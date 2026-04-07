@@ -1,0 +1,315 @@
+/* Admin Panel Styles */
+.admin-login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--dark);
+}
+
+.admin-login .login-card {
+  background: var(--dark-2);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.admin-login .login-card .logo-text {
+  font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+  font-size: 2rem;
+  color: var(--primary);
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.admin-login .login-card .subtitle {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+  margin-bottom: 30px;
+}
+
+.admin-login .form-control {
+  background: var(--dark-3);
+  border: 1px solid var(--dark-4);
+  color: var(--text-primary);
+  padding: 12px 16px;
+  border-radius: 8px;
+}
+
+.admin-login .form-control:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.2);
+  background: var(--dark-3);
+  color: var(--text-primary);
+}
+
+.admin-login .login-btn {
+  width: 100%;
+  padding: 12px;
+  font-weight: 700;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+
+.shake {
+  animation: shake 0.4s ease;
+}
+
+/* Admin Sidebar */
+.admin-sidebar {
+  background: var(--dark);
+  border-right: 1px solid var(--card-border);
+  min-height: 100vh;
+  width: 250px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding-top: 0;
+  z-index: 1050;
+  transition: transform 0.3s;
+}
+
+@media (max-width: 991px) {
+  .admin-sidebar {
+    transform: translateX(-100%);
+  }
+  .admin-sidebar.open {
+    transform: translateX(0);
+  }
+}
+
+.admin-sidebar .sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--card-border);
+  text-align: center;
+}
+
+.admin-sidebar .sidebar-header .admin-title {
+  font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+  font-size: 1.5rem;
+  color: var(--primary);
+}
+
+.admin-sidebar .sidebar-header .admin-subtitle {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.admin-sidebar .sidebar-nav {
+  padding: 16px 0;
+}
+
+.admin-sidebar .sidebar-nav .nav-item {
+  display: block;
+  padding: 12px 20px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.admin-sidebar .sidebar-nav .nav-item:hover {
+  color: var(--accent);
+  background: var(--dark-2);
+}
+
+.admin-sidebar .sidebar-nav .nav-item.active {
+  color: var(--accent);
+  background: var(--dark-2);
+  border-left-color: var(--primary);
+}
+
+.admin-sidebar .sidebar-nav .nav-item i {
+  width: 20px;
+  margin-right: 10px;
+}
+
+/* Admin Dashboard */
+.admin-content {
+  margin-left: 250px;
+  padding: 24px;
+  min-height: 100vh;
+}
+
+@media (max-width: 991px) {
+  .admin-content {
+    margin-left: 0;
+  }
+}
+
+.admin-content .stat-card {
+  background: var(--dark-2);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.admin-content .stat-card:hover {
+  border-color: var(--primary);
+}
+
+.admin-content .stat-card .stat-number {
+  font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+  font-size: 2.5rem;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.admin-content .stat-card .stat-label {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Admin Table */
+.admin-table {
+  width: 100%;
+  color: var(--text-primary);
+}
+
+.admin-table thead th {
+  background: var(--dark-3);
+  border-bottom: 2px solid var(--primary);
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.admin-table tbody td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--dark-4);
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+.admin-table tbody tr:hover {
+  background: var(--dark-3);
+}
+
+.admin-table .action-btn {
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: color 0.3s;
+}
+
+.admin-table .action-btn.edit {
+  color: var(--accent);
+}
+
+.admin-table .action-btn.delete {
+  color: var(--primary);
+}
+
+.admin-table .action-btn:hover {
+  opacity: 0.7;
+}
+
+/* Add/Edit Article Form */
+.article-form .form-control,
+.article-form .form-select {
+  background: var(--dark-3);
+  border: 1px solid var(--dark-4);
+  color: var(--text-primary);
+  border-radius: 8px;
+}
+
+.article-form .form-control:focus,
+.article-form .form-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.2);
+  background: var(--dark-3);
+  color: var(--text-primary);
+}
+
+.article-form .form-label {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.article-form .char-counter {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.article-form .step-indicator {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.article-form .step-indicator .step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.article-form .step-indicator .step.active {
+  color: var(--primary);
+}
+
+.article-form .step-indicator .step.completed {
+  color: var(--accent);
+}
+
+.article-form .step-indicator .step .step-num {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.article-form .step-indicator .step.active .step-num {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.article-form .step-indicator .step.completed .step-num {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+}
+
+.image-preview {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  margin-top: 10px;
+}
+
+/* Preview Card */
+.preview-card {
+  background: var(--dark-3);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 16px;
+}

@@ -1,0 +1,18 @@
+export const SUBSECTIONS = [
+  { key:'politics',       label:'राजनीति',       labelEn:'Politics',        emoji:'🏛️',  color:'#CC0000', row:1 },
+  { key:'parliament',     label:'संसद',           labelEn:'Parliament',       emoji:'📜',  color:'#990000', row:1 },
+  { key:'economy',        label:'अर्थव्यवस्था',   labelEn:'Economy',          emoji:'📈',  color:'#FFD700', row:1 },
+  { key:'defence',        label:'रक्षा',          labelEn:'Defence',          emoji:'🛡️',  color:'#CC0000', row:1 },
+  { key:'education',      label:'शिक्षा',         labelEn:'Education',        emoji:'📚',  color:'#B45309', row:2 },
+  { key:'health',         label:'स्वास्थ्य',      labelEn:'Health',           emoji:'🏥',  color:'#990000', row:2 },
+  { key:'infrastructure', label:'बुनियाद',         labelEn:'Infrastructure',   emoji:'🏗️',  color:'#CC0000', row:2 },
+  { key:'laworder',       label:'कानून-व्यवस्था', labelEn:'Law & Order',      emoji:'⚖️',  color:'#7F1D1D', row:2 },
+  { key:'schemes',        label:'सरकारी योजना',   labelEn:'Govt Schemes',     emoji:'📋',  color:'#B45309', row:3 },
+  { key:'agriculture',    label:'कृषि',           labelEn:'Agriculture',      emoji:'🌾',  color:'#92400E', row:3 },
+  { key:'environment',    label:'पर्यावरण',        labelEn:'Environment',      emoji:'🌿',  color:'#166534', row:3 },
+  { key:'sports',         label:'खेल',            labelEn:'Sports',           emoji:'🏏',  color:'#9A3412', row:3 },
+  { key:'factcheck',      label:'फैक्ट चेक',      labelEn:'Fact Check',       emoji:'✅',  color:'#DC2626', row:4 },
+  { key:'photo',          label:'फोटो स्टोरी',    labelEn:'Photo Stories',    emoji:'📷',  color:'#B91C1C', row:4 },
+  { key:'opinion',        label:'विश्लेषण',        labelEn:'Opinion',          emoji:'💡',  color:'#991B1B', row:4 },
+  { key:'election',       label:'चुनाव',           labelEn:'Election News',    emoji:'🗳️',  color:'#7F1D1D', row:4 },
+];

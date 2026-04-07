@@ -1,0 +1,914 @@
+/* ══ Daily Horoscope Section ════════════════════════════════════════════════ */
+
+.dh-wrapper {
+  background: var(--dark-2);
+  padding: 28px 0 36px;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.dh-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.dh-heading h2 {
+  font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0;
+}
+.dh-heading h2 span { color: var(--primary); }
+
+.dh-date {
+  font-size: 13px;
+  color: var(--text-muted);
+  background: var(--dark-3);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 4px 14px;
+}
+
+/* Sign selector strip */
+.dh-sign-strip {
+  display: flex;
+  overflow-x: auto;
+  gap: 8px;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+  margin-bottom: 20px;
+}
+.dh-sign-strip::-webkit-scrollbar { display: none; }
+
+.dh-sign-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  padding: 8px 14px;
+  background: var(--dark-3);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 62px;
+}
+.dh-sign-btn:hover { border-color: var(--primary); }
+.dh-sign-btn.active {
+  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+  border-color: var(--primary);
+  background: rgba(204,0,0,0.1);
+}
+
+.dh-sign-symbol { font-size: 1.5rem; line-height: 1; }
+.dh-sign-name   { font-size: 11px; font-weight: 600; color: var(--text-muted); white-space: nowrap; font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif; }
+
+/* Main card */
+.dh-card {
+  background: var(--dark);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.dh-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--card-border);
+}
+.dh-card-sign { display: flex; align-items: center; gap: 16px; }
+.dh-big-symbol { font-size: 3.5rem; line-height: 1; }
+.dh-sign-title { font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif; font-size: 1.6rem; font-weight: 800; margin: 0 0 4px; }
+.dh-sign-sub   { font-size: 12px; color: var(--text-muted); }
+
+.dh-overall { text-align: right; }
+.dh-overall-label { font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+.dh-overall-stars { display: flex; gap: 2px; justify-content: flex-end; }
+
+/* Score bars */
+.dh-scores {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+@media (max-width: 575px) { .dh-scores { grid-template-columns: 1fr; } }
+
+.dh-score-row { display: flex; align-items: center; gap: 10px; }
+.dh-score-label { font-size: 12px; color: var(--text-secondary); width: 90px; flex-shrink: 0; font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif; }
+.dh-score-bar { flex: 1; height: 6px; background: var(--dark-3); border-radius: 3px; overflow: hidden; }
+.dh-score-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+.dh-stars { display: flex; gap: 1px; flex-shrink: 0; }
+
+/* Prediction blocks */
+.dh-preds {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+@media (max-width: 575px) { .dh-preds { grid-template-columns: 1fr; } }
+
+.dh-pred-block {
+  background: var(--dark-3);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.dh-pred-label { font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif; }
+.dh-pred-text  { font-size: 13px; color: var(--text-secondary); line-height: 1.6; font-family: 'Noto Sans Devanagari', sans-serif; }
+
+/* Lucky details */
+.dh-lucky-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+@media (max-width: 575px) { .dh-lucky-row { grid-template-columns: repeat(2, 1fr); } }
+
+.dh-lucky-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--dark-3);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.dh-lucky-icon { font-size: 1.3rem; flex-shrink: 0; }
+.dh-lucky-key  { display: block; font-size: 10px; color: var(--text-muted); margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.3px; }
+.dh-lucky-val  { display: block; font-size: 14px; font-weight: 700; color: var(--primary); font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif; }
+
+/* Tip */
+.dh-tip {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: var(--dark-3);
+  border: 1px solid var(--card-border);
+  border-left: 3px solid var(--primary);
+  border-radius: 0 10px 10px 0;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  line-height: 1.6;
+}
+.dh-tip-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+.dh-tip strong { color: var(--primary); }
+
+/* Light mode */
+[data-theme="light"] .dh-wrapper { background: #f5f5f5; border-bottom-color: #ddd; }
+[data-theme="light"] .dh-date { background: #fff; border-color: #ddd; color: #666; }
+[data-theme="light"] .dh-sign-btn { background: #fff; border-color: #ddd; }
+[data-theme="light"] .dh-card { background: #fff; border-color: #e0e0e0; }
+[data-theme="light"] .dh-card-header { border-bottom-color: #eee; }
+[data-theme="light"] .dh-score-bar { background: #e8e8e8; }
+[data-theme="light"] .dh-pred-block { background: #f5f5f5; }
+[data-theme="light"] .dh-lucky-item { background: #f5f5f5; border-color: #ddd; }
+[data-theme="light"] .dh-tip { background: #fff8f8; border-right-color: #ddd; border-top-color: #ddd; border-bottom-color: #ddd; }
+
+/* ══ Astrology Page ══════════════════════════════════════════════════════════ */
+
+/* Hero */
+.astro-hero {
+  position: relative;
+  background: linear-gradient(135deg, var(--dark) 0%, #1a0000 50%, var(--dark) 100%);
+  padding: 48px 0 36px;
+  overflow: hidden;
+  text-align: center;
+  border-bottom: 2px solid var(--primary);
+}
+
+.astro-hero-stars {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 40%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 85% 75%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(2px 2px at 20% 80%, rgba(204,0,0,0.3) 0%, transparent 100%),
+    radial-gradient(2px 2px at 60% 30%, rgba(204,0,0,0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 15%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 40% 50%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 75% 90%, rgba(255,255,255,0.3) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.astro-hero-content { position: relative; z-index: 1; }
+
+.astro-hero-title {
+  font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+}
+.astro-hero-title span { color: var(--primary); }
+
+.astro-hero-subtitle {
+  color: var(--text-secondary);
+  font-size: 15px;
+  margin-bottom: 14px;
+}
+
+.astro-hero-date {
+  display: inline-block;
+  background: var(--dark-3);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 5px 18px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+@media (max-width: 576px) {
+  .astro-hero-title { font-size: 1.6rem; }
+  .astro-hero { padding: 32px 0 24px; }
+}
+
+/* Tab nav */
+.astro-tabnav {
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+  background: var(--dark-2);
+  border-bottom: 2px solid var(--card-border);
+  padding: 0 8px;
+  gap: 4px;
+  justify-content: center;
+}
+.astro-tabnav::-webkit-scrollbar { display: none; }
+
+.astro-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+  padding: 10px 18px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+  border-radius: 6px 6px 0 0;
+}
+.astro-tab span:first-child { font-size: 18px; }
+.astro-tab:hover { color: var(--text-primary); background: var(--dark-3); }
+.astro-tab.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  background: rgba(204,0,0,0.06);
+}
+
+/* Section header */
+.astro-section-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.astro-section-header h2 {
+  font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.astro-section-header h2 span { color: var(--primary); }
+.astro-section-header p {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.astro-subheading {
+  font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  border-left: 4px solid var(--primary);
+  padding-left: 12px;
+}
+
+/* ── Rashi Grid ── */
+.astro-rashi-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+}
+@media (max-width: 991px) { .astro-rashi-grid { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 575px) { .astro-rashi-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; } }
+
+.astro-rashi-card {
+  background: var(--dark-2);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 16px 10px 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s, background 0.2s;
+}
+.astro-rashi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  border-color: var(--primary);
+}
+.astro-rashi-card.selected {
+  background: var(--dark-3);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary), 0 6px 20px rgba(204,0,0,0.15);
+  transform: translateY(-2px);
+}
+
+.astro-rashi-symbol { font-size: 2rem; margin-bottom: 6px; }
+.astro-rashi-name { font-weight: 700; font-size: 14px; color: var(--text-primary); margin-bottom: 3px; }
+.astro-rashi-dates { font-size: 10px; color: var(--text-muted); line-height: 1.3; }
+
+.astro-rashi-detail { margin-top: 14px; text-align: left; border-top: 1px solid var(--card-border); padding-top: 12px; }
+.astro-pred-row { display: flex; gap: 8px; margin-bottom: 8px; font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+.astro-pred-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+.astro-lucky-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 6px; }
+.astro-lucky-badge {
+  background: var(--dark-4);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 3px 10px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+.astro-tip {
+  background: var(--dark-4);
+  border-left: 3px solid var(--primary);
+  padding: 8px 10px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  border-radius: 0 6px 6px 0;
+  margin-top: 8px;
+}
+
+/* ── Sun Sign Card ── */
+.astro-sun-card {
+  background: var(--dark-2);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 20px;
+  height: 100%;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.astro-sun-card:hover { transform: translateY(-2px); border-color: var(--primary); }
+
+.astro-sun-header { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.astro-sun-symbol { font-size: 2.5rem; }
+.astro-sun-name { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin: 0 0 2px; }
+.astro-sun-dates { font-size: 12px; color: var(--text-muted); }
+.astro-sun-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 12px; }
+.astro-sun-meta { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
+
+.astro-traits { display: flex; flex-wrap: wrap; gap: 6px; }
+.astro-trait-badge {
+  background: var(--dark-3);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 3px 10px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* ── Calculator Card ── */
+.astro-calc-card {
+  background: var(--dark-2);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 24px;
+}
+.astro-calc-card h4 {
+  font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.astro-input-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+
+.astro-input, .astro-select {
+  flex: 1;
+  min-width: 200px;
+  background: var(--dark-3);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  padding: 10px 14px;
+  font-size: 14px;
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.astro-input:focus, .astro-select:focus { border-color: var(--primary); }
+.astro-select option { background: var(--dark-2); }
+
+.astro-calc-btn {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.astro-calc-btn:hover { background: var(--primary-dark); }
+
+.astro-result-box {
+  background: var(--dark-3);
+  border: 1px solid var(--primary);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  margin-top: 20px;
+}
+.astro-result-box h4 {
+  font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+  font-size: 1.2rem;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+.astro-result-symbol { font-size: 3rem; margin-bottom: 8px; }
+.astro-num-big {
+  font-size: 4rem;
+  font-weight: 900;
+  color: var(--primary);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.astro-num-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  background: var(--dark-4);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  text-align: left;
+}
+.astro-num-label { color: var(--text-muted); font-size: 12px; flex-shrink: 0; }
+.astro-num-val { color: var(--text-primary); font-weight: 600; text-align: right; }
+
+/* Numerology cards */
+.astro-num-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--dark-2);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 18px 16px;
+  transition: transform 0.2s, border-color 0.2s;
+  height: 100%;
+}
+.astro-num-card:hover { transform: translateY(-2px); border-color: var(--primary); }
+.astro-num-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.astro-num-info { flex: 1; }
+.astro-num-info strong { font-size: 14px; color: var(--text-primary); display: block; margin-bottom: 4px; }
+.astro-num-traits { font-size: 12px; color: var(--primary); margin: 0 0 6px; line-height: 1.4; font-weight: 600; }
+.astro-num-desc { font-size: 13px; color: var(--text-secondary); margin: 0 0 10px; line-height: 1.6; }
+
+/* ── Rashi pills (marriage tab) ── */
+.astro-rashi-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.astro-rashi-pill {
+  background: var(--dark-3);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+  font-weight: 500;
+}
+.astro-rashi-pill:hover { border-color: var(--primary); color: var(--text-primary); }
+.astro-rashi-pill.active { color: #fff; font-weight: 700; }
+
+.astro-compat-list { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+.astro-compat-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--dark-3);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  padding: 10px 16px;
+}
+.astro-compat-rank {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary);
+  background: var(--dark-4);
+  padding: 3px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--card-border);
+}
+.astro-compat-sign { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+
+/* Guna cards */
+.astro-guna-card {
+  background: var(--dark-2);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 14px;
+  text-align: center;
+  height: 100%;
+}
+.astro-guna-name { font-weight: 800; font-size: 1rem; color: var(--primary); margin-bottom: 4px; }
+.astro-guna-max { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+.astro-guna-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+.astro-info-banner {
+  background: var(--dark-3);
+  border: 1px solid var(--card-border);
+  border-left: 4px solid var(--primary);
+  border-radius: 0 12px 12px 0;
+  padding: 20px 24px;
+}
+.astro-info-banner h5 { color: var(--primary); font-weight: 700; margin-bottom: 8px; }
+.astro-info-banner p { color: var(--text-secondary); font-size: 14px; margin-bottom: 14px; }
+
+.astro-guna-scale { display: flex; gap: 8px; flex-wrap: wrap; }
+.astro-scale-item {
+  flex: 1;
+  min-width: 100px;
+  text-align: center;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.astro-scale-item.red    { background: rgba(204,0,0,0.12); color: #ef5350; border: 1px solid rgba(204,0,0,0.3); }
+.astro-scale-item.yellow { background: rgba(255,179,0,0.12); color: #ffb300; border: 1px solid rgba(255,179,0,0.3); }
+.astro-scale-item.green  { background: rgba(67,160,71,0.12); color: #66bb6a; border: 1px solid rgba(67,160,71,0.3); }
+.astro-scale-item.gold   { background: rgba(204,0,0,0.12); color: var(--primary); border: 1px solid rgba(204,0,0,0.4); }
+
+/* ── Info card ── */
+.astro-info-card {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: var(--dark-2);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 16px;
+  transition: border-color 0.2s;
+}
+.astro-info-card:hover { border-color: var(--primary); }
+.astro-info-icon { font-size: 1.8rem; flex-shrink: 0; }
+.astro-info-card strong { font-size: 14px; color: var(--text-primary); display: block; margin-bottom: 4px; }
+.astro-info-card p { font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.6; }
+
+/* ── Graha cards ── */
+.astro-graha-card {
+  background: var(--dark-2);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 18px;
+  height: 100%;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.astro-graha-card:hover { transform: translateY(-2px); border-color: var(--primary); }
+.astro-graha-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.astro-graha-icon { font-size: 2rem; }
+.astro-graha-name { font-size: 1rem; font-weight: 800; margin: 0 0 2px; }
+.astro-graha-dasha { font-size: 11px; color: var(--text-muted); background: var(--dark-3); border-radius: 10px; padding: 2px 8px; }
+.astro-graha-effect, .astro-graha-remedy, .astro-graha-gem {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+.astro-mantra {
+  margin-top: 10px;
+  background: var(--dark-3);
+  border: 1px solid var(--card-border);
+  border-left: 3px solid var(--primary);
+  border-radius: 0 6px 6px 0;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: var(--primary);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* ── Rashi Detail Panel (below grid) ── */
+.astro-detail-panel {
+  background: var(--dark-2);
+  border: 2px solid var(--primary);
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-top: 16px;
+  animation: slideDown 0.25s ease;
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.astro-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.astro-detail-sign-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+}
+
+.astro-detail-close {
+  background: var(--dark-3);
+  border: 1px solid var(--card-border);
+  color: var(--text-muted);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 13px;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.astro-detail-close:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+.astro-detail-preds {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+@media (max-width: 575px) { .astro-detail-preds { grid-template-columns: 1fr; } }
+
+.astro-detail-pred {
+  background: var(--dark-3);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+[data-theme="light"] .astro-detail-panel { background: #fff; }
+[data-theme="light"] .astro-detail-pred  { background: #f5f5f5; }
+[data-theme="light"] .astro-detail-close { background: #f0f0f0; border-color: #ddd; color: #555; }
+
+/* Dasha timeline */
+.astro-dasha-timeline { display: flex; flex-direction: column; gap: 10px; }
+.astro-dasha-bar-wrap { display: flex; align-items: center; gap: 12px; }
+.astro-dasha-label { width: 80px; font-size: 13px; color: var(--text-secondary); flex-shrink: 0; text-align: right; }
+.astro-dasha-bar-outer { flex: 1; height: 14px; background: var(--dark-3); border-radius: 7px; overflow: hidden; }
+.astro-dasha-bar-fill { height: 100%; border-radius: 7px; transition: width 1s ease; }
+.astro-dasha-years { width: 54px; font-size: 12px; color: var(--text-muted); flex-shrink: 0; }
+
+/* News heading */
+.astro-news-heading {
+  font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: 8px;
+  margin-bottom: 20px;
+}
+
+/* ── Rashi grid sub-heading ── */
+.astro-rashi-grid-heading {
+  font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+  padding: 6px 0;
+  border-left: 3px solid var(--primary);
+  padding-left: 12px;
+}
+
+/* ── News section wrapper ── */
+.astro-news-section {
+  border-top: 1px solid var(--card-border);
+  padding-top: 32px;
+}
+
+/* ── Astro News Empty state ── */
+.astro-news-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+  background: var(--dark-2);
+  border: 1px dashed var(--card-border);
+  border-radius: 12px;
+}
+.astro-news-empty span { font-size: 2.5rem; display: block; margin-bottom: 10px; }
+.astro-news-empty p { margin: 0; font-size: 14px; }
+
+/* ══ Astro News Slider ═══════════════════════════════════════════════════════ */
+
+.astro-slider {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  aspect-ratio: 16 / 7;
+  background: var(--dark-2);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+
+/* Full-width hero variant — matches home page HeroSlider height */
+.astro-slider--hero {
+  border-radius: 0;
+  aspect-ratio: unset;
+  height: 460px;
+  box-shadow: none;
+}
+
+@media (max-width: 768px) {
+  .astro-slider--hero { height: 280px; }
+}
+@media (max-width: 480px) {
+  .astro-slider--hero { height: 220px; }
+}
+
+.astro-slider-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.astro-slide-item {
+  min-width: 100%;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.astro-slide-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+.astro-slide-item:hover img { transform: scale(1.03); }
+
+.astro-slide-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+  display: flex;
+  align-items: flex-end;
+}
+
+.astro-slide-content {
+  padding: 20px 24px;
+  width: 100%;
+}
+
+.astro-slide-badge {
+  display: inline-block;
+  background: var(--primary);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.astro-slide-title {
+  font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 6px;
+  line-height: 1.4;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+}
+
+.astro-slide-time {
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+}
+
+/* Prev / Next buttons */
+.astro-slide-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.55);
+  border: none;
+  color: #fff;
+  font-size: 1.8rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: background 0.2s;
+  z-index: 10;
+}
+.astro-slide-btn:hover { background: var(--primary); }
+.astro-slide-prev { left: 12px; }
+.astro-slide-next { right: 12px; }
+
+/* Dot indicators */
+.astro-slide-dots {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+}
+.astro-slide-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.4);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s, transform 0.2s;
+}
+.astro-slide-dot.active {
+  background: var(--primary);
+  transform: scale(1.3);
+}
+
+@media (max-width: 576px) {
+  .astro-slider { aspect-ratio: 4 / 3; }
+  .astro-slide-title { font-size: 1rem; }
+  .astro-slide-content { padding: 14px 16px; }
+  .astro-slide-btn { width: 32px; height: 32px; font-size: 1.4rem; }
+}
+
+/* Light mode */
+[data-theme="light"] .astro-hero { background: linear-gradient(135deg, #f5f5f5 0%, #fff0f0 50%, #f5f5f5 100%); }
+[data-theme="light"] .astro-tabnav { background: #fff; border-bottom-color: #eee; }
+[data-theme="light"] .astro-rashi-card,
+[data-theme="light"] .astro-sun-card,
+[data-theme="light"] .astro-calc-card,
+[data-theme="light"] .astro-graha-card,
+[data-theme="light"] .astro-num-card,
+[data-theme="light"] .astro-guna-card,
+[data-theme="light"] .astro-info-card,
+[data-theme="light"] .astro-compat-item { background: #fff; border-color: #e0e0e0; }
+[data-theme="light"] .astro-input,
+[data-theme="light"] .astro-select { background: #f5f5f5; border-color: #ccc; color: #111; }
+[data-theme="light"] .astro-rashi-pill { background: #f5f5f5; border-color: #ddd; color: #555; }
+[data-theme="light"] .astro-result-box { background: #fff0f0; }
+[data-theme="light"] .astro-info-banner { background: #fff0f0; }
+[data-theme="light"] .astro-mantra { background: #f5f5f5; }
+[data-theme="light"] .astro-guna-card { background: #fff; }

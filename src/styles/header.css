@@ -1,0 +1,426 @@
+/* ── Sticky site header ─────────────────────────────── */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1050;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+/* ── Top Strip ─────────────────────────────────────── */
+.header-topstrip {
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--card-border);
+  padding: 4px 0;
+}
+
+.header-date {
+  font-size: 11px;
+  color: #666;
+}
+
+.header-social {
+  display: flex;
+  gap: 0;
+}
+
+.header-social a {
+  color: #fff;
+  font-size: 12px;
+  padding: 0 7px;
+  transition: color 0.2s;
+}
+
+.header-social a:hover { color: var(--accent); }
+
+/* ── Lang Toggle ──────────────────────────────────── */
+.lang-toggle {
+  display: inline-flex;
+  border: 1px solid #2a2a2a;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.lang-toggle span {
+  cursor: pointer;
+  padding: 2px 9px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: var(--dark-2);
+  transition: all 0.15s;
+  user-select: none;
+  line-height: 1.6;
+}
+
+.lang-toggle span:first-child {
+  border-right: 1px solid #2a2a2a;
+}
+
+.lang-toggle span.active {
+  background: var(--primary);
+  color: #fff;
+}
+
+.lang-toggle span:hover:not(.active) { color: #ccc; }
+
+/* ── Logo Row ─────────────────────────────────────── */
+.header-logo-row {
+  background: var(--header-bg);
+  padding: 8px 0 10px;
+  border-bottom: 2px solid var(--primary);
+}
+
+
+.portal-brand {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  line-height: 1;
+}
+
+.brand-logo {
+  height: 52px;
+}
+
+.brand-hindi {
+  font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: 0.5px;
+}
+
+.brand-english {
+  font-size: 0.68rem;
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-search {
+  background: none;
+  border: 1px solid #2a2a2a;
+  color: #fff;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.btn-search:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.btn-subscribe {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.btn-subscribe:hover { background: var(--primary-dark); }
+
+/* ── Main Navbar ──────────────────────────────────── */
+.main-navbar {
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--card-border);
+  transition: box-shadow 0.3s;
+}
+
+.main-navbar.scrolled {
+  box-shadow: 0 2px 10px rgba(0,0,0,0.7);
+}
+
+.main-navbar .navbar-nav .nav-link {
+  color: var(--nav-link);
+  font-weight: 500;
+  font-size: 13px;
+  padding: 9px 12px;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.main-navbar .navbar-nav .nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: var(--primary);
+  transition: width 0.25s;
+}
+
+.main-navbar .navbar-nav .nav-link:hover,
+.main-navbar .navbar-nav .nav-link.active {
+  color: #fff;
+}
+
+.main-navbar .navbar-nav .nav-link:hover::after,
+.main-navbar .navbar-nav .nav-link.active::after {
+  width: 70%;
+}
+
+.main-navbar .navbar-toggler {
+  border-color: #333;
+  padding: 3px 7px;
+}
+
+.main-navbar .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23CC0000' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* ── Search Overlay ───────────────────────────────── */
+.search-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.96);
+  z-index: 1060;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 100px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.25s;
+}
+
+.search-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.search-overlay .search-box {
+  width: 90%;
+  max-width: 560px;
+}
+
+.search-overlay .search-input {
+  background: #1a1a1a;
+  border: 2px solid var(--primary);
+  color: #fff;
+  font-size: 17px;
+  padding: 14px 18px;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.search-overlay .search-input::placeholder { color: #555; }
+
+.search-overlay .close-search {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 26px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.search-overlay .close-search:hover { color: #fff; }
+
+/* ── Mobile Navbar Expanded (< 992px) ────────────── */
+@media (max-width: 991.98px) {
+  .main-navbar .navbar-collapse {
+    background: var(--nav-bg);
+    border-top: 1px solid var(--card-border);
+    padding: 4px 0 12px;
+  }
+
+  .main-navbar .navbar-nav {
+    gap: 0;
+    padding: 0 4px;
+  }
+
+  .main-navbar .navbar-nav .nav-item {
+    width: 100%;
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .main-navbar .navbar-nav .nav-item:last-child {
+    border-bottom: none;
+  }
+
+  .main-navbar .navbar-nav .nav-link {
+    display: block;
+    width: 100%;
+    padding: 11px 14px;
+    font-size: 14px;
+    color: var(--text-secondary) !important;
+  }
+
+  .main-navbar .navbar-nav .nav-link::after {
+    display: none;
+  }
+
+  .main-navbar .navbar-nav .nav-link:hover,
+  .main-navbar .navbar-nav .nav-link.active {
+    color: #fff !important;
+    background: rgba(204, 0, 0, 0.1);
+    border-radius: 6px;
+  }
+
+  /* States dropdown: left-align and constrain width on mobile */
+  .main-navbar .navbar-nav .nav-item .states-dropdown {
+    position: static !important;
+    transform: none !important;
+    left: auto !important;
+    width: 100%;
+    border-radius: 6px;
+    margin-top: 4px;
+    margin-bottom: 6px;
+  }
+}
+
+[data-theme="light"] .main-navbar .navbar-collapse {
+  border-top-color: #ddd;
+}
+
+[data-theme="light"] .main-navbar .navbar-nav .nav-item {
+  border-bottom-color: #eee;
+}
+
+[data-theme="light"] .main-navbar .navbar-nav .nav-link {
+  color: #555 !important;
+}
+
+[data-theme="light"] .main-navbar .navbar-nav .nav-link:hover,
+[data-theme="light"] .main-navbar .navbar-nav .nav-link.active {
+  color: #111 !important;
+  background: rgba(204, 0, 0, 0.06);
+}
+
+/* ── Mobile Category Bar ─────────────────────────── */
+.mobile-cat-bar {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--card-border);
+}
+
+.mobile-cat-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.mobile-cat-pill {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+  padding: 6px 14px;
+  background: var(--dark-3);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  text-decoration: none;
+  color: var(--text-secondary);
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.mobile-cat-pill.active,
+.mobile-cat-pill:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.mobile-cat-emoji {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.mobile-cat-label {
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+[data-theme="light"] .mobile-cat-bar {
+  background: #fff;
+  border-bottom-color: #ddd;
+}
+
+[data-theme="light"] .mobile-cat-pill {
+  background: #f5f5f5;
+  border-color: #ddd;
+  color: #555;
+}
+
+/* ── Mobile Responsive ────────────────────────────── */
+@media (max-width: 575px) {
+  .header-logo-row {
+    padding: 6px 0 8px;
+  }
+
+  .portal-brand {
+    gap: 7px;
+  }
+
+  .brand-logo {
+    height: 36px;
+  }
+
+  .brand-hindi {
+    font-size: 1.2rem;
+    letter-spacing: 0;
+  }
+
+  .btn-subscribe {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  .header-date {
+    font-size: 10px;
+  }
+
+  .header-search-input {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+}
+
+@media (max-width: 400px) {
+  .brand-logo {
+    height: 28px;
+  }
+
+  .brand-hindi {
+    font-size: 1rem;
+  }
+
+  .btn-subscribe {
+    display: none;
+  }
+}
