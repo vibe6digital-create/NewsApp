@@ -36,7 +36,6 @@ const NationalNewsCard = ({ article, lang, isLead, accentColor, subsectionKey })
 
   const imageHeight = isPhoto ? 220 : isLead ? 240 : 170;
 
-  const initials = (article.source || 'N').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
 
   if (isPhoto) {
     return (
@@ -160,9 +159,9 @@ const NationalNewsCard = ({ article, lang, isLead, accentColor, subsectionKey })
             <div style={{
               width: '32px', height: '32px', borderRadius: '50%',
               background: accentColor, display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '12px', fontWeight: 700, color: '#fff', flexShrink: 0,
+              fontSize: '14px', flexShrink: 0,
             }}>
-              {initials}
+              ✍️
             </div>
           </div>
         )}
