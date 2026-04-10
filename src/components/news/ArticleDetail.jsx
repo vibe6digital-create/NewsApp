@@ -221,7 +221,7 @@ const ArticleDetail = ({ article }) => {
   }, [article, fullContent, pdfLoading, lang]);
 
   useEffect(() => {
-    if (!article || article.body || !article.isRss || !article.link || article.link === '#') return;
+    if (!article || !article.isRss || !article.link || article.link === '#') return;
 
     let cancelled = false;
     setFetching(true);
@@ -398,36 +398,11 @@ const ArticleDetail = ({ article }) => {
           <div>{parse(article.body)}</div>
         )}
 
-        {/* Loading indicator — shown below existing content */}
+        {/* Loading indicator */}
         {fetching && (
           <div className="d-flex align-items-center gap-2 mt-3" style={{ color: '#888', fontSize: '14px' }}>
             <div className="spinner-border spinner-border-sm text-danger" role="status" style={{ width: '1rem', height: '1rem' }} />
-            {lang === 'EN' ? 'Loading more content…' : 'और सामग्री लोड हो रही है…'}
-          </div>
-        )}
-
-        {/* Read full article link */}
-        {!fetching && article.link && article.link !== '#' && (
-          <div className="mt-4 pt-3" style={{ borderTop: '1px solid #333' }}>
-            <a
-              href={article.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                background: '#CC0000',
-                color: '#fff',
-                padding: '10px 22px',
-                borderRadius: '30px',
-                fontWeight: 700,
-                fontSize: '15px',
-                textDecoration: 'none',
-              }}
-            >
-              {lang === 'EN' ? '📰 Read Full Article' : '📰 पूरी खबर पढ़ें'}
-            </a>
+            {lang === 'EN' ? 'Loading full article…' : 'पूरी खबर लोड हो रही है…'}
           </div>
         )}
       </div>
