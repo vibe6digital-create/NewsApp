@@ -12,14 +12,17 @@ export const useAuth = () => {
 };
 
 const USER_KEY = 'kpn_user';
+const TOKEN_KEY = 'kpn_token';
 const API = API_BASE ? `${API_BASE}/api/auth` : '/api/auth';
 
 /** Try a server API call; returns null if server unavailable */
-const tryServer = async (path, body) => {
+const tryServer = async (path, body, token = null) => {
   try {
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
     const res = await fetch(`${API}${path}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify(body),
       signal: AbortSignal.timeout(5000),
     });
@@ -46,6 +49,7 @@ export const AuthProvider = ({ children }) => {
     if (data?.exists && data?.user) {
       const u = data.user;
       localStorage.setItem(USER_KEY, JSON.stringify(u));
+      if (data.token) localStorage.setItem(TOKEN_KEY, data.token);
       setUser(u);
       setShowAuthModal(false);
       return { exists: true };
@@ -76,6 +80,7 @@ export const AuthProvider = ({ children }) => {
     const data = await tryServer('/subscribe', { name, email, mobile });
     if (data?.user) {
       localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+      if (data.token) localStorage.setItem(TOKEN_KEY, data.token);
       setUser(data.user);
     } else {
       // Local only
@@ -89,16 +94,17 @@ export const AuthProvider = ({ children }) => {
 
   const logout = useCallback(() => {
     localStorage.removeItem(USER_KEY);
+    localStorage.removeItem(TOKEN_KEY);
     setUser(null);
   }, []);
 
   const unsubscribe = useCallback(async () => {
-    const stored = localStorage.getItem(USER_KEY);
-    const u = stored ? JSON.parse(stored) : null;
-    if (u?.id) {
-      await tryServer('/unsubscribe', { id: u.id });
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (token) {
+      await tryServer('/unsubscribe', {}, token);
     }
     localStorage.removeItem(USER_KEY);
+    localStorage.removeItem(TOKEN_KEY);
     setUser(null);
   }, []);
 
