@@ -53,6 +53,14 @@ export const deleteSubscriber = (id) => {
   return true;
 };
 
+export const removeSubscriberByEmail = (email, mobile) => {
+  const subscribers = getSubscribers();
+  const filtered = subscribers.filter(s =>
+    !(email && s.email === email) && !(mobile && s.mobile === mobile)
+  );
+  saveSubscribers(filtered);
+};
+
 export const exportSubscribersCSV = () => {
   const subscribers = getSubscribers();
   if (subscribers.length === 0) return null;

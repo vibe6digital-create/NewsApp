@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { addSubscriber, getAllSubscribers } from '../services/subscriptionService';
+import { addSubscriber, getAllSubscribers, removeSubscriberByEmail } from '../services/subscriptionService';
 import { API_BASE } from '../utils/constants';
 import AuthModal from '../components/common/AuthModal';
 
@@ -102,8 +102,10 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem(TOKEN_KEY);
     const stored = localStorage.getItem(USER_KEY);
     const u = stored ? JSON.parse(stored) : null;
-    // Send token if available, always include email/mobile as fallback
+    // Remove from server DB
     await tryServer('/unsubscribe', { email: u?.email, mobile: u?.mobile }, token);
+    // Remove from local subscribers list so admin panel reflects immediately
+    if (u?.email || u?.mobile) removeSubscriberByEmail(u.email, u.mobile);
     localStorage.removeItem(USER_KEY);
     localStorage.removeItem(TOKEN_KEY);
     setUser(null);
