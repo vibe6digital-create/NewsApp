@@ -63,7 +63,7 @@ const translations = {
     contactUs: 'संपर्क करें',
     allRightsReserved: 'सर्वाधिकार सुरक्षित',
     poweredBy: 'Powered by',
-    portalDesc: 'खबर का सफर - आपका अपना हिंदी समाचार पोर्टल। ताज़ा खबरें, शिक्षा, नौकरी, राशिफल, स्वास्थ्य और तकनीक से जुड़ी हर अपडेट सबसे पहले।',
+    portalDesc: 'खबर का सफर — तेज नज़र तेज़ खबर। आपका अपना हिंदी समाचार पोर्टल। ताज़ा खबरें, शिक्षा, नौकरी, राशिफल, स्वास्थ्य और तकनीक से जुड़ी हर अपडेट सबसे पहले।',
 
     // Search
     searchResults: 'के लिए परिणाम',
@@ -132,6 +132,22 @@ const translations = {
 
     // Category page
     articlesFound: 'खबरें मिलीं',
+
+    // Auth
+    loginTitle: 'लॉग इन करें',
+    signupTitle: 'साइन अप करें',
+    namePlaceholder: 'आपका नाम',
+    passwordPlaceholder: 'पासवर्ड',
+    loginBtn: 'लॉग इन',
+    signupBtn: 'साइन अप',
+    loggingIn: 'लॉग इन हो रहा है…',
+    signingUp: 'साइन अप हो रहा है…',
+    noAccount: 'खाता नहीं है?',
+    haveAccount: 'पहले से खाता है?',
+    loginSuccess: 'लॉग इन सफल!',
+    signupSuccess: 'साइन अप सफल! स्वागत है!',
+    pdfSubscribePrompt: 'PDF डाउनलोड के लिए साइन अप करें',
+    myAccount: 'मेरा खाता',
   },
 
   EN: {
@@ -180,7 +196,7 @@ const translations = {
     contactUs: 'Contact Us',
     allRightsReserved: 'All Rights Reserved',
     poweredBy: 'Powered by',
-    portalDesc: 'Khabar Ka Safar - Your Hindi news portal. Latest updates on education, jobs, astrology, health, and technology.',
+    portalDesc: 'Khabar Ka Safar — Tez Nazar Tez Khabar. Your Hindi news portal. Latest updates on education, jobs, astrology, health, and technology.',
 
     searchResults: 'results for',
     noResults: 'No results found',
@@ -243,11 +259,32 @@ const translations = {
 
     // Category page
     articlesFound: 'articles found',
+
+    // Auth
+    loginTitle: 'Log In',
+    signupTitle: 'Sign Up',
+    namePlaceholder: 'Your name',
+    passwordPlaceholder: 'Password',
+    loginBtn: 'Log In',
+    signupBtn: 'Sign Up',
+    loggingIn: 'Logging in…',
+    signingUp: 'Signing up…',
+    noAccount: "Don't have an account?",
+    haveAccount: 'Already have an account?',
+    loginSuccess: 'Logged in successfully!',
+    signupSuccess: 'Signed up successfully! Welcome!',
+    pdfSubscribePrompt: 'Sign up to download PDF',
+    myAccount: 'My Account',
   },
 };
 
 export const LanguageProvider = ({ children }) => {
-  const [lang, setLang] = useState('HI');
+  const [lang, setLang] = useState(() => localStorage.getItem('appLang') || 'HI');
+
+  const setLangPersist = useCallback((newLang) => {
+    setLang(newLang);
+    localStorage.setItem('appLang', newLang);
+  }, []);
 
   const t = useCallback((key) => {
     return translations[lang]?.[key] || key;
@@ -258,7 +295,7 @@ export const LanguageProvider = ({ children }) => {
   }, [lang]);
 
   return (
-    <LanguageContext.Provider value={{ lang, setLang, t, getCatLabel }}>
+    <LanguageContext.Provider value={{ lang, setLang: setLangPersist, t, getCatLabel }}>
       {children}
     </LanguageContext.Provider>
   );

@@ -44,12 +44,7 @@ const SubSection = ({ subsection, articles, lang, aosDelay }) => {
             </span>
           )}
         </div>
-        <a
-          href={`/category/${subsection.key}`}
-          style={{ fontSize: 12, color: subsection.color, textDecoration: 'none' }}
-        >
-          {lang === 'hi' ? 'सभी देखें' : 'See All'} →
-        </a>
+{/* Load more button below handles showing more articles */}
       </div>
 
       {/* Empty state */}

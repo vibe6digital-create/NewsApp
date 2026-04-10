@@ -2,12 +2,18 @@ export const PORTAL_NAME = "कौशल प्राइम नेशन";
 export const PORTAL_NAME_EN = "Kaushal Prime Nation";
 export const PORTAL_TAGLINE = "उत्तराखंड की आवाज़";
 export const PORTAL_TAGLINE_EN = "Voice of Uttarakhand";
+export const PORTAL_SLOGAN = "तेज नज़र तेज़ खबर";
+export const PORTAL_SLOGAN_EN = "Tez Nazar Tez Khabar";
 export const ADMIN_USER = "admin";
 export const ADMIN_PASS = "news@2026";
 export const SUBSCRIPTION_KEY = "portal_subscribers";
 export const ARTICLES_KEY = "portal_articles";
-export const CACHE_KEY = "rss_cache_v20";
+export const CACHE_KEY = "rss_cache_v22";
 export const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
+
+// Backend API URL — change this to your Render URL after deploying
+// e.g. 'https://kpn-server.onrender.com'
+export const API_BASE = process.env.REACT_APP_API_URL || '';
 export const AUTO_REFRESH_INTERVAL = 10 * 60 * 1000; // auto-refresh every 10 minutes
 
 export const CATEGORIES = [
@@ -18,9 +24,6 @@ export const CATEGORIES = [
   { slug: "health", label: "स्वास्थ्य", labelEn: "Health", emoji: "💊", color: "#EF4444" },
   { slug: "technology", label: "तकनीक", labelEn: "Technology", emoji: "💻", color: "#06B6D4" },
   { slug: "astro", label: "ज्योतिषशास्त्र", labelEn: "Astrology", emoji: "⭐", color: "#FFD700" },
-  { slug: "rental", label: "किराया", labelEn: "Rental", emoji: "🏠", color: "#A855F7" },
-  { slug: "podcast", label: "पॉडकास्ट", labelEn: "Podcast", emoji: "🎙️", color: "#EC4899" },
-  { slug: "quiz", label: "प्रश्नोत्तरी", labelEn: "Quiz", emoji: "❓", color: "#F97316" },
 ];
 
 export const STATES = [
@@ -43,7 +46,6 @@ export const CATEGORY_KEYWORDS = {
     "UKPSC", "UKSSSC", "UP Police recruitment", "RPSC", "MPSC",
     "employment notification", "पद", "वैकेंसी", "नियुक्ति", "आवेदन",
   ],
-  rental: ["rental", "property", "housing", "accommodation", "PG", "किराया", "मकान"],
   astro: ["astrology", "rashifal", "horoscope", "kundali", "jyotish", "राशिफल", "ज्योतिष"],
   health: ["health", "medical", "hospital", "disease", "medicine", "yoga", "स्वास्थ्य", "चिकित्सा"],
   technology: [
@@ -54,8 +56,6 @@ export const CATEGORY_KEYWORDS = {
     "ISRO", "NASA", "space", "satellite", "5G", "electric vehicle", "EV",
     "तकनीक", "प्रौद्योगिकी", "स्मार्टफोन", "साइबर", "इंटरनेट", "डिजिटल इंडिया",
   ],
-  podcast: ["podcast", "audio", "पॉडकास्ट"],
-  quiz: ["quiz", "question", "प्रश्न", "क्विज"],
   national: ["india", "national", "भारत", "देश", "राष्ट्रीय"],
   world: ["world", "international", "global", "विदेश", "अंतरराष्ट्रीय"],
   uttarakhand: [

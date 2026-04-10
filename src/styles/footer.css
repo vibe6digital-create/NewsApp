@@ -14,6 +14,16 @@
   margin-bottom: 10px;
 }
 
+.site-footer .footer-slogan {
+  font-size: 0.7rem;
+  color: var(--accent);
+  font-weight: 600;
+  font-style: italic;
+  margin-top: 0;
+  vertical-align: sub;
+  letter-spacing: 0.5px;
+}
+
 .site-footer .footer-desc {
   font-size: 13px;
   color: var(--text-muted);

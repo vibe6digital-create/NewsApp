@@ -57,11 +57,16 @@ export const NewsProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, [fetchNews]);
 
-  // Filter articles by selected language.
-  // Articles with no lang field (admin-created) always show in both modes.
+  // Sort articles by preferred language (preferred first), but show all.
+  // Articles with no lang field (admin-created) always appear.
   const allArticles = useMemo(() => {
     const preferredLang = lang === 'EN' ? 'en' : 'hi';
-    return rawArticles.filter(a => !a.lang || a.lang === preferredLang);
+    return [...rawArticles].sort((a, b) => {
+      const aMatch = !a.lang || a.lang === preferredLang ? 0 : 1;
+      const bMatch = !b.lang || b.lang === preferredLang ? 0 : 1;
+      if (aMatch !== bMatch) return aMatch - bMatch;
+      return new Date(b.pubDate) - new Date(a.pubDate);
+    });
   }, [rawArticles, lang]);
 
   const getBreakingNews = useCallback(() => {

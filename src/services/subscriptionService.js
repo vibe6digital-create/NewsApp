@@ -13,17 +13,22 @@ const saveSubscribers = (subs) => {
   localStorage.setItem(SUBSCRIPTION_KEY, JSON.stringify(subs));
 };
 
-export const addSubscriber = (email, mobile) => {
+export const addSubscriber = (email, mobile, name) => {
   const subscribers = getSubscribers();
 
   // Check for duplicate
-  const exists = subscribers.find(s => s.email === email || s.mobile === mobile);
+  const exists = subscribers.find(s =>
+    (email && s.email === email) || (mobile && s.mobile === mobile)
+  );
   if (exists) {
+    // Update name if provided
+    if (name && !exists.name) { exists.name = name; saveSubscribers(subscribers); }
     return { success: false, message: 'आप पहले से सदस्य हैं!' };
   }
 
   const newSub = {
     id: Date.now().toString(36),
+    name: name || '',
     email,
     mobile,
     subscribedAt: new Date().toISOString(),

@@ -1,10 +1,11 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import '../styles/hero.css';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Carousel } from 'bootstrap';
 import { Helmet } from 'react-helmet-async';
 import { useNews } from '../context/NewsContext';
 import { useLang } from '../context/LanguageContext';
-import { CATEGORIES, CATEGORY_KEYWORDS, PORTAL_NAME } from '../utils/constants';
+import { CATEGORIES, PORTAL_NAME } from '../utils/constants';
 import { getCategoryFallbackImage, SAFE_FALLBACK } from '../utils/categoryImages';
 import { timeAgo } from '../utils/formatDate';
 import NewsCard from '../components/news/NewsCard';
@@ -16,22 +17,30 @@ const CategoryCarousel = ({ slides, catColor, lang }) => {
   const navigate = useNavigate();
   const touchStartX = useRef(0);
   const swiping = useRef(false);
+  const carouselRef = useRef(null);
 
   const handleTouchStart = (e) => {
     touchStartX.current = e.touches[0].clientX;
     swiping.current = false;
   };
   const handleTouchMove = (e) => {
-    if (Math.abs(e.touches[0].clientX - touchStartX.current) > 8) {
+    if (Math.abs(e.touches[0].clientX - touchStartX.current) > 30) {
       swiping.current = true;
     }
   };
+
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el || Carousel.getInstance(el)) return;
+    new Carousel(el);
+  }, [slides.length]);
 
   if (!slides.length) return null;
 
   return (
     <div className="hero-slider" data-aos="fade" style={{ margin: 0, padding: 0 }}>
       <div
+        ref={carouselRef}
         id="categoryCarousel"
         className="carousel slide carousel-fade"
         data-bs-ride="carousel"
@@ -115,33 +124,19 @@ const CategoryCarousel = ({ slides, catColor, lang }) => {
 
 const CategoryPage = () => {
   const { slug } = useParams();
-  const { allArticles, getByCategory, loading } = useNews();
+  const { getByCategory, allArticles, loading } = useNews();
   const { lang, t } = useLang();
   const [visibleCount, setVisibleCount] = useState(12);
   const [sortOrder, setSortOrder] = useState('latest');
 
   const category = CATEGORIES.find(c => c.slug === slug);
-  const catLabel = category ? (lang === 'EN' ? category.labelEn : category.label) : slug;
+  const catLabel = category ? (lang === 'EN' ? category.labelEn : category.label) : (slug === 'latest' ? (lang === 'EN' ? 'Latest News' : 'ताज़ा खबरें') : slug);
   const catEmoji = category ? category.emoji : '📰';
   const catColor = category ? category.color : '#CC0000';
 
   const articles = useMemo(() => {
-    let result = getByCategory(slug);
-
-    // Also search by keywords (skip for national — only show strictly national articles)
-    if (slug !== 'national') {
-      const keywords = CATEGORY_KEYWORDS[slug] || [];
-      if (keywords.length > 0 && result.length < 5) {
-        const keywordArticles = allArticles.filter(a => {
-          const text = `${a.title} ${a.summary}`.toLowerCase();
-          return keywords.some(kw => text.includes(kw.toLowerCase()));
-        });
-        const existingIds = new Set(result.map(a => a.id));
-        keywordArticles.forEach(a => {
-          if (!existingIds.has(a.id)) result.push(a);
-        });
-      }
-    }
+    // If slug doesn't match a known category, show all articles
+    let result = category ? getByCategory(slug) : allArticles;
 
     // Sort
     if (sortOrder === 'oldest') {
@@ -149,11 +144,12 @@ const CategoryPage = () => {
     }
 
     return result;
-  }, [slug, getByCategory, allArticles, sortOrder]);
+  }, [slug, category, getByCategory, allArticles, sortOrder]);
 
-  const carouselSlides = useMemo(() =>
-    getByCategory(slug).filter(a => a.image).slice(0, 5),
-  [slug, getByCategory]);
+  const carouselSlides = useMemo(() => {
+    const source = category ? getByCategory(slug) : allArticles;
+    return source.filter(a => a.image).slice(0, 5);
+  }, [slug, category, getByCategory, allArticles]);
 
   const topStories = articles.filter(a => a.image).slice(0, 5);
 

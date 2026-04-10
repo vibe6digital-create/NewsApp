@@ -78,10 +78,10 @@ const ManageArticles = () => {
       <div className="admin-content">
         <h1 className="admin-page-title">Manage Articles</h1>
 
-        <div className="filters-bar">
+        <div className="admin-filters">
           <input
             type="text"
-            className="form-control search-input"
+            className="form-control"
             placeholder="Search by title..."
             value={searchTerm}
             onChange={(e) => {
@@ -90,7 +90,7 @@ const ManageArticles = () => {
             }}
           />
           <select
-            className="form-control filter-select"
+            className="form-control"
             value={categoryFilter}
             onChange={(e) => {
               setCategoryFilter(e.target.value);
@@ -99,13 +99,13 @@ const ManageArticles = () => {
           >
             <option value="">All Categories</option>
             {CATEGORIES.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
+              <option key={cat.slug} value={cat.slug}>
+                {cat.emoji} {cat.label} ({cat.labelEn})
               </option>
             ))}
           </select>
           <select
-            className="form-control filter-select"
+            className="form-control"
             value={statusFilter}
             onChange={(e) => {
               setStatusFilter(e.target.value);
@@ -127,89 +127,89 @@ const ManageArticles = () => {
           </div>
         )}
 
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>
-                <input
-                  type="checkbox"
-                  onChange={handleSelectAll}
-                  checked={
-                    paginatedArticles.length > 0 &&
-                    paginatedArticles.every((a) => selectedIds.includes(a.id))
-                  }
-                />
-              </th>
-              <th>Thumbnail</th>
-              <th>Title</th>
-              <th>Category</th>
-              <th>Status</th>
-              <th>Date</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedArticles.length > 0 ? (
-              paginatedArticles.map((article) => (
-                <tr key={article.id}>
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.includes(article.id)}
-                      onChange={() => handleSelectOne(article.id)}
-                    />
-                  </td>
-                  <td>
-                    <img
-                      src={article.featuredImage || article.image || '/placeholder.png'}
-                      alt=""
-                      className="thumbnail"
-                      style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }}
-                    />
-                  </td>
-                  <td>{article.titleHindi || article.title}</td>
-                  <td>{article.category}</td>
-                  <td>
-                    <span className={`badge badge-${article.status}`}>
-                      {article.status}
-                    </span>
-                  </td>
-                  <td>{formatNewsDate(article.date || article.createdAt)}</td>
-                  <td className="actions">
-                    <Link to={`/admin/edit/${article.id}`} className="action-btn edit" title="Edit">
-                      <i className="fas fa-pencil-alt"></i>
-                    </Link>
-                    <button
-                      className="action-btn visibility"
-                      onClick={() => handleToggleVisibility(article.id)}
-                      title="Toggle Visibility"
-                    >
-                      <i className="fas fa-eye"></i>
-                    </button>
-                    <button
-                      className="action-btn delete"
-                      onClick={() => handleDelete(article.id, article.titleHindi || article.title)}
-                      title="Delete"
-                    >
-                      <i className="fas fa-trash"></i>
-                    </button>
+        <div className="admin-table-wrapper">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th style={{ width: 40 }}>
+                  <input
+                    type="checkbox"
+                    onChange={handleSelectAll}
+                    checked={
+                      paginatedArticles.length > 0 &&
+                      paginatedArticles.every((a) => selectedIds.includes(a.id))
+                    }
+                  />
+                </th>
+                <th style={{ width: 60 }}>Image</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginatedArticles.length > 0 ? (
+                paginatedArticles.map((article) => (
+                  <tr key={article.id}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.includes(article.id)}
+                        onChange={() => handleSelectOne(article.id)}
+                      />
+                    </td>
+                    <td>
+                      <img
+                        src={article.featuredImage || article.image || '/placeholder.png'}
+                        alt=""
+                        style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }}
+                      />
+                    </td>
+                    <td>{article.titleHindi || article.title}</td>
+                    <td>{article.category}</td>
+                    <td>
+                      <span className={`badge badge-${article.status}`}>
+                        {article.status}
+                      </span>
+                    </td>
+                    <td>{formatNewsDate(article.date || article.createdAt)}</td>
+                    <td className="actions">
+                      <Link to={`/admin/edit/${article.id}`} className="action-btn edit" title="Edit">
+                        <i className="fas fa-pencil-alt"></i>
+                      </Link>
+                      <button
+                        className="action-btn visibility"
+                        onClick={() => handleToggleVisibility(article.id)}
+                        title={article.status === 'published' ? 'Unpublish' : 'Publish'}
+                      >
+                        <i className={`fas ${article.status === 'published' ? 'fa-eye' : 'fa-eye-slash'}`}></i>
+                      </button>
+                      <button
+                        className="action-btn delete"
+                        onClick={() => handleDelete(article.id, article.titleHindi || article.title)}
+                        title="Delete"
+                      >
+                        <i className="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="empty-state">
+                    No articles found.
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="7" className="empty-state">
-                  No articles found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
 
         {totalPages > 1 && (
-          <div className="pagination">
+          <div className="admin-pagination">
             <button
-              className="page-btn"
               disabled={currentPage === 1}
               onClick={() => setCurrentPage((p) => p - 1)}
             >
@@ -218,14 +218,13 @@ const ManageArticles = () => {
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
               <button
                 key={page}
-                className={`page-btn ${currentPage === page ? 'active' : ''}`}
+                className={currentPage === page ? 'active' : ''}
                 onClick={() => setCurrentPage(page)}
               >
                 {page}
               </button>
             ))}
             <button
-              className="page-btn"
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage((p) => p + 1)}
             >

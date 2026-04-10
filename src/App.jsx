@@ -19,6 +19,7 @@ import { NewsProvider } from './context/NewsContext';
 import { AdminProvider } from './context/AdminContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { AuthProvider } from './context/AuthContext';
 
 import Header from './components/layout/Header';
 import Navbar from './components/layout/Navbar';
@@ -42,6 +43,7 @@ import ArticlePage from './pages/ArticlePage';
 import SearchPage from './pages/SearchPage';
 import NotFoundPage from './pages/NotFoundPage';
 import StatePage from './pages/StatePage';
+import LegalPage from './pages/LegalPage';
 
 const AdminLogin = lazy(() => import('./components/admin/AdminLogin'));
 const AdminDashboard = lazy(() => import('./components/admin/AdminDashboard'));
@@ -70,6 +72,7 @@ function App() {
         <ScrollToTop />
         <ThemeProvider>
         <LanguageProvider>
+        <AuthProvider>
         <AdminProvider>
           <NewsProvider>
             <ToastContainer
@@ -139,16 +142,17 @@ function App() {
                       <Route path="/article/:id" element={<ArticlePage />} />
                       <Route path="/state/:slug" element={<StatePage />} />
                       <Route path="/search" element={<SearchPage />} />
+                      <Route path="/:slug" element={<LegalPage />} />
                       <Route path="*" element={<NotFoundPage />} />
                     </Routes>
                   </main>
                   <Footer />
-                  <MobileBottomNav />
                 </>
               } />
             </Routes>
           </NewsProvider>
         </AdminProvider>
+        </AuthProvider>
         </LanguageProvider>
         </ThemeProvider>
       </Router>

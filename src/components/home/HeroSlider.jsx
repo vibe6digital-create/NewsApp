@@ -1,4 +1,5 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
+import { Carousel } from 'bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useNews } from '../../context/NewsContext';
 import { useLang } from '../../context/LanguageContext';
@@ -15,13 +16,14 @@ const HeroSlider = () => {
   const { lang, t } = useLang();
   const touchStartX = useRef(0);
   const swiping = useRef(false);
+  const carouselRef = useRef(null);
 
   const handleTouchStart = (e) => {
     touchStartX.current = e.touches[0].clientX;
     swiping.current = false;
   };
   const handleTouchMove = (e) => {
-    if (Math.abs(e.touches[0].clientX - touchStartX.current) > 8) {
+    if (Math.abs(e.touches[0].clientX - touchStartX.current) > 30) {
       swiping.current = true;
     }
   };
@@ -47,6 +49,12 @@ const HeroSlider = () => {
     }
     return picks.map(a => ({ ...a, image: a.image || getCategoryFallbackImage(a.category, a.id, a.title) }));
   })();
+
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el || Carousel.getInstance(el)) return;
+    new Carousel(el);
+  }, [slides.length]);
 
   if (loading) {
     return (
@@ -75,6 +83,7 @@ const HeroSlider = () => {
   return (
     <div className="hero-slider" data-aos="fade">
       <div
+        ref={carouselRef}
         id="heroCarousel"
         className="carousel slide carousel-fade"
         data-bs-ride="carousel"

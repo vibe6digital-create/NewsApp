@@ -86,3 +86,132 @@
   border-bottom: 1px solid #dddddd;
 }
 
+/* ── Career Portals ────────────────────────────────────────── */
+.career-portals {
+  padding: 8px 0;
+}
+
+.career-category-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: 4px;
+}
+.career-category-tabs::-webkit-scrollbar { display: none; }
+
+.career-cat-pill {
+  flex-shrink: 0;
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--card-border, #333);
+  background: transparent;
+  color: var(--text-muted, #999);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.career-cat-pill:hover {
+  border-color: #F59E0B;
+  color: #F59E0B;
+}
+.career-cat-pill.active {
+  background: #F59E0B;
+  border-color: #F59E0B;
+  color: #000;
+  font-weight: 600;
+}
+
+.career-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.career-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--card-bg, #1a1a2e);
+  border: 1px solid var(--card-border, #2a2a3e);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.career-card:hover {
+  border-color: var(--portal-color, #F59E0B);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.career-card-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.career-card-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.career-card-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary, #fff);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.career-card-action {
+  font-size: 11px;
+  color: var(--text-muted, #999);
+  margin-top: 1px;
+}
+.career-card:hover .career-card-action {
+  color: var(--portal-color, #F59E0B);
+}
+
+@media (max-width: 991px) {
+  .career-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 576px) {
+  .career-grid { grid-template-columns: 1fr; }
+}
+
+/* Light mode overrides for career portals */
+[data-theme="light"] .career-cat-pill {
+  border-color: #ddd;
+  color: #666;
+}
+[data-theme="light"] .career-cat-pill:hover {
+  border-color: #F59E0B;
+  color: #F59E0B;
+}
+[data-theme="light"] .career-cat-pill.active {
+  background: #F59E0B;
+  border-color: #F59E0B;
+  color: #000;
+}
+[data-theme="light"] .career-card {
+  background: #fff;
+  border-color: #eee;
+}
+[data-theme="light"] .career-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+

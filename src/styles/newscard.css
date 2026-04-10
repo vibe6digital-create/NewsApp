@@ -138,6 +138,10 @@
   color: var(--text-muted);
 }
 
+.news-card .card-share-wrap {
+  position: relative;
+}
+
 .news-card .card-share {
   color: var(--text-muted);
   cursor: pointer;
@@ -147,6 +151,49 @@
 .news-card .card-share:hover {
   color: var(--primary);
 }
+
+.share-popup {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  margin-bottom: 8px;
+  display: flex;
+  gap: 6px;
+  padding: 8px 10px;
+  background: var(--dark-3);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  z-index: 10;
+  white-space: nowrap;
+}
+
+.share-popup .share-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 13px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
+  text-decoration: none;
+}
+
+.share-popup .share-icon:hover {
+  transform: scale(1.15);
+  opacity: 0.9;
+}
+
+.share-popup .share-icon.whatsapp  { background: #25D366; }
+.share-popup .share-icon.facebook  { background: #1877F2; }
+.share-popup .share-icon.twitter   { background: #1DA1F2; }
+.share-popup .share-icon.linkedin  { background: #0A66C2; }
+.share-popup .share-icon.copy      { background: #555; }
+.share-popup .share-icon.copy.copied { background: #22C55E; }
 
 /* Horizontal Card */
 .news-card-horizontal {

@@ -14,6 +14,7 @@ const AddEditArticle = () => {
 
   const [step, setStep] = useState(1);
   const [imageTab, setImageTab] = useState('upload');
+  const [lang, setLang] = useState('hi');
 
   const [formData, setFormData] = useState({
     titleHindi: '',
@@ -84,7 +85,23 @@ const AddEditArticle = () => {
     reader.readAsDataURL(file);
   };
 
-  const handleSubmit = async () => {
+  const validateForm = () => {
+    if (!formData.titleHindi.trim() && !formData.titleEnglish.trim()) {
+      toast.error(lang === 'hi' ? 'कम से कम एक शीर्षक आवश्यक है!' : 'At least one title is required!');
+      setStep(1);
+      return false;
+    }
+    if (!formData.category) {
+      toast.error(lang === 'hi' ? 'श्रेणी चुनें!' : 'Please select a category!');
+      setStep(1);
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = () => {
+    if (!validateForm()) return;
+
     const articleData = {
       ...formData,
       tags: formData.tags
@@ -96,30 +113,30 @@ const AddEditArticle = () => {
 
     try {
       if (isEdit) {
-        await updateArticle(id, articleData);
-        toast.success('Article updated successfully!');
+        updateArticle(id, articleData);
+        toast.success(lang === 'hi' ? 'लेख अपडेट हो गया!' : 'Article updated successfully!');
       } else {
-        await addArticle(articleData);
-        toast.success('Article published successfully!');
+        addArticle(articleData);
+        toast.success(lang === 'hi' ? 'लेख प्रकाशित हो गया!' : 'Article published successfully!');
       }
       navigate('/admin/manage');
     } catch (err) {
-      toast.error('Failed to save article. Please try again.');
+      toast.error(lang === 'hi' ? 'लेख सेव नहीं हो पाया।' : 'Failed to save article.');
     }
   };
 
   const renderStepIndicator = () => (
     <div className="step-indicator">
       <div className={`step ${step >= 1 ? 'active' : ''}`}>
-        <span className="step-number">1</span>
+        <span className="step-num">1</span>
         <span className="step-label">Content</span>
       </div>
       <div className={`step ${step >= 2 ? 'active' : ''}`}>
-        <span className="step-number">2</span>
+        <span className="step-num">2</span>
         <span className="step-label">Media</span>
       </div>
       <div className={`step ${step >= 3 ? 'active' : ''}`}>
-        <span className="step-number">3</span>
+        <span className="step-num">3</span>
         <span className="step-label">Publish</span>
       </div>
     </div>
@@ -127,35 +144,54 @@ const AddEditArticle = () => {
 
   const renderStep1 = () => (
     <div className="form-step">
-      <h2>Step 1: Content</h2>
+      <h2>{lang === 'hi' ? 'चरण 1: सामग्री' : 'Step 1: Content'}</h2>
+
+      <div className="lang-toggle">
+        <button
+          type="button"
+          className={`lang-btn ${lang === 'hi' ? 'active' : ''}`}
+          onClick={() => setLang('hi')}
+        >
+          हिंदी
+        </button>
+        <button
+          type="button"
+          className={`lang-btn ${lang === 'en' ? 'active' : ''}`}
+          onClick={() => setLang('en')}
+        >
+          English
+        </button>
+      </div>
 
       <div className="form-group">
-        <label>Title Hindi *</label>
+        <label>{lang === 'hi' ? 'शीर्षक (हिंदी) *' : 'Title (Hindi) *'}</label>
         <textarea
           name="titleHindi"
           className="form-control"
           value={formData.titleHindi}
           onChange={handleChange}
-          placeholder="हिंदी शीर्षक लिखें"
+          placeholder={lang === 'hi' ? 'हिंदी शीर्षक लिखें...' : 'Enter Hindi title...'}
           required
           rows={2}
         />
       </div>
 
       <div className="form-group">
-        <label>Title English</label>
+        <label>{lang === 'hi' ? 'शीर्षक (अंग्रेज़ी)' : 'Title (English)'}</label>
         <input
           type="text"
           name="titleEnglish"
           className="form-control"
           value={formData.titleEnglish}
           onChange={handleChange}
-          placeholder="Enter English title"
+          placeholder={lang === 'hi' ? 'अंग्रेज़ी शीर्षक लिखें...' : 'Enter English title...'}
         />
       </div>
 
       <div className="form-group">
-        <label>Summary / Excerpt ({formData.summary.length}/150)</label>
+        <label>
+          {lang === 'hi' ? `सारांश (${formData.summary.length}/150)` : `Summary / Excerpt (${formData.summary.length}/150)`}
+        </label>
         <textarea
           name="summary"
           className="form-control"
@@ -163,54 +199,56 @@ const AddEditArticle = () => {
           onChange={(e) => {
             if (e.target.value.length <= 150) handleChange(e);
           }}
-          placeholder="Short summary (max 150 characters)"
+          placeholder={lang === 'hi' ? 'संक्षिप्त सारांश लिखें (अधिकतम 150 अक्षर)' : 'Short summary (max 150 characters)'}
           rows={3}
           maxLength={150}
         />
         <small className="char-counter">
-          {150 - formData.summary.length} characters remaining
+          {lang === 'hi'
+            ? `${150 - formData.summary.length} अक्षर शेष`
+            : `${150 - formData.summary.length} characters remaining`}
         </small>
       </div>
 
       <div className="form-group">
-        <label>Full Article Body</label>
+        <label>{lang === 'hi' ? 'पूरा लेख' : 'Full Article Body'}</label>
         <textarea
           name="body"
           className="form-control article-body"
           value={formData.body}
           onChange={handleChange}
-          placeholder="Write full article content here..."
+          placeholder={lang === 'hi' ? 'यहाँ पूरा लेख लिखें...' : 'Write full article content here...'}
           rows={10}
         />
       </div>
 
       <div className="form-row">
         <div className="form-group">
-          <label>Category</label>
+          <label>{lang === 'hi' ? 'श्रेणी' : 'Category'}</label>
           <select
             name="category"
             className="form-control"
             value={formData.category}
             onChange={handleChange}
           >
-            <option value="">-- Select Category --</option>
+            <option value="">{lang === 'hi' ? '-- श्रेणी चुनें --' : '-- Select Category --'}</option>
             {CATEGORIES.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
+              <option key={cat.slug} value={cat.slug}>
+                {cat.emoji} {lang === 'hi' ? cat.label : cat.labelEn}
               </option>
             ))}
           </select>
         </div>
 
         <div className="form-group">
-          <label>State (Optional)</label>
+          <label>{lang === 'hi' ? 'राज्य (वैकल्पिक)' : 'State (Optional)'}</label>
           <select
             name="state"
             className="form-control"
             value={formData.state}
             onChange={handleChange}
           >
-            <option value="">-- Select State --</option>
+            <option value="">{lang === 'hi' ? '-- राज्य चुनें --' : '-- Select State --'}</option>
             {STATES.map((st) => (
               <option key={st} value={st}>
                 {st}
@@ -221,20 +259,20 @@ const AddEditArticle = () => {
       </div>
 
       <div className="form-group">
-        <label>Tags (comma-separated)</label>
+        <label>{lang === 'hi' ? 'टैग (अल्पविराम से अलग करें)' : 'Tags (comma-separated)'}</label>
         <input
           type="text"
           name="tags"
           className="form-control"
           value={formData.tags}
           onChange={handleChange}
-          placeholder="e.g. politics, breaking, election"
+          placeholder={lang === 'hi' ? 'जैसे: राजनीति, ब्रेकिंग, चुनाव' : 'e.g. politics, breaking, election'}
         />
       </div>
 
       <div className="form-buttons">
         <button className="btn-primary-red" onClick={() => setStep(2)}>
-          Next <i className="fas fa-arrow-right"></i>
+          {lang === 'hi' ? 'अगला' : 'Next'} <i className="fas fa-arrow-right"></i>
         </button>
       </div>
     </div>
@@ -242,24 +280,24 @@ const AddEditArticle = () => {
 
   const renderStep2 = () => (
     <div className="form-step">
-      <h2>Step 2: Media</h2>
+      <h2>{lang === 'hi' ? 'चरण 2: मीडिया' : 'Step 2: Media'}</h2>
 
       <div className="form-group">
-        <label>Featured Image</label>
+        <label>{lang === 'hi' ? 'मुख्य चित्र' : 'Featured Image'}</label>
         <div className="image-tabs">
           <button
             className={`tab-btn ${imageTab === 'upload' ? 'active' : ''}`}
             onClick={() => setImageTab('upload')}
             type="button"
           >
-            Upload File
+            {lang === 'hi' ? 'फाइल अपलोड करें' : 'Upload File'}
           </button>
           <button
             className={`tab-btn ${imageTab === 'url' ? 'active' : ''}`}
             onClick={() => setImageTab('url')}
             type="button"
           >
-            Paste URL
+            {lang === 'hi' ? 'URL पेस्ट करें' : 'Paste URL'}
           </button>
         </div>
 
@@ -279,7 +317,7 @@ const AddEditArticle = () => {
             className="form-control"
             value={formData.featuredImage}
             onChange={handleChange}
-            placeholder="Paste image URL here"
+            placeholder={lang === 'hi' ? 'चित्र का URL यहाँ पेस्ट करें' : 'Paste image URL here'}
           />
         )}
 
@@ -291,7 +329,7 @@ const AddEditArticle = () => {
       </div>
 
       <div className="form-group">
-        <label>Video URL (Optional YouTube Embed)</label>
+        <label>{lang === 'hi' ? 'वीडियो URL (YouTube Embed)' : 'Video URL (YouTube Embed)'}</label>
         <input
           type="text"
           name="videoUrl"
@@ -303,7 +341,7 @@ const AddEditArticle = () => {
       </div>
 
       <div className="form-group">
-        <label>Gallery Images (up to 3 URLs)</label>
+        <label>{lang === 'hi' ? 'गैलरी चित्र (अधिकतम 3 URL)' : 'Gallery Images (up to 3 URLs)'}</label>
         {formData.galleryImages.map((url, index) => (
           <input
             key={index}
@@ -311,17 +349,17 @@ const AddEditArticle = () => {
             className="form-control gallery-input"
             value={url}
             onChange={(e) => handleGalleryChange(index, e.target.value)}
-            placeholder={`Gallery image ${index + 1} URL`}
+            placeholder={lang === 'hi' ? `गैलरी चित्र ${index + 1} URL` : `Gallery image ${index + 1} URL`}
           />
         ))}
       </div>
 
       <div className="form-buttons">
         <button className="btn-secondary" onClick={() => setStep(1)}>
-          <i className="fas fa-arrow-left"></i> Back
+          <i className="fas fa-arrow-left"></i> {lang === 'hi' ? 'पीछे' : 'Back'}
         </button>
         <button className="btn-primary-red" onClick={() => setStep(3)}>
-          Next <i className="fas fa-arrow-right"></i>
+          {lang === 'hi' ? 'अगला' : 'Next'} <i className="fas fa-arrow-right"></i>
         </button>
       </div>
     </div>
@@ -329,10 +367,10 @@ const AddEditArticle = () => {
 
   const renderStep3 = () => (
     <div className="form-step">
-      <h2>Step 3: Publish Settings</h2>
+      <h2>{lang === 'hi' ? 'चरण 3: प्रकाशन सेटिंग्स' : 'Step 3: Publish Settings'}</h2>
 
       <div className="form-group">
-        <label>Status</label>
+        <label>{lang === 'hi' ? 'स्थिति' : 'Status'}</label>
         <div className="radio-group">
           <label className="radio-label">
             <input
@@ -342,7 +380,7 @@ const AddEditArticle = () => {
               checked={formData.status === 'published'}
               onChange={handleChange}
             />
-            Published
+            {lang === 'hi' ? 'प्रकाशित' : 'Published'}
           </label>
           <label className="radio-label">
             <input
@@ -352,7 +390,7 @@ const AddEditArticle = () => {
               checked={formData.status === 'draft'}
               onChange={handleChange}
             />
-            Draft
+            {lang === 'hi' ? 'ड्राफ्ट' : 'Draft'}
           </label>
         </div>
       </div>
@@ -365,7 +403,7 @@ const AddEditArticle = () => {
             checked={formData.featured}
             onChange={handleChange}
           />
-          Featured (appears in hero slider)
+          {lang === 'hi' ? 'फीचर्ड (हीरो स्लाइडर में दिखेगा)' : 'Featured (appears in hero slider)'}
         </label>
       </div>
 
@@ -377,24 +415,24 @@ const AddEditArticle = () => {
             checked={formData.breaking}
             onChange={handleChange}
           />
-          Breaking News (appears in ticker)
+          {lang === 'hi' ? 'ब्रेकिंग न्यूज़ (टिकर में दिखेगा)' : 'Breaking News (appears in ticker)'}
         </label>
       </div>
 
       <div className="preview-card">
-        <h3>Preview</h3>
+        <h3>{lang === 'hi' ? 'पूर्वावलोकन' : 'Preview'}</h3>
         <div className="article-preview">
           {formData.featuredImage && (
             <img src={formData.featuredImage} alt="Preview" className="preview-image" />
           )}
           <div className="preview-content">
-            <span className="preview-category">{formData.category || 'Category'}</span>
-            <h4>{formData.titleHindi || 'Article Title'}</h4>
-            <p>{formData.summary || 'Article summary will appear here...'}</p>
+            <span className="preview-category">{formData.category || (lang === 'hi' ? 'श्रेणी' : 'Category')}</span>
+            <h4>{formData.titleHindi || (lang === 'hi' ? 'लेख का शीर्षक' : 'Article Title')}</h4>
+            <p>{formData.summary || (lang === 'hi' ? 'लेख का सारांश यहाँ दिखेगा...' : 'Article summary will appear here...')}</p>
             <div className="preview-meta">
               <span className={`badge badge-${formData.status}`}>{formData.status}</span>
-              {formData.featured && <span className="badge badge-featured">Featured</span>}
-              {formData.breaking && <span className="badge badge-breaking">Breaking</span>}
+              {formData.featured && <span className="badge badge-featured">{lang === 'hi' ? 'फीचर्ड' : 'Featured'}</span>}
+              {formData.breaking && <span className="badge badge-breaking">{lang === 'hi' ? 'ब्रेकिंग' : 'Breaking'}</span>}
             </div>
           </div>
         </div>
@@ -402,10 +440,12 @@ const AddEditArticle = () => {
 
       <div className="form-buttons">
         <button className="btn-secondary" onClick={() => setStep(2)}>
-          <i className="fas fa-arrow-left"></i> Back
+          <i className="fas fa-arrow-left"></i> {lang === 'hi' ? 'पीछे' : 'Back'}
         </button>
         <button className="btn-primary-red" onClick={handleSubmit}>
-          <i className="fas fa-paper-plane"></i> {isEdit ? 'Update Article' : 'Publish Article'}
+          <i className="fas fa-paper-plane"></i> {isEdit
+            ? (lang === 'hi' ? 'लेख अपडेट करें' : 'Update Article')
+            : (lang === 'hi' ? 'लेख प्रकाशित करें' : 'Publish Article')}
         </button>
       </div>
     </div>
@@ -413,7 +453,7 @@ const AddEditArticle = () => {
 
   return (
     <div className="admin-layout">
-      <AdminSidebar activePage="add" />
+      <AdminSidebar activePage={isEdit ? 'manage' : 'add'} />
       <div className="admin-content">
         <h1 className="admin-page-title">
           {isEdit ? 'Edit Article' : 'Add New Article'}

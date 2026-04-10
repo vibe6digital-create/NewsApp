@@ -1,30 +1,31 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useLang } from '../../context/LanguageContext';
+import { useAuth } from '../../context/AuthContext';
 
 const MobileBottomNav = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useLang();
+  const { user, openAuthModal } = useAuth();
 
   const navItems = [
     { icon: 'fas fa-home', labelKey: 'home', path: '/' },
     { icon: 'fas fa-search', labelKey: 'search', path: '/search' },
     { icon: 'fas fa-folder', labelKey: 'categories', path: '/category/education' },
-    { icon: 'fas fa-envelope', labelKey: 'subscribeCTA', action: 'scroll' },
+    { icon: 'fas fa-bell', labelKey: 'subscribeCTA', action: 'subscribe' },
   ];
 
   const handleClick = (item) => {
-    if (item.action === 'scroll') {
-      const el = document.getElementById('subscription-section');
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
+    if (item.action === 'subscribe') {
+      if (user) {
+        // Already subscribed — scroll to subscription section
+        const el = document.getElementById('subscription-section');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
       } else {
-        navigate('/');
-        setTimeout(() => {
-          const target = document.getElementById('subscription-section');
-          if (target) target.scrollIntoView({ behavior: 'smooth' });
-        }, 500);
+        openAuthModal();
       }
     } else {
       navigate(item.path);

@@ -1,6 +1,7 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
+import { Carousel } from 'bootstrap';
 import { useNews } from '../context/NewsContext';
 import { useLang } from '../context/LanguageContext';
 import SubSection from '../components/national/SubSection';
@@ -169,9 +170,7 @@ const TECH_STRICT_KEYWORDS = [
 ];
 
 function isTechArticle(article) {
-  if (article.category === 'technology') return true;
-  const text = (article.title + ' ' + (article.summary || '')).toLowerCase();
-  return TECH_STRICT_KEYWORDS.some(kw => text.includes(kw.toLowerCase()));
+  return article.category === 'technology';
 }
 
 function filterByTechSubsection(techArticles, key) {
@@ -188,12 +187,20 @@ const TechHeroSlider = ({ slides, lang }) => {
   const navigate = useNavigate();
   const touchStartX = useRef(0);
   const swiping = useRef(false);
+  const carouselRef = useRef(null);
   const handleTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; swiping.current = false; };
-  const handleTouchMove = (e) => { if (Math.abs(e.touches[0].clientX - touchStartX.current) > 8) swiping.current = true; };
+  const handleTouchMove = (e) => { if (Math.abs(e.touches[0].clientX - touchStartX.current) > 30) swiping.current = true; };
+
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el || Carousel.getInstance(el)) return;
+    new Carousel(el);
+  }, [slides.length]);
+
   if (!slides.length) return null;
   return (
     <div className="hero-slider" style={{ margin: 0, padding: 0 }}>
-      <div id="techCarousel" className="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4500">
+      <div ref={carouselRef} id="techCarousel" className="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4500">
         <div className="carousel-indicators">
           {slides.map((_, i) => (
             <button key={i} type="button" data-bs-target="#techCarousel"

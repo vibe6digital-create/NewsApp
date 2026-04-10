@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAdmin } from '../../context/AdminContext';
+import { PORTAL_NAME, PORTAL_SLOGAN, PORTAL_SLOGAN_EN } from '../../utils/constants';
 import '../../styles/admin.css';
 
 const AdminLogin = () => {
@@ -13,24 +14,18 @@ const AdminLogin = () => {
   const [loading, setLoading] = useState(false);
 
   if (isLoggedIn) {
-    return <Navigate to="/admin" />;
+    return <Navigate to="/admin/dashboard" />;
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    try {
-      const success = await login(username, password);
-      if (success) {
-        navigate('/admin');
-      } else {
-        setShake(true);
-        toast.error('Invalid username or password');
-        setTimeout(() => setShake(false), 600);
-      }
-    } catch (err) {
+    const result = login(username.trim(), password.trim());
+    if (result.success) {
+      navigate('/admin/dashboard');
+    } else {
       setShake(true);
-      toast.error('Login failed. Please try again.');
+      toast.error(result.message || 'Invalid username or password');
       setTimeout(() => setShake(false), 600);
     }
     setLoading(false);
@@ -40,7 +35,8 @@ const AdminLogin = () => {
     <div className="admin-login">
       <div className={`login-card ${shake ? 'shake' : ''}`}>
         <div className="login-header">
-          <h1 className="login-logo">खबर का सफर</h1>
+          <h1 className="login-logo">{PORTAL_NAME}</h1>
+          <p className="login-slogan">{PORTAL_SLOGAN} | {PORTAL_SLOGAN_EN}</p>
           <p className="login-subtitle">Admin Panel</p>
         </div>
         <form onSubmit={handleSubmit}>

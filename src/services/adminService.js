@@ -64,14 +64,25 @@ export const toggleArticleVisibility = (id) => {
   return article;
 };
 
+/** Normalize admin articles so they have the same fields the frontend expects */
+const normalize = (article) => ({
+  ...article,
+  title: article.titleHindi || article.titleEnglish || article.title || '',
+  pubDate: article.pubDate || article.createdAt,
+  image: article.featuredImage || article.image || '',
+  excerpt: article.summary || article.excerpt || '',
+  content: article.body || article.content || '',
+  source: article.source || 'Kaushal Prime Nation',
+});
+
 export const getPublishedAdminArticles = () => {
-  return getArticles().filter(a => a.status === 'published');
+  return getArticles().filter(a => a.status === 'published').map(normalize);
 };
 
 export const getFeaturedArticles = () => {
-  return getArticles().filter(a => a.featured && a.status === 'published');
+  return getArticles().filter(a => a.featured && a.status === 'published').map(normalize);
 };
 
 export const getBreakingArticles = () => {
-  return getArticles().filter(a => a.breaking && a.status === 'published');
+  return getArticles().filter(a => a.breaking && a.status === 'published').map(normalize);
 };

@@ -73,10 +73,16 @@
 
 .portal-brand {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+
+.brand-top {
+  display: flex;
   flex-direction: row;
   align-items: center;
   gap: 10px;
-  line-height: 1;
 }
 
 .brand-logo {
@@ -89,6 +95,7 @@
   font-weight: 800;
   color: var(--primary);
   letter-spacing: 0.5px;
+  line-height: 1.1;
 }
 
 .brand-english {
@@ -98,6 +105,16 @@
   letter-spacing: 2.5px;
   text-transform: uppercase;
   margin-top: 1px;
+}
+
+.brand-slogan {
+  font-size: 0.65rem;
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 1px;
+  font-style: italic;
+  white-space: nowrap;
+  margin-top: 2px;
 }
 
 .header-actions {
@@ -383,7 +400,7 @@
     padding: 6px 0 8px;
   }
 
-  .portal-brand {
+  .brand-top {
     gap: 7px;
   }
 
@@ -394,6 +411,10 @@
   .brand-hindi {
     font-size: 1.2rem;
     letter-spacing: 0;
+  }
+
+  .brand-slogan {
+    font-size: 0.5rem;
   }
 
   .btn-subscribe {
@@ -420,7 +441,12 @@
     font-size: 1rem;
   }
 
+  .brand-slogan {
+    font-size: 0.5rem;
+  }
+
   .btn-subscribe {
-    display: none;
+    padding: 4px 8px;
+    font-size: 10px;
   }
 }

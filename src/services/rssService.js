@@ -8,16 +8,12 @@ const CORS_PROXIES = [
 ];
 
 /**
- * Detect actual language from title script, overriding the feed's tagged lang.
- * If a "hi" feed has an English-only title, reclassify as 'en' (and vice versa).
+ * Use the feed's tagged language as the article's language.
+ * Feed lang is the source of truth — Hindi feeds often use English words
+ * in titles (e.g., "PM Modi", "SSC CGL") but are still Hindi articles.
  */
-const detectLang = (title, feedLang) => {
-  if (!title) return feedLang;
-  const devanagari = (title.match(/[\u0900-\u097F]/g) || []).length;
-  const latin      = (title.match(/[a-zA-Z]/g) || []).length;
-  if (devanagari >= 3) return 'hi';   // has meaningful Hindi script → Hindi
-  if (latin >= 5 && devanagari === 0) return 'en'; // pure Latin → English
-  return feedLang;                     // mixed / short → trust feed tag
+const detectLang = (_title, feedLang) => {
+  return feedLang || 'hi';
 };
 
 const generateId = (title, source) => {
@@ -127,7 +123,7 @@ const parseFeed = (xmlText, feedConfig) => {
       return Array.from(entries).slice(0, 10).map(entry => {
         const title = entry.querySelector('title')?.textContent?.trim() || '';
         const contentEl = entry.querySelector('content');
-        const summary = entry.querySelector('summary')?.textContent?.trim() ||
+        const summaryRaw = entry.querySelector('summary')?.textContent?.trim() ||
                         contentEl?.textContent?.trim() || '';
         const fullBody = contentEl?.textContent?.trim() || '';
         const link = entry.querySelector('link')?.getAttribute('href') || '';
@@ -135,15 +131,25 @@ const parseFeed = (xmlText, feedConfig) => {
                        entry.querySelector('updated')?.textContent || new Date().toISOString();
         const image = extractImage(entry);
 
+        // Use content:encoded first; fall back to full description/summary if substantial
+        const cleanSummary = summaryRaw.replace(/<[^>]*>/g, '').trim();
+        let body = null;
+        if (fullBody.length > 200) {
+          body = fullBody;
+        } else if (summaryRaw.length > 300) {
+          // Description has real content — preserve it as body (with HTML)
+          body = summaryRaw;
+        }
+
         return {
           id: generateId(title, feedConfig.name),
           title,
-          summary: summary.replace(/<[^>]*>/g, '').substring(0, 300),
-          body: fullBody.length > 200 ? fullBody : null,
+          summary: cleanSummary.substring(0, 300),
+          body,
           image,
           link,
           pubDate: new Date(pubDate).toISOString(),
-          category: categorizeFeedItem(title, summary, feedConfig.categories),
+          category: categorizeFeedItem(title, summaryRaw, feedConfig.categories),
           source: feedConfig.name,
           lang: detectLang(title, feedConfig.lang),
           stateSlug: feedConfig.state || null,
@@ -165,11 +171,21 @@ const parseFeed = (xmlText, feedConfig) => {
       const encodedEl = item.getElementsByTagName('content:encoded')[0];
       const fullBody = encodedEl?.textContent?.trim() || '';
 
+      // Use content:encoded first; fall back to full description if substantial
+      const cleanDesc = description.replace(/<[^>]*>/g, '').trim();
+      let body = null;
+      if (fullBody.length > 200) {
+        body = fullBody;
+      } else if (description.length > 300) {
+        // Description has real content — preserve it as body (with HTML)
+        body = description;
+      }
+
       return {
         id: generateId(title, feedConfig.name),
         title,
-        summary: description.replace(/<[^>]*>/g, '').substring(0, 300),
-        body: fullBody.length > 200 ? fullBody : null,
+        summary: cleanDesc.substring(0, 300),
+        body,
         image,
         link,
         pubDate: new Date(pubDate).toISOString(),
@@ -267,7 +283,7 @@ export const fetchPriorityFeeds = async () => {
 
 export const fetchAllFeeds = async (force = false) => {
   // Remove old cache keys from previous versions
-  ['rss_cache', 'rss_cache_v2', 'rss_cache_v3', 'rss_cache_v4', 'rss_cache_v5', 'rss_cache_v6', 'rss_cache_v7', 'rss_cache_v8', 'rss_cache_v9', 'rss_cache_v10', 'rss_cache_v11', 'rss_cache_v12', 'rss_cache_v13', 'rss_cache_v14', 'rss_cache_v15', 'rss_cache_v16', 'rss_cache_v17', 'rss_cache_v18', 'rss_cache_v19'].forEach(k => localStorage.removeItem(k));
+  ['rss_cache', 'rss_cache_v2', 'rss_cache_v3', 'rss_cache_v4', 'rss_cache_v5', 'rss_cache_v6', 'rss_cache_v7', 'rss_cache_v8', 'rss_cache_v9', 'rss_cache_v10', 'rss_cache_v11', 'rss_cache_v12', 'rss_cache_v13', 'rss_cache_v14', 'rss_cache_v15', 'rss_cache_v16', 'rss_cache_v17', 'rss_cache_v18', 'rss_cache_v19', 'rss_cache_v20', 'rss_cache_v21'].forEach(k => localStorage.removeItem(k));
 
   // Check current cache (skip if force refresh)
   if (!force) {

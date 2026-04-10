@@ -24,17 +24,13 @@ const NationalNewsCard = ({ article, lang, isLead, accentColor, subsectionKey })
   ].filter(Boolean).join(' ');
 
   const handleClick = () => {
-    if (article.link && !article.id?.startsWith('admin_')) {
-      window.open(article.link, '_blank', 'noopener noreferrer');
-    } else {
-      navigate(`/article/${article.id}`);
-    }
+    navigate(`/article/${article.id}`);
   };
 
   const handleShare = (e) => {
     e.stopPropagation();
     const text = encodeURIComponent(article.title);
-    const url  = encodeURIComponent(article.link || window.location.href);
+    const url  = encodeURIComponent(`${window.location.origin}/article/${article.id}`);
     window.open(`https://wa.me/?text=${text}%20${url}`, '_blank', 'noopener noreferrer');
   };
 
@@ -154,14 +150,7 @@ const NationalNewsCard = ({ article, lang, isLead, accentColor, subsectionKey })
           national
         </span>
 
-        {/* Source badge */}
-        <span style={{
-          position: 'absolute', bottom: '8px', right: '8px',
-          background: 'rgba(0,0,0,0.7)', color: '#FFD700', fontSize: '9px',
-          padding: '2px 6px', borderRadius: '3px',
-        }}>
-          {article.source}
-        </span>
+        {/* Source badge removed */}
       </div>
 
       {/* Card body */}
@@ -175,7 +164,6 @@ const NationalNewsCard = ({ article, lang, isLead, accentColor, subsectionKey })
             }}>
               {initials}
             </div>
-            <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{article.source}</span>
           </div>
         )}
 
@@ -211,7 +199,6 @@ const NationalNewsCard = ({ article, lang, isLead, accentColor, subsectionKey })
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
             <span style={{ color: 'var(--text-muted)', fontSize: '10px' }}>🕐 {timeAgo(article.pubDate, lang)}</span>
-            <span style={{ color: accentColor, fontSize: '10px', fontWeight: 600 }}>{article.source}</span>
           </div>
           <button
             onClick={handleShare}

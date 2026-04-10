@@ -1,6 +1,7 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
+import { Carousel } from 'bootstrap';
 import { useNews } from '../context/NewsContext';
 import { useLang } from '../context/LanguageContext';
 import SubSection from '../components/national/SubSection';
@@ -122,9 +123,7 @@ const JOB_STRICT_KEYWORDS = [
 ];
 
 function isJobArticle(article) {
-  if (article.category === 'jobs') return true;
-  const text = (article.title + ' ' + article.summary).toLowerCase();
-  return JOB_STRICT_KEYWORDS.some(kw => text.includes(kw.toLowerCase()));
+  return article.category === 'jobs';
 }
 
 // Subsection filter: runs only on already-filtered job articles
@@ -144,13 +143,21 @@ const JobsHeroSlider = ({ slides, lang }) => {
   const navigate = useNavigate();
   const touchStartX = useRef(0);
   const swiping = useRef(false);
+  const carouselRef = useRef(null);
   const handleTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; swiping.current = false; };
-  const handleTouchMove = (e) => { if (Math.abs(e.touches[0].clientX - touchStartX.current) > 8) swiping.current = true; };
+  const handleTouchMove = (e) => { if (Math.abs(e.touches[0].clientX - touchStartX.current) > 30) swiping.current = true; };
+
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el || Carousel.getInstance(el)) return;
+    new Carousel(el);
+  }, [slides.length]);
+
   if (!slides.length) return null;
 
   return (
     <div className="hero-slider" data-aos="fade" style={{ margin: 0, padding: 0 }}>
-      <div id="jobsCarousel" className="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4500">
+      <div ref={carouselRef} id="jobsCarousel" className="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4500">
         <div className="carousel-indicators">
           {slides.map((_, i) => (
             <button key={i} type="button" data-bs-target="#jobsCarousel"
@@ -197,6 +204,118 @@ const JobsHeroSlider = ({ slides, lang }) => {
   );
 };
 
+
+// ── Career Portals Data ───────────────────────────────────────
+const CAREER_PORTALS = [
+  // Indian IT
+  { name: 'TCS', url: 'https://ibegin.tcs.com/iBegin/jobs/search', icon: 'fa-solid fa-building', color: '#0046BE', category: 'Indian IT' },
+  { name: 'Infosys', url: 'https://career.infosys.com/', icon: 'fa-solid fa-laptop-code', color: '#007CC3', category: 'Indian IT' },
+  { name: 'Wipro', url: 'https://careers.wipro.com/', icon: 'fa-solid fa-microchip', color: '#3C1E78', category: 'Indian IT' },
+  { name: 'HCL', url: 'https://www.hcltech.com/careers', icon: 'fa-solid fa-server', color: '#0067B1', category: 'Indian IT' },
+  { name: 'Tech Mahindra', url: 'https://careers.techmahindra.com/', icon: 'fa-solid fa-network-wired', color: '#E42527', category: 'Indian IT' },
+  // Global Tech
+  { name: 'Google', url: 'https://careers.google.com/', icon: 'fa-brands fa-google', color: '#4285F4', category: 'Global Tech' },
+  { name: 'Microsoft', url: 'https://careers.microsoft.com/', icon: 'fa-brands fa-microsoft', color: '#00A4EF', category: 'Global Tech' },
+  { name: 'Amazon', url: 'https://www.amazon.jobs/', icon: 'fa-brands fa-amazon', color: '#FF9900', category: 'Global Tech' },
+  { name: 'Meta', url: 'https://www.metacareers.com/', icon: 'fa-brands fa-meta', color: '#0668E1', category: 'Global Tech' },
+  { name: 'Apple', url: 'https://jobs.apple.com/', icon: 'fa-brands fa-apple', color: '#555555', category: 'Global Tech' },
+  { name: 'Netflix', url: 'https://jobs.netflix.com/', icon: 'fa-solid fa-film', color: '#E50914', category: 'Global Tech' },
+  { name: 'Tesla', url: 'https://www.tesla.com/careers', icon: 'fa-solid fa-car', color: '#CC0000', category: 'Global Tech' },
+  { name: 'IBM', url: 'https://www.ibm.com/careers', icon: 'fa-solid fa-cube', color: '#0530AD', category: 'Global Tech' },
+  // Consulting
+  { name: 'EY', url: 'https://www.ey.com/en_in/careers', icon: 'fa-solid fa-chart-line', color: '#FFE600', category: 'Consulting' },
+  { name: 'Deloitte', url: 'https://www2.deloitte.com/us/en/careers.html', icon: 'fa-solid fa-briefcase', color: '#86BC25', category: 'Consulting' },
+  { name: 'PwC', url: 'https://www.pwc.in/careers.html', icon: 'fa-solid fa-chart-pie', color: '#D04A02', category: 'Consulting' },
+  { name: 'KPMG', url: 'https://kpmg.com/in/en/home/careers.html', icon: 'fa-solid fa-scale-balanced', color: '#00338D', category: 'Consulting' },
+  { name: 'Accenture', url: 'https://www.accenture.com/in-en/careers', icon: 'fa-solid fa-arrow-trend-up', color: '#A100FF', category: 'Consulting' },
+  { name: 'McKinsey', url: 'https://www.mckinsey.com/careers', icon: 'fa-solid fa-lightbulb', color: '#004B87', category: 'Consulting' },
+  // Banks & Finance
+  { name: 'SBI', url: 'https://sbi.co.in/web/careers', icon: 'fa-solid fa-university', color: '#1A4B8C', category: 'Banks & Finance' },
+  { name: 'HDFC Bank', url: 'https://www.hdfcbank.com/personal/useful-links/careers', icon: 'fa-solid fa-landmark', color: '#004C8F', category: 'Banks & Finance' },
+  { name: 'ICICI Bank', url: 'https://www.icicicareers.com/', icon: 'fa-solid fa-coins', color: '#F37B20', category: 'Banks & Finance' },
+  { name: 'Axis Bank', url: 'https://www.axisbank.com/careers', icon: 'fa-solid fa-piggy-bank', color: '#800020', category: 'Banks & Finance' },
+  { name: 'RBI', url: 'https://rbi.org.in/Scripts/Aborecruit.aspx', icon: 'fa-solid fa-building-columns', color: '#003580', category: 'Banks & Finance' },
+  // Government
+  { name: 'NCS', url: 'https://www.ncs.gov.in/', icon: 'fa-solid fa-flag', color: '#FF6B00', category: 'Government' },
+  { name: 'SSC', url: 'https://ssc.gov.in/', icon: 'fa-solid fa-clipboard-list', color: '#1B5E20', category: 'Government' },
+  { name: 'UPSC', url: 'https://upsc.gov.in/', icon: 'fa-solid fa-scroll', color: '#0D47A1', category: 'Government' },
+  { name: 'Railway Jobs', url: 'https://www.rrbcdg.gov.in/', icon: 'fa-solid fa-train', color: '#D32F2F', category: 'Government' },
+  { name: 'Defence Jobs', url: 'https://www.joinindianarmy.nic.in/', icon: 'fa-solid fa-shield-halved', color: '#2E7D32', category: 'Government' },
+];
+
+const CAREER_CATEGORIES = ['All', 'Indian IT', 'Global Tech', 'Consulting', 'Banks & Finance', 'Government'];
+const INITIAL_SHOW_COUNT = 10;
+
+const CareerPortals = ({ lang }) => {
+  const [activeCategory, setActiveCategory] = useState('All');
+  const [showAll, setShowAll] = useState(false);
+
+  const filtered = activeCategory === 'All'
+    ? CAREER_PORTALS
+    : CAREER_PORTALS.filter(p => p.category === activeCategory);
+
+  const visible = showAll ? filtered : filtered.slice(0, INITIAL_SHOW_COUNT);
+
+  return (
+    <div className="career-portals" data-aos="fade-up">
+      {/* Header */}
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h3 style={{ borderLeft: '4px solid #F59E0B', paddingLeft: 12, margin: 0, fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+          <i className="fa-solid fa-briefcase me-2" style={{ color: '#F59E0B' }} />
+          {lang === 'EN' ? 'Career Portals' : 'करियर पोर्टल'}
+        </h3>
+        {filtered.length > INITIAL_SHOW_COUNT && (
+          <button
+            className="btn btn-sm btn-outline-warning"
+            onClick={() => setShowAll(prev => !prev)}
+            style={{ fontSize: 13, borderRadius: 20 }}
+          >
+            {showAll
+              ? (lang === 'EN' ? 'Show Less' : 'कम दिखाएं')
+              : (lang === 'EN' ? 'See All →' : 'सभी देखें →')}
+          </button>
+        )}
+      </div>
+
+      {/* Category Tabs */}
+      <div className="career-category-tabs mb-3">
+        {CAREER_CATEGORIES.map(cat => (
+          <button
+            key={cat}
+            className={`career-cat-pill${activeCategory === cat ? ' active' : ''}`}
+            onClick={() => { setActiveCategory(cat); setShowAll(false); }}
+          >
+            {cat === 'All' ? (lang === 'EN' ? 'All' : 'सभी') : cat}
+          </button>
+        ))}
+      </div>
+
+      {/* Cards Grid */}
+      <div className="career-grid">
+        {visible.map(portal => (
+          <a
+            key={portal.name}
+            href={portal.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="career-card"
+            style={{ '--portal-color': portal.color }}
+          >
+            <div className="career-card-icon" style={{ background: portal.color }}>
+              <i className={portal.icon} />
+            </div>
+            <div className="career-card-info">
+              <span className="career-card-name">{portal.name}</span>
+              <span className="career-card-action">
+                {lang === 'EN' ? 'Careers' : 'करियर'} <i className="fa-solid fa-arrow-up-right-from-square" style={{ fontSize: 10 }} />
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 // ── Main Page ─────────────────────────────────────────────────
 const JobsPage = () => {
@@ -326,6 +445,10 @@ const JobsPage = () => {
                   lang={lang === 'EN' ? 'en' : 'hi'}
                   aosDelay={240}
                 />
+                <hr className="section-divider" />
+
+                {/* Career Portals */}
+                <CareerPortals lang={lang} />
                 <hr className="section-divider" />
 
                 {/* Freelance & Remote Jobs */}

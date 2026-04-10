@@ -1,6 +1,7 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
+import { Carousel } from 'bootstrap';
 import { useNews } from '../context/NewsContext';
 import { useLang } from '../context/LanguageContext';
 import SubSection from '../components/national/SubSection';
@@ -20,12 +21,21 @@ const NationalHeroSlider = ({ slides, lang }) => {
   const navigate = useNavigate();
   const touchStartX = useRef(0);
   const swiping = useRef(false);
+  const carouselRef = useRef(null);
   const handleTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; swiping.current = false; };
-  const handleTouchMove = (e) => { if (Math.abs(e.touches[0].clientX - touchStartX.current) > 8) swiping.current = true; };
+  const handleTouchMove = (e) => { if (Math.abs(e.touches[0].clientX - touchStartX.current) > 30) swiping.current = true; };
+
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el || Carousel.getInstance(el)) return;
+    new Carousel(el);
+  }, [slides.length]);
+
   if (!slides.length) return null;
   return (
     <div className="hero-slider" data-aos="fade" style={{ margin: 0, padding: 0 }}>
       <div
+        ref={carouselRef}
         id="nationalCarousel"
         className="carousel slide carousel-fade"
         data-bs-ride="carousel"

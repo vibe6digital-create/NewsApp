@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { PORTAL_NAME, PORTAL_NAME_EN, CATEGORIES } from '../../utils/constants';
+import { PORTAL_NAME, PORTAL_NAME_EN, PORTAL_SLOGAN, PORTAL_SLOGAN_EN, CATEGORIES } from '../../utils/constants';
 import { useLang } from '../../context/LanguageContext';
 import { addSubscriber } from '../../services/subscriptionService';
 import '../../styles/footer.css';
@@ -37,7 +37,10 @@ const Footer = () => {
         <div className="row">
           {/* Column 1: Logo & About */}
           <div className="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="0">
-            <div className="footer-logo">{lang === 'EN' ? PORTAL_NAME_EN : PORTAL_NAME}</div>
+            <div className="footer-logo">
+              {lang === 'EN' ? PORTAL_NAME_EN : PORTAL_NAME}
+              <div className="footer-slogan">{lang === 'EN' ? PORTAL_SLOGAN_EN : PORTAL_SLOGAN}</div>
+            </div>
             <p className="footer-desc">
               {t('portalDesc')}
             </p>
@@ -68,7 +71,9 @@ const Footer = () => {
               <li>
                 <Link to="/">{t('home')}</Link>
               </li>
-              {CATEGORIES.map((cat) => (
+              {CATEGORIES.filter(cat =>
+                ['national', 'world', 'education', 'jobs', 'health', 'technology', 'astro'].includes(cat.slug)
+              ).map((cat) => (
                 <li key={cat.slug}>
                   <Link to={`/category/${cat.slug}`}>
                     {lang === 'EN' ? cat.labelEn : cat.label}

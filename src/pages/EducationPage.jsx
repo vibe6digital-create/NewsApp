@@ -1,6 +1,7 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
+import { Carousel } from 'bootstrap';
 import { useNews } from '../context/NewsContext';
 import { useLang } from '../context/LanguageContext';
 import SubSection from '../components/national/SubSection';
@@ -86,12 +87,20 @@ const EducationHeroSlider = ({ slides, lang }) => {
   const navigate = useNavigate();
   const touchStartX = useRef(0);
   const swiping = useRef(false);
+  const carouselRef = useRef(null);
   const handleTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; swiping.current = false; };
-  const handleTouchMove = (e) => { if (Math.abs(e.touches[0].clientX - touchStartX.current) > 8) swiping.current = true; };
+  const handleTouchMove = (e) => { if (Math.abs(e.touches[0].clientX - touchStartX.current) > 30) swiping.current = true; };
+
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el || Carousel.getInstance(el)) return;
+    new Carousel(el);
+  }, [slides.length]);
+
   if (!slides.length) return null;
   return (
     <div className="hero-slider" data-aos="fade" style={{ margin: 0, padding: 0 }}>
-      <div id="eduCarousel" className="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
+      <div ref={carouselRef} id="eduCarousel" className="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
         <div className="carousel-indicators">
           {slides.map((_, i) => (
             <button key={i} type="button" data-bs-target="#eduCarousel"
@@ -144,21 +153,7 @@ const EducationPage = () => {
   const [sortOrder, setSortOrder] = useState('latest');
 
   const eduArticles = useMemo(() => {
-    // Strict education-specific keywords — avoids pulling in unrelated articles
-    const strictKeywords = [
-      'NEET', 'JEE Main', 'JEE Advanced', 'UPSC', 'CBSE', 'ICSE', 'UGC', 'NTA', 'CUET', 'CTET',
-      'TET exam', 'SSC CGL', 'IBPS', 'NDA exam', 'board exam', 'board result', 'admit card',
-      'scholarship', 'school syllabus', 'exam result', 'merit list', 'college counselling',
-      'kendriya vidyalaya', 'navodaya vidyalaya', 'IIT ', 'IIM ', 'NIT ', 'teacher recruitment',
-      'नीट', 'जेईई', 'यूपीएससी', 'सीबीएसई', 'बोर्ड परीक्षा', 'बोर्ड परिणाम',
-      'छात्रवृत्ति', 'परीक्षा परिणाम', 'मेरिट लिस्ट', 'काउंसलिंग', 'केंद्रीय विद्यालय',
-      'शिक्षक भर्ती', 'एडमिट कार्ड', 'नवोदय विद्यालय', 'शिक्षा नीति',
-    ];
-
-    let result = allArticles.filter(a =>
-      a.category === 'education' ||
-      strictKeywords.some(kw => (a.title + ' ' + a.summary).toLowerCase().includes(kw.toLowerCase()))
-    );
+    let result = allArticles.filter(a => a.category === 'education');
 
     if (sortOrder === 'oldest') {
       return [...result].sort((a, b) => new Date(a.pubDate) - new Date(b.pubDate));
@@ -169,11 +164,10 @@ const EducationPage = () => {
   const filteredMap = useMemo(() => {
     const map = {};
     EDUCATION_SUBSECTIONS.forEach(s => {
-      // Search all articles so every subsection has the best chance of finding news
-      map[s.key] = filterByEduSubsection(allArticles, s.key);
+      map[s.key] = filterByEduSubsection(eduArticles, s.key);
     });
     return map;
-  }, [allArticles]);
+  }, [eduArticles]);
 
   const latestArticles = useMemo(() => {
     const claimedIds = new Set(Object.values(filteredMap).flat().map(a => a.id));

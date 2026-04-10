@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navigate, Link } from 'react-router-dom';
 import { useAdmin } from '../../context/AdminContext';
 import AdminSidebar from './AdminSidebar';
@@ -7,13 +7,35 @@ import '../../styles/admin.css';
 
 const AdminDashboard = () => {
   const { isLoggedIn, getArticles, getSubscribers, deleteArticle } = useAdmin();
+  const [subscriberCount, setSubscriberCount] = useState(0);
+
+  useEffect(() => {
+    const loadCount = async () => {
+      const localSubs = getSubscribers() || [];
+      try {
+        const res = await fetch('/api/admin/subscribers');
+        if (res.ok) {
+          const data = await res.json();
+          // Deduplicate by email
+          const emails = new Set();
+          (data.subscribers || []).forEach(s => s.email && emails.add(s.email));
+          localSubs.forEach(s => s.email && emails.add(s.email));
+          setSubscriberCount(emails.size);
+        } else {
+          setSubscriberCount(localSubs.length);
+        }
+      } catch {
+        setSubscriberCount(localSubs.length);
+      }
+    };
+    loadCount();
+  }, [getSubscribers]);
 
   if (!isLoggedIn) {
     return <Navigate to="/admin" />;
   }
 
   const articles = getArticles() || [];
-  const subscribers = getSubscribers() || [];
   const publishedCount = articles.filter((a) => a.status === 'published').length;
   const draftCount = articles.filter((a) => a.status === 'draft').length;
   const recentArticles = articles.slice(-5).reverse();
@@ -30,49 +52,41 @@ const AdminDashboard = () => {
       <div className="admin-content">
         <h1 className="admin-page-title">Dashboard</h1>
 
-        <div className="row stats-row">
-          <div className="col-md-3 col-sm-6">
-            <div className="stat-card">
-              <div className="stat-icon">
-                <i className="fas fa-newspaper"></i>
-              </div>
-              <div className="stat-info">
-                <h3>{articles.length}</h3>
-                <p>Total Articles</p>
-              </div>
+        <div className="stats-row">
+          <div className="stat-card">
+            <div className="stat-icon">
+              <i className="fas fa-newspaper"></i>
+            </div>
+            <div className="stat-info">
+              <h3>{articles.length}</h3>
+              <p>Total Articles</p>
             </div>
           </div>
-          <div className="col-md-3 col-sm-6">
-            <div className="stat-card">
-              <div className="stat-icon published">
-                <i className="fas fa-check-circle"></i>
-              </div>
-              <div className="stat-info">
-                <h3>{publishedCount}</h3>
-                <p>Published</p>
-              </div>
+          <div className="stat-card">
+            <div className="stat-icon published">
+              <i className="fas fa-check-circle"></i>
+            </div>
+            <div className="stat-info">
+              <h3>{publishedCount}</h3>
+              <p>Published</p>
             </div>
           </div>
-          <div className="col-md-3 col-sm-6">
-            <div className="stat-card">
-              <div className="stat-icon draft">
-                <i className="fas fa-pencil-alt"></i>
-              </div>
-              <div className="stat-info">
-                <h3>{draftCount}</h3>
-                <p>Draft</p>
-              </div>
+          <div className="stat-card">
+            <div className="stat-icon draft">
+              <i className="fas fa-pencil-alt"></i>
+            </div>
+            <div className="stat-info">
+              <h3>{draftCount}</h3>
+              <p>Draft</p>
             </div>
           </div>
-          <div className="col-md-3 col-sm-6">
-            <div className="stat-card">
-              <div className="stat-icon subscribers">
-                <i className="fas fa-users"></i>
-              </div>
-              <div className="stat-info">
-                <h3>{subscribers.length}</h3>
-                <p>Subscribers</p>
-              </div>
+          <div className="stat-card">
+            <div className="stat-icon subscribers">
+              <i className="fas fa-users"></i>
+            </div>
+            <div className="stat-info">
+              <h3>{subscriberCount}</h3>
+              <p>Subscribers</p>
             </div>
           </div>
         </div>
