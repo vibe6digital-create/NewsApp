@@ -55,7 +55,7 @@ const SubSection = ({ subsection, articles, lang, aosDelay }) => {
         }}>
           <p style={{ fontSize: 24, margin: '0 0 6px' }}>📭</p>
           <p style={{ fontFamily: "'Noto Sans Devanagari', 'Noto Sans', sans-serif", fontSize: 13 }}>
-            {lang === 'hi' ? 'अभी कोई खबर उपलब्ध नहीं' : 'No news available right now'}
+            {lang === 'hi' ? 'आज कोई खबर उपलब्ध नहीं' : 'No news available for today'}
           </p>
         </div>
       )}

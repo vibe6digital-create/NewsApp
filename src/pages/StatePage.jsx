@@ -139,7 +139,7 @@ const StatePage = () => {
           <div style={{ textAlign: 'center', padding: '60px 20px', color: '#666' }}>
             <div style={{ fontSize: '3rem', marginBottom: '12px' }}>📰</div>
             <p style={{ fontSize: '16px' }}>
-              {lang === 'EN' ? 'No news available for this state yet.' : 'इस राज्य की खबरें अभी उपलब्ध नहीं हैं।'}
+              {lang === 'EN' ? 'No news available for today in this state.' : 'आज इस राज्य की कोई खबर उपलब्ध नहीं है।'}
             </p>
             <Link to="/" className="btn btn-danger mt-3" style={{ borderRadius: '30px' }}>
               {lang === 'EN' ? 'Back to Home' : 'होम पर जाएं'}

@@ -71,7 +71,7 @@ const translations = {
     typeToSearch: 'कृपया खोजने के लिए कुछ टाइप करें',
 
     // Category page
-    noCategoryArticles: 'इस श्रेणी में अभी कोई खबर उपलब्ध नहीं है',
+    noCategoryArticles: 'आज इस श्रेणी में कोई खबर उपलब्ध नहीं है',
     loadMore: 'और खबरें देखें',
     sortLatest: 'नवीनतम',
     sortOldest: 'पुराने',
@@ -202,7 +202,7 @@ const translations = {
     noResults: 'No results found',
     typeToSearch: 'Type something to search',
 
-    noCategoryArticles: 'No articles available in this category',
+    noCategoryArticles: 'No news available for today in this category',
     loadMore: 'Load More',
     sortLatest: 'Latest',
     sortOldest: 'Oldest',
