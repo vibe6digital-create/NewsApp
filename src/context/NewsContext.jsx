@@ -57,11 +57,11 @@ export const NewsProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, [fetchNews]);
 
-  // Strictly filter by selected language. Admin articles (no lang field) always appear.
+  // Strictly filter by selected language — no exceptions.
   const allArticles = useMemo(() => {
     const preferredLang = lang === 'EN' ? 'en' : 'hi';
     return rawArticles
-      .filter(a => !a.lang || a.lang === preferredLang)
+      .filter(a => a.lang === preferredLang)
       .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
   }, [rawArticles, lang]);
 

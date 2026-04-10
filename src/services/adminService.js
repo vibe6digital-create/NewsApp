@@ -73,6 +73,7 @@ const normalize = (article) => ({
   excerpt: article.summary || article.excerpt || '',
   content: article.body || article.content || '',
   source: article.source || 'Kaushal Prime Nation',
+  lang: article.lang || 'hi',
 });
 
 export const getPublishedAdminArticles = () => {
