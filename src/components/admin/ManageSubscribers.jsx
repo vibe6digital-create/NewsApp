@@ -9,46 +9,39 @@ import '../../styles/admin.css';
 const ManageSubscribers = () => {
   const { isLoggedIn, getSubscribers, exportSubscribers } = useAdmin();
   const [searchTerm, setSearchTerm] = useState('');
-  const [allSubscribers, setAllSubscribers] = useState([]);
+  const [activeTab, setActiveTab] = useState('active'); // 'active' | 'unsubscribed'
+  const [subscribers, setSubscribers] = useState([]);
+  const [unsubscribed, setUnsubscribed] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadSubscribers = async () => {
-      // Get localStorage subscribers
       const localSubs = getSubscribers() || [];
 
-      // Try fetching from server DB
       try {
         const res = await fetch('/api/admin/subscribers');
         if (res.ok) {
           const data = await res.json();
-          const serverSubs = (data.subscribers || []).map(s => ({
-            ...s,
-            source: 'server',
-          }));
+          const serverActive = (data.subscribers || []).map(s => ({ ...s, source: 'server' }));
+          const serverUnsub = (data.unsubscribed || []).map(s => ({ ...s, source: 'server' }));
 
-          // Merge: deduplicate by email
+          // Merge active: server first, then localStorage (dedupe by email)
           const emailSet = new Set();
-          const merged = [];
-          for (const sub of serverSubs) {
-            if (sub.email && !emailSet.has(sub.email)) {
-              emailSet.add(sub.email);
-              merged.push(sub);
-            }
+          const mergedActive = [];
+          for (const sub of serverActive) {
+            if (sub.email && !emailSet.has(sub.email)) { emailSet.add(sub.email); mergedActive.push(sub); }
           }
           for (const sub of localSubs) {
-            if (sub.email && !emailSet.has(sub.email)) {
-              emailSet.add(sub.email);
-              merged.push(sub);
-            }
+            if (sub.email && !emailSet.has(sub.email)) { emailSet.add(sub.email); mergedActive.push(sub); }
           }
-          setAllSubscribers(merged);
+
+          setSubscribers(mergedActive);
+          setUnsubscribed(serverUnsub);
         } else {
-          setAllSubscribers(localSubs);
+          setSubscribers(localSubs);
         }
       } catch {
-        // Server not running — fall back to localStorage only
-        setAllSubscribers(localSubs);
+        setSubscribers(localSubs);
       }
       setLoading(false);
     };
@@ -56,11 +49,10 @@ const ManageSubscribers = () => {
     loadSubscribers();
   }, [getSubscribers]);
 
-  if (!isLoggedIn) {
-    return <Navigate to="/admin" />;
-  }
+  if (!isLoggedIn) return <Navigate to="/admin" />;
 
-  const filteredSubscribers = allSubscribers.filter((sub) => {
+  const list = activeTab === 'active' ? subscribers : unsubscribed;
+  const filtered = list.filter(sub => {
     const term = searchTerm.toLowerCase();
     return (
       (sub.name || '').toLowerCase().includes(term) ||
@@ -70,27 +62,38 @@ const ManageSubscribers = () => {
   });
 
   const handleExport = () => {
-    try {
-      exportSubscribers();
-      toast.success('Subscribers exported successfully!');
-    } catch (err) {
-      toast.error('Failed to export subscribers.');
-    }
+    try { exportSubscribers(); toast.success('Exported successfully!'); }
+    catch { toast.error('Export failed.'); }
   };
 
   const handleDelete = async (sub) => {
-    if (!window.confirm(`Remove subscriber "${sub.email}"?`)) return;
+    if (!window.confirm(`Remove "${sub.email || sub.name}"?`)) return;
     try {
-      // If from server DB, delete via API
       if (sub.source === 'server') {
         await fetch(`/api/admin/subscribers/${sub.id}`, { method: 'DELETE' });
       }
-      setAllSubscribers(prev => prev.filter(s => s.id !== sub.id));
+      if (activeTab === 'active') {
+        setSubscribers(prev => prev.filter(s => s.id !== sub.id));
+      } else {
+        setUnsubscribed(prev => prev.filter(s => s.id !== sub.id));
+      }
       toast.success('Subscriber removed');
     } catch {
       toast.error('Failed to remove subscriber');
     }
   };
+
+  const tabStyle = (tab) => ({
+    padding: '8px 24px',
+    borderRadius: '20px',
+    border: 'none',
+    cursor: 'pointer',
+    fontWeight: 600,
+    fontSize: '14px',
+    background: activeTab === tab ? '#CC0000' : '#2a2a2a',
+    color: activeTab === tab ? '#fff' : '#aaa',
+    transition: 'all 0.2s',
+  });
 
   return (
     <div className="admin-layout">
@@ -98,11 +101,27 @@ const ManageSubscribers = () => {
       <div className="admin-content">
         <h1 className="admin-page-title">Manage Subscribers</h1>
 
-        <div className="subscribers-header">
-          <h2 className="subscriber-count">Total Subscribers: {allSubscribers.length}</h2>
-          <button className="btn-primary-red" onClick={handleExport}>
-            <i className="fas fa-file-csv"></i> Export CSV
+        {/* Tabs */}
+        <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+          <button style={tabStyle('active')} onClick={() => setActiveTab('active')}>
+            ✅ Active ({subscribers.length})
           </button>
+          <button style={tabStyle('unsubscribed')} onClick={() => setActiveTab('unsubscribed')}>
+            ❌ Unsubscribed ({unsubscribed.length})
+          </button>
+        </div>
+
+        <div className="subscribers-header">
+          <h2 className="subscriber-count">
+            {activeTab === 'active'
+              ? `Active Subscribers: ${subscribers.length}`
+              : `Unsubscribed: ${unsubscribed.length}`}
+          </h2>
+          {activeTab === 'active' && (
+            <button className="btn-primary-red" onClick={handleExport}>
+              <i className="fas fa-file-csv"></i> Export CSV
+            </button>
+          )}
         </div>
 
         <div className="admin-filters">
@@ -116,8 +135,8 @@ const ManageSubscribers = () => {
         </div>
 
         {loading ? (
-          <div className="empty-state">Loading subscribers...</div>
-        ) : filteredSubscribers.length > 0 ? (
+          <div className="empty-state">Loading...</div>
+        ) : filtered.length > 0 ? (
           <div className="admin-table-wrapper">
             <table className="admin-table">
               <thead>
@@ -126,12 +145,12 @@ const ManageSubscribers = () => {
                   <th>Name</th>
                   <th>Email</th>
                   <th>Mobile</th>
-                  <th>Joined</th>
+                  <th>{activeTab === 'active' ? 'Joined' : 'Unsubscribed On'}</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredSubscribers.map((sub, index) => (
+                {filtered.map((sub, index) => (
                   <tr key={sub.id || index}>
                     <td>{index + 1}</td>
                     <td>{sub.name || '-'}</td>
@@ -142,7 +161,7 @@ const ManageSubscribers = () => {
                       <button
                         className="action-btn delete"
                         onClick={() => handleDelete(sub)}
-                        title="Remove subscriber"
+                        title="Remove"
                       >
                         <i className="fas fa-trash"></i>
                       </button>
@@ -155,7 +174,7 @@ const ManageSubscribers = () => {
         ) : (
           <div className="empty-state">
             <i className="fas fa-users" style={{ fontSize: 32, marginBottom: 12, display: 'block' }}></i>
-            <p>No subscribers found.</p>
+            <p>{activeTab === 'active' ? 'No active subscribers.' : 'No unsubscribed users.'}</p>
           </div>
         )}
       </div>

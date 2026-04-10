@@ -124,10 +124,10 @@ app.get('/api/auth/me', auth, (req, res) => {
   res.json({ user: sanitiseUser(user) });
 });
 
-// ── POST /api/auth/unsubscribe ── (deletes user from DB)
+// ── POST /api/auth/unsubscribe ── (marks user as unsubscribed, keeps record)
 app.post('/api/auth/unsubscribe', auth, (req, res) => {
-  db.prepare('DELETE FROM users WHERE id = ?').run(req.user.id);
-  res.json({ success: true, message: 'Unsubscribed and removed successfully' });
+  db.prepare('UPDATE users SET is_subscribed = 0 WHERE id = ?').run(req.user.id);
+  res.json({ success: true, message: 'Unsubscribed successfully' });
 });
 
 // ── DELETE /api/admin/subscribers/:id ──
@@ -150,7 +150,10 @@ app.get('/api/admin/subscribers', (req, res) => {
     isSubscribed: !!u.is_subscribed,
     subscribedAt: u.created_at,
   }));
-  res.json({ subscribers });
+  res.json({
+    subscribers: subscribers.filter(s => s.isSubscribed),
+    unsubscribed: subscribers.filter(s => !s.isSubscribed),
+  });
 });
 
 // Serve React build in production (must be after all API routes)
