@@ -367,8 +367,8 @@ const ArticleDetail = ({ article }) => {
         </div>
       </div>
 
-      {/* Article Summary / Lead — only show as lead when full body exists */}
-      {article.summary && (article.body || fullContent) && (
+      {/* Article Summary / Lead */}
+      {article.summary && (
         <p
           className="article-lead"
           style={{
@@ -398,11 +398,6 @@ const ArticleDetail = ({ article }) => {
           <div>{parse(article.body)}</div>
         )}
 
-        {/* Fallback: only summary available */}
-        {!fullContent && !article.body && article.summary && (
-          <p>{article.summary}</p>
-        )}
-
         {/* Loading indicator — shown below existing content */}
         {fetching && (
           <div className="d-flex align-items-center gap-2 mt-3" style={{ color: '#888', fontSize: '14px' }}>
@@ -412,7 +407,7 @@ const ArticleDetail = ({ article }) => {
         )}
 
         {/* Read full article link */}
-        {!fetching && article.link && (
+        {!fetching && article.link && article.link !== '#' && (
           <div className="mt-4 pt-3" style={{ borderTop: '1px solid #333' }}>
             <a
               href={article.link}

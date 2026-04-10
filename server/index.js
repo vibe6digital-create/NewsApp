@@ -157,7 +157,7 @@ app.get('/api/admin/subscribers', (req, res) => {
 if (process.env.NODE_ENV === 'production') {
   const buildPath = path.join(__dirname, '../build');
   app.use(express.static(buildPath));
-  app.get('*', (_req, res) => {
+  app.get('*', (_, res) => {
     res.sendFile(path.join(buildPath, 'index.html'));
   });
 }
