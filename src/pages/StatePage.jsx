@@ -93,14 +93,17 @@ const StatePage = () => {
 
   const articles = useMemo(() => {
     if (!stateConfig) return [];
+    const langCode = lang === 'EN' ? 'en' : 'hi';
     return allArticles.filter(a => {
+      // Language filter — strict match
+      if (a.lang !== langCode) return false;
       // Tier 1: article came from a state-dedicated RSS feed — always include
       if (a.stateSlug) return a.stateSlug === slug;
       // Tier 2: general feed article — only include if state keyword is in the title
       const title = (a.title || '').toLowerCase();
       return stateConfig.keywords.some(kw => title.includes(kw.toLowerCase()));
     });
-  }, [allArticles, stateConfig, slug]);
+  }, [allArticles, stateConfig, slug, lang]);
 
   if (!stateConfig) {
     return (
