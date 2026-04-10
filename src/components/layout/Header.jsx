@@ -80,7 +80,7 @@ const Header = () => {
               <a href="https://wa.me/" target="_blank" rel="noopener noreferrer"><i className="fab fa-whatsapp" /></a>
               <a href="https://facebook.com" target="_blank" rel="noopener noreferrer"><i className="fab fa-facebook-f" /></a>
               <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"><i className="fab fa-instagram" /></a>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer"><i className="fab fa-youtube" /></a>
+              <a href="https://youtube.com/@kaushalprimenation" target="_blank" rel="noopener noreferrer"><i className="fab fa-youtube" /></a>
               <a href="https://twitter.com" target="_blank" rel="noopener noreferrer"><i className="fab fa-twitter" /></a>
             </div>
           </div>
