@@ -221,7 +221,7 @@ const ArticleDetail = ({ article }) => {
   }, [article, fullContent, pdfLoading, lang]);
 
   useEffect(() => {
-    if (!article || article.body || !article.isRss || !article.link) return;
+    if (!article || article.body || !article.isRss || !article.link || article.link === '#') return;
 
     let cancelled = false;
     setFetching(true);

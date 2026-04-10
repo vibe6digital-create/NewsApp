@@ -131,14 +131,9 @@ const parseFeed = (xmlText, feedConfig) => {
                        entry.querySelector('updated')?.textContent || new Date().toISOString();
         const image = extractImage(entry);
 
-        // Use content:encoded first; fall back to full description/summary
+        // Only use content element as body — summary is already stored in summary field
         const cleanSummary = summaryRaw.replace(/<[^>]*>/g, '').trim();
-        let body = null;
-        if (fullBody.length > 100) {
-          body = fullBody;
-        } else if (cleanSummary.length > 40) {
-          body = summaryRaw || cleanSummary;
-        }
+        const body = fullBody.length > 100 ? fullBody : null;
 
         return {
           id: generateId(title, feedConfig.name),
@@ -170,14 +165,9 @@ const parseFeed = (xmlText, feedConfig) => {
       const encodedEl = item.getElementsByTagName('content:encoded')[0];
       const fullBody = encodedEl?.textContent?.trim() || '';
 
-      // Use content:encoded first; fall back to full description
+      // Only use content:encoded as body — description is already stored in summary
       const cleanDesc = description.replace(/<[^>]*>/g, '').trim();
-      let body = null;
-      if (fullBody.length > 100) {
-        body = fullBody;
-      } else if (cleanDesc.length > 40) {
-        body = description || cleanDesc;
-      }
+      const body = fullBody.length > 100 ? fullBody : null;
 
       return {
         id: generateId(title, feedConfig.name),
