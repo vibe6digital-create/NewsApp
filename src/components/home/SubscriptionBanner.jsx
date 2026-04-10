@@ -6,7 +6,7 @@ import { useLang } from '../../context/LanguageContext';
 const SubscriptionBanner = () => {
   const [email, setEmail] = useState('');
   const [mobile, setMobile] = useState('');
-  const { t } = useLang();
+  const { t, lang } = useLang();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -80,6 +80,14 @@ const SubscriptionBanner = () => {
               padding: '12px 16px',
             }}
           />
+          <span style={{
+            color: 'rgba(255,255,255,0.6)',
+            fontWeight: 700,
+            fontSize: '14px',
+            whiteSpace: 'nowrap',
+          }}>
+            {lang === 'HI' ? 'या' : 'OR'}
+          </span>
           <div className="d-flex align-items-center" style={{ position: 'relative' }}>
             <span
               style={{
