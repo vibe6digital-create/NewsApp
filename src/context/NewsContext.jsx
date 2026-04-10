@@ -2,7 +2,6 @@ import React, { createContext, useContext, useState, useEffect, useCallback, use
 import { fetchAllFeeds, fetchPriorityFeeds, filterByCategory, searchArticles as searchFn } from '../services/rssService';
 import { getPublishedAdminArticles, getBreakingArticles, getFeaturedArticles } from '../services/adminService';
 import { useLang } from './LanguageContext';
-import sampleNews from '../data/sampleNews';
 import { AUTO_REFRESH_INTERVAL } from '../utils/constants';
 
 const NewsContext = createContext();
@@ -23,9 +22,8 @@ const mergeArticles = (existing, incoming) => {
 };
 
 export const NewsProvider = ({ children }) => {
-  // Start with sampleNews — page renders instantly with no spinner
-  const [rawArticles, setRawArticles] = useState([...sampleNews]);
-  const [loading] = useState(false);
+  const [rawArticles, setRawArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { lang } = useLang();
 
@@ -39,6 +37,7 @@ export const NewsProvider = ({ children }) => {
       if (priorityArticles.length > 0) {
         setRawArticles(prev => mergeArticles(prev, [...adminArticles, ...priorityArticles]));
       }
+      setLoading(false);
 
       // Step 2: remaining feeds — background, never clears existing content
       const allRss = await fetchAllFeeds(force);
@@ -48,6 +47,7 @@ export const NewsProvider = ({ children }) => {
     } catch (err) {
       console.error('Feed fetch error:', err);
       setError('कुछ समाचार स्रोतों से कनेक्ट नहीं हो पाया।');
+      setLoading(false);
     }
   }, []);
 
