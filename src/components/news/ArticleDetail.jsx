@@ -387,34 +387,53 @@ const ArticleDetail = ({ article }) => {
 
       {/* Article Body */}
       <div className="article-body" style={{ fontSize: '17px', lineHeight: 2, color: '#ddd' }}>
-        {fetching && (
-          <div className="text-center py-4">
-            <div className="spinner-border text-danger" role="status" style={{ width: '2rem', height: '2rem' }} />
-            <p style={{ color: '#999', marginTop: '12px', fontSize: '14px' }}>
-              {lang === 'EN' ? 'Loading full article…' : 'पूरा समाचार लोड हो रहा है…'}
-            </p>
-          </div>
-        )}
 
-        {!fetching && article.body && parse(article.body)}
-
-        {!fetching && !article.body && fullContent && (
+        {/* Show fetched full content if available */}
+        {fullContent && (
           <div dangerouslySetInnerHTML={{ __html: fullContent }} />
         )}
 
-        {/* Fallback: no full content — show summary as article body text */}
-        {!fetching && !article.body && !fullContent && (fetchFailed || (!article.isRss)) && article.summary && (
-          <div style={{ fontSize: '17px', lineHeight: 2, color: '#ddd' }}>
-            <p>{article.summary}</p>
+        {/* Show RSS body / admin body when no fetched content */}
+        {!fullContent && article.body && (
+          <div>{parse(article.body)}</div>
+        )}
+
+        {/* Fallback: only summary available */}
+        {!fullContent && !article.body && article.summary && (
+          <p>{article.summary}</p>
+        )}
+
+        {/* Loading indicator — shown below existing content */}
+        {fetching && (
+          <div className="d-flex align-items-center gap-2 mt-3" style={{ color: '#888', fontSize: '14px' }}>
+            <div className="spinner-border spinner-border-sm text-danger" role="status" style={{ width: '1rem', height: '1rem' }} />
+            {lang === 'EN' ? 'Loading more content…' : 'और सामग्री लोड हो रही है…'}
           </div>
         )}
 
-        {!fetching && !article.body && !fullContent && (fetchFailed || (!article.isRss)) && !article.summary && (
-          <p style={{ color: '#888', fontSize: '15px', fontStyle: 'italic' }}>
-            {lang === 'EN'
-              ? 'Detailed content for this article is not available at this time.'
-              : 'इस समाचार का विस्तृत विवरण इस समय उपलब्ध नहीं है।'}
-          </p>
+        {/* Read full article link */}
+        {!fetching && article.link && (
+          <div className="mt-4 pt-3" style={{ borderTop: '1px solid #333' }}>
+            <a
+              href={article.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                background: '#CC0000',
+                color: '#fff',
+                padding: '10px 22px',
+                borderRadius: '30px',
+                fontWeight: 700,
+                fontSize: '15px',
+                textDecoration: 'none',
+              }}
+            >
+              {lang === 'EN' ? '📰 Read Full Article' : '📰 पूरी खबर पढ़ें'}
+            </a>
+          </div>
         )}
       </div>
 

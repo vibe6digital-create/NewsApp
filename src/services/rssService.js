@@ -131,20 +131,19 @@ const parseFeed = (xmlText, feedConfig) => {
                        entry.querySelector('updated')?.textContent || new Date().toISOString();
         const image = extractImage(entry);
 
-        // Use content:encoded first; fall back to full description/summary if substantial
+        // Use content:encoded first; fall back to full description/summary
         const cleanSummary = summaryRaw.replace(/<[^>]*>/g, '').trim();
         let body = null;
-        if (fullBody.length > 200) {
+        if (fullBody.length > 100) {
           body = fullBody;
-        } else if (summaryRaw.length > 300) {
-          // Description has real content — preserve it as body (with HTML)
-          body = summaryRaw;
+        } else if (cleanSummary.length > 40) {
+          body = summaryRaw || cleanSummary;
         }
 
         return {
           id: generateId(title, feedConfig.name),
           title,
-          summary: cleanSummary.substring(0, 300),
+          summary: cleanSummary.substring(0, 600),
           body,
           image,
           link,
@@ -171,20 +170,19 @@ const parseFeed = (xmlText, feedConfig) => {
       const encodedEl = item.getElementsByTagName('content:encoded')[0];
       const fullBody = encodedEl?.textContent?.trim() || '';
 
-      // Use content:encoded first; fall back to full description if substantial
+      // Use content:encoded first; fall back to full description
       const cleanDesc = description.replace(/<[^>]*>/g, '').trim();
       let body = null;
-      if (fullBody.length > 200) {
+      if (fullBody.length > 100) {
         body = fullBody;
-      } else if (description.length > 300) {
-        // Description has real content — preserve it as body (with HTML)
-        body = description;
+      } else if (cleanDesc.length > 40) {
+        body = description || cleanDesc;
       }
 
       return {
         id: generateId(title, feedConfig.name),
         title,
-        summary: cleanDesc.substring(0, 300),
+        summary: cleanDesc.substring(0, 600),
         body,
         image,
         link,
