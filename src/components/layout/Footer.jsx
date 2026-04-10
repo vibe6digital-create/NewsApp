@@ -48,10 +48,10 @@ const Footer = () => {
               <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
                 <i className="fab fa-whatsapp"></i>
               </a>
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <a href="https://www.facebook.com/KaushalPrimeNation/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
                 <i className="fab fa-facebook-f"></i>
               </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <a href="https://www.instagram.com/kaushalprimenation/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                 <i className="fab fa-instagram"></i>
               </a>
               <a href="https://youtube.com/@kaushalprimenation" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
