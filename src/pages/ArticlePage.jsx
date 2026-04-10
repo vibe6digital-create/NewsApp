@@ -8,7 +8,6 @@ import { PORTAL_NAME } from '../utils/constants';
 import ArticleDetail from '../components/news/ArticleDetail';
 import RelatedNews from '../components/news/RelatedNews';
 import AdBanner from '../components/layout/AdBanner';
-import ShareButtons from '../components/common/ShareButtons';
 
 const ArticlePage = () => {
   const { id } = useParams();
@@ -72,7 +71,6 @@ const ArticlePage = () => {
           {/* Main Content */}
           <div className="col-lg-8" data-aos="fade-up">
             <ArticleDetail article={article} />
-            <ShareButtons url={articleUrl} title={article.title} />
           </div>
 
           {/* Sidebar */}
