@@ -10,40 +10,64 @@ import { PORTAL_NAME } from '../../utils/constants';
 
 // Multiple reader services — tried in order until one returns good content
 const READER_SERVICES = [
-  // Jina AI Reader — renders JS pages server-side
-  (url) => fetch(`https://r.jina.ai/${url}`, {
-    headers: { 'Accept': 'text/plain' },
-    signal: AbortSignal.timeout(15000),
-  }).then(r => r.ok ? r.text() : null),
-  // 12ft.io — bypasses paywalls and returns readable content
-  (url) => fetch(`https://12ft.io/api/proxy?q=${encodeURIComponent(url)}`, {
+  // Our own Vercel serverless function — most reliable, no CORS or rate limits
+  (url) => fetch(`/api/fetch-article?url=${encodeURIComponent(url)}`, {
     signal: AbortSignal.timeout(12000),
   }).then(r => r.ok ? r.text() : null),
   // AllOrigins proxy — fetches raw HTML for extraction
   (url) => fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, {
     signal: AbortSignal.timeout(10000),
   }).then(r => r.ok ? r.json() : null).then(d => d?.contents || null),
+  // Jina AI Reader — fallback
+  (url) => fetch(`https://r.jina.ai/${url}`, {
+    headers: { 'Accept': 'text/plain' },
+    signal: AbortSignal.timeout(10000),
+  }).then(r => r.ok ? r.text() : null),
 ];
 
-// Extract main article text from raw HTML (for AllOrigins fallback)
+// Extract main article text from raw HTML
 const extractArticleFromHtml = (html) => {
   if (!html || html.length < 200) return null;
   const doc = new DOMParser().parseFromString(html, 'text/html');
   // Remove non-content elements
-  doc.querySelectorAll('script,style,nav,header,footer,aside,iframe,noscript,.ad,.ads,.sidebar,.menu,.nav,.comment,.social,.share,.related').forEach(el => el.remove());
-  // Try common article selectors
-  const selectors = ['article', '[itemprop="articleBody"]', '.article-body', '.story-body', '.entry-content', '.post-content', '.article-content', '.story-content', 'main', '.content'];
+  doc.querySelectorAll(
+    'script,style,nav,header,footer,aside,iframe,noscript,button,form,' +
+    '.ad,.ads,.sidebar,.menu,.nav,.comment,.social,.share,.related,' +
+    '.subscription,.paywall,.newsletter,.popup,.modal,.cookie,.banner,' +
+    '.breadcrumb,.tags,.author-bio,.more-stories,.also-read'
+  ).forEach(el => el.remove());
+
+  // Site-specific selectors (Indian news sites first, then generic)
+  const selectors = [
+    // Indian news sites
+    '.jagran-story-full-text', '.story-details', '.story__content',   // Jagran
+    '.details-body', '.article__body',                                  // Amar Ujala
+    '.art_content', '.bhaskar-article',                                 // Dainik Bhaskar
+    '.readmore_span', '.article_text',                                  // NBT/TOI
+    '.sp-cn', '.ndtv__storycontent',                                    // NDTV
+    '.artText', '.fullstory',                                           // ABP/Zee
+    '.article-body__content', '.article-body',                          // BBC Hindi
+    '.Normal', '.article-txt',                                          // Times of India
+    '.story-body', '.story-content',                                    // LiveHindustan
+    '.content-area', '.post-body',                                      // Generic blogs
+    // Standard selectors
+    '[itemprop="articleBody"]', 'article', '.entry-content',
+    '.post-content', '.article-content', '.story-body',
+    'main article', 'main .content', 'main',
+  ];
+
   for (const sel of selectors) {
     const el = doc.querySelector(sel);
     if (el) {
       const text = el.innerHTML.trim();
-      if (text.replace(/<[^>]*>/g, '').trim().length > 200) return text;
+      if (text.replace(/<[^>]*>/g, '').trim().length > 150) return text;
     }
   }
-  // Fallback: grab all <p> tags
+
+  // Fallback: grab all <p> tags with real content
   const paragraphs = Array.from(doc.querySelectorAll('p'))
     .map(p => p.textContent.trim())
-    .filter(t => t.length > 40);
+    .filter(t => t.length > 20);
   if (paragraphs.length >= 2) {
     return paragraphs.map(p => `<p>${p}</p>`).join('');
   }
@@ -98,7 +122,7 @@ const markdownToHtml = (text) => {
     // Convert double newlines to paragraph breaks
     .split(/\n{2,}/)
     .map(p => p.trim())
-    .filter(p => p.length > 30)
+    .filter(p => p.length > 15)
     .map(p => `<p>${p.replace(/\n/g, ' ')}</p>`)
     .join('');
 };
