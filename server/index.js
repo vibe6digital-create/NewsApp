@@ -125,9 +125,29 @@ app.get('/api/auth/me', auth, (req, res) => {
 });
 
 // ── POST /api/auth/unsubscribe ── (marks user as unsubscribed, keeps record)
-app.post('/api/auth/unsubscribe', auth, (req, res) => {
-  db.prepare('UPDATE users SET is_subscribed = 0 WHERE id = ?').run(req.user.id);
-  res.json({ success: true, message: 'Unsubscribed successfully' });
+// Accepts either JWT token (via auth header) or email/mobile in body
+app.post('/api/auth/unsubscribe', (req, res) => {
+  // Try JWT first
+  const header = req.headers.authorization;
+  if (header && header.startsWith('Bearer ')) {
+    try {
+      const decoded = jwt.verify(header.split(' ')[1], JWT_SECRET);
+      db.prepare('UPDATE users SET is_subscribed = 0 WHERE id = ?').run(decoded.id);
+      return res.json({ success: true });
+    } catch {}
+  }
+  // Fallback: match by email or mobile from body
+  const { email, mobile } = req.body;
+  const cleanMobile = mobile ? mobile.replace(/\D/g, '').slice(-10) : '';
+  let updated = false;
+  if (email) {
+    const r = db.prepare('UPDATE users SET is_subscribed = 0 WHERE email = ?').run(email);
+    if (r.changes > 0) updated = true;
+  }
+  if (!updated && cleanMobile) {
+    db.prepare('UPDATE users SET is_subscribed = 0 WHERE mobile = ?').run(cleanMobile);
+  }
+  res.json({ success: true });
 });
 
 // ── DELETE /api/admin/subscribers/:id ──

@@ -100,9 +100,10 @@ export const AuthProvider = ({ children }) => {
 
   const unsubscribe = useCallback(async () => {
     const token = localStorage.getItem(TOKEN_KEY);
-    if (token) {
-      await tryServer('/unsubscribe', {}, token);
-    }
+    const stored = localStorage.getItem(USER_KEY);
+    const u = stored ? JSON.parse(stored) : null;
+    // Send token if available, always include email/mobile as fallback
+    await tryServer('/unsubscribe', { email: u?.email, mobile: u?.mobile }, token);
     localStorage.removeItem(USER_KEY);
     localStorage.removeItem(TOKEN_KEY);
     setUser(null);
