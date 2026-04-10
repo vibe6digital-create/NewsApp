@@ -53,12 +53,17 @@ export const deleteSubscriber = (id) => {
   return true;
 };
 
-export const removeSubscriberByEmail = (email, mobile) => {
+export const markUnsubscribed = (email, mobile) => {
   const subscribers = getSubscribers();
-  const filtered = subscribers.filter(s =>
-    !(email && s.email === email) && !(mobile && s.mobile === mobile)
-  );
-  saveSubscribers(filtered);
+  let changed = false;
+  subscribers.forEach(s => {
+    if ((email && s.email === email) || (mobile && s.mobile === mobile)) {
+      s.isSubscribed = false;
+      s.unsubscribedAt = new Date().toISOString();
+      changed = true;
+    }
+  });
+  if (changed) saveSubscribers(subscribers);
 };
 
 export const exportSubscribersCSV = () => {

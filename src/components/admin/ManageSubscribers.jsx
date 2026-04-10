@@ -18,6 +18,10 @@ const ManageSubscribers = () => {
     const loadSubscribers = async () => {
       const localSubs = getSubscribers() || [];
 
+      // Split local subs into active and unsubscribed
+      const localActive = localSubs.filter(s => s.isSubscribed !== false);
+      const localUnsub = localSubs.filter(s => s.isSubscribed === false);
+
       try {
         const res = await fetch('/api/admin/subscribers');
         if (res.ok) {
@@ -31,17 +35,29 @@ const ManageSubscribers = () => {
           for (const sub of serverActive) {
             if (sub.email && !emailSet.has(sub.email)) { emailSet.add(sub.email); mergedActive.push(sub); }
           }
-          for (const sub of localSubs) {
+          for (const sub of localActive) {
             if (sub.email && !emailSet.has(sub.email)) { emailSet.add(sub.email); mergedActive.push(sub); }
           }
 
+          // Merge unsubscribed similarly
+          const unsubEmailSet = new Set();
+          const mergedUnsub = [];
+          for (const sub of serverUnsub) {
+            if (sub.email && !unsubEmailSet.has(sub.email)) { unsubEmailSet.add(sub.email); mergedUnsub.push(sub); }
+          }
+          for (const sub of localUnsub) {
+            if (sub.email && !unsubEmailSet.has(sub.email)) { unsubEmailSet.add(sub.email); mergedUnsub.push(sub); }
+          }
+
           setSubscribers(mergedActive);
-          setUnsubscribed(serverUnsub);
+          setUnsubscribed(mergedUnsub);
         } else {
-          setSubscribers(localSubs);
+          setSubscribers(localActive);
+          setUnsubscribed(localUnsub);
         }
       } catch {
-        setSubscribers(localSubs);
+        setSubscribers(localActive);
+        setUnsubscribed(localUnsub);
       }
       setLoading(false);
     };

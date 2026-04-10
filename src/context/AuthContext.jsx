@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { addSubscriber, getAllSubscribers, removeSubscriberByEmail } from '../services/subscriptionService';
+import { addSubscriber, getAllSubscribers, markUnsubscribed } from '../services/subscriptionService';
 import { API_BASE } from '../utils/constants';
 import AuthModal from '../components/common/AuthModal';
 
@@ -104,8 +104,8 @@ export const AuthProvider = ({ children }) => {
     const u = stored ? JSON.parse(stored) : null;
     // Remove from server DB
     await tryServer('/unsubscribe', { email: u?.email, mobile: u?.mobile }, token);
-    // Remove from local subscribers list so admin panel reflects immediately
-    if (u?.email || u?.mobile) removeSubscriberByEmail(u.email, u.mobile);
+    // Mark as unsubscribed in local list so admin panel shows them in Unsubscribed tab
+    if (u?.email || u?.mobile) markUnsubscribed(u.email, u.mobile);
     localStorage.removeItem(USER_KEY);
     localStorage.removeItem(TOKEN_KEY);
     setUser(null);
