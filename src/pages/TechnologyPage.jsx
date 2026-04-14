@@ -298,6 +298,15 @@ const TechnologyPage = () => {
     }
     // Last resort: any language (never show empty)
     if (result.length === 0) result = rawArticles.filter(isTechArticle);
+    // Emergency: keyword search across ALL loaded articles when dedicated feeds failed
+    if (result.length === 0 && rawArticles.length > 0) {
+      const techKws = ['smartphone', 'artificial intelligence', 'chatgpt', 'tech', 'gadget',
+        'isro', 'nasa', 'electric vehicle', 'cybersecurity', 'startup', 'app launch',
+        'तकनीक', 'स्मार्टफोन', 'एआई', 'इसरो', 'साइबर', 'इलेक्ट्रिक'];
+      result = rawArticles.filter(a =>
+        techKws.some(kw => (a.title + ' ' + (a.summary || '')).toLowerCase().includes(kw))
+      ).slice(0, 20);
+    }
     if (sortOrder === 'oldest') {
       return [...result].sort((a, b) => new Date(a.pubDate) - new Date(b.pubDate));
     }

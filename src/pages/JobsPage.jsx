@@ -333,6 +333,15 @@ const JobsPage = () => {
     }
     // Last resort: any language (never show empty)
     if (result.length === 0) result = rawArticles.filter(isJobArticle);
+    // Emergency: keyword search across ALL loaded articles when dedicated feeds failed
+    if (result.length === 0 && rawArticles.length > 0) {
+      const jobKws = ['recruitment', 'vacancy', 'sarkari naukri', 'hiring', 'government job',
+        'upsc', 'ssc cgl', 'ibps', 'rrb', 'railway recruitment', 'police recruitment',
+        'भर्ती', 'नौकरी', 'वैकेंसी', 'रोजगार', 'आवेदन', 'सरकारी नौकरी'];
+      result = rawArticles.filter(a =>
+        jobKws.some(kw => (a.title + ' ' + (a.summary || '')).toLowerCase().includes(kw))
+      ).slice(0, 20);
+    }
     if (sortOrder === 'oldest') {
       return [...result].sort((a, b) => new Date(a.pubDate) - new Date(b.pubDate));
     }
