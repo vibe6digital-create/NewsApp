@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { useNews } from '../context/NewsContext';
 import { useLang } from '../context/LanguageContext';
 import NewsCard from '../components/news/NewsCard';
+import LoadingSpinner from '../components/common/LoadingSpinner';
 import { PORTAL_NAME } from '../utils/constants';
 
 export const STATES_CONFIG = [
@@ -86,15 +87,17 @@ export const STATES_CONFIG = [
 
 const matchesState = (a, stateConfig, slug) => {
   // Tier 1: article from a state-dedicated RSS feed
-  if (a.stateSlug) return a.stateSlug === slug;
-  // Tier 2: keyword in title or summary
-  const text = `${a.title || ''} ${a.summary || ''}`.toLowerCase();
+  if (a.stateSlug === slug) return true;
+  if (a.stateSlug) return false; // belongs to a different state
+  // Tier 2: keyword in title, summary, OR source name
+  // (source like "Jagran Delhi", "Amar Ujala Bihar" often contains state name)
+  const text = `${a.title || ''} ${a.summary || ''} ${a.source || ''}`.toLowerCase();
   return stateConfig.keywords.some(kw => text.includes(kw.toLowerCase()));
 };
 
 const StatePage = () => {
   const { slug } = useParams();
-  const { allArticles, rawArticles } = useNews();
+  const { allArticles, rawArticles, loading } = useNews();
   const { lang } = useLang();
 
   const stateConfig = STATES_CONFIG.find(s => s.slug === slug);
@@ -102,11 +105,19 @@ const StatePage = () => {
   const articles = useMemo(() => {
     if (!stateConfig) return [];
     const langCode = lang === 'EN' ? 'en' : 'hi';
-    const primary = allArticles.filter(a => a.lang === langCode && matchesState(a, stateConfig, slug));
+    // Try language-filtered allArticles first (already language-filtered in context)
+    const primary = allArticles.filter(a => matchesState(a, stateConfig, slug));
     if (primary.length > 0) return primary;
-    // Fallback: older articles (same language) from cache
-    return rawArticles.filter(a => a.lang === langCode && matchesState(a, stateConfig, slug));
+    // Fallback: older cached articles, same language
+    const cached = rawArticles.filter(a => a.lang === langCode && matchesState(a, stateConfig, slug));
+    if (cached.length > 0) return cached;
+    // Last resort: ignore language filter (show any language)
+    return rawArticles.filter(a => matchesState(a, stateConfig, slug));
   }, [allArticles, rawArticles, stateConfig, slug, lang]);
+
+  if (loading && articles.length === 0) {
+    return <div className="container py-4"><LoadingSpinner count={6} /></div>;
+  }
 
   if (!stateConfig) {
     return (
