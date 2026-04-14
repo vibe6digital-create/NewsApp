@@ -331,16 +331,6 @@ const TechnologyPage = () => {
       articles.forEach(a => claimedIds.add(a.id));
       map[s.key] = articles;
     });
-    // Backfill empty subsections so no section shows the empty state
-    if (techArticles.length > 0) {
-      let offset = 0;
-      TECH_SUBSECTIONS.forEach(s => {
-        if (map[s.key].length === 0) {
-          map[s.key] = techArticles.slice(offset, offset + 4);
-          offset = (offset + 4) % techArticles.length;
-        }
-      });
-    }
     return map;
   }, [techArticles, heroSlides]);
 
@@ -354,7 +344,7 @@ const TechnologyPage = () => {
   }, [techArticles, heroSlides, subsectionMap]);
 
   const showHero = heroSlides.length >= 3;
-  const activeSections = techArticles.length > 0 ? TECH_SUBSECTIONS : TECH_SUBSECTIONS.filter(s => subsectionMap[s.key]?.length > 0);
+  const activeSections = TECH_SUBSECTIONS.filter(s => subsectionMap[s.key]?.length > 0);
 
   return (
     <>

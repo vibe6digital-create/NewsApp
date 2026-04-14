@@ -181,18 +181,10 @@ const EducationPage = () => {
     EDUCATION_SUBSECTIONS.forEach(s => {
       map[s.key] = filterByEduSubsection(eduArticles, s.key);
     });
-    // Backfill empty subsections so no section shows the empty state
-    if (eduArticles.length > 0) {
-      let offset = 0;
-      EDUCATION_SUBSECTIONS.forEach(s => {
-        if (map[s.key].length === 0) {
-          map[s.key] = eduArticles.slice(offset, offset + 4);
-          offset = (offset + 4) % eduArticles.length;
-        }
-      });
-    }
     return map;
   }, [eduArticles]);
+
+  const activeSections = EDUCATION_SUBSECTIONS.filter(s => filteredMap[s.key]?.length > 0);
 
   const latestArticles = useMemo(() => {
     const claimedIds = new Set(Object.values(filteredMap).flat().map(a => a.id));
@@ -252,7 +244,7 @@ const EducationPage = () => {
                 )}
                 {latestArticles.length > 0 && <hr className="section-divider" />}
 
-                {EDUCATION_SUBSECTIONS.map((s, idx) => (
+                {activeSections.map((s, idx) => (
                   <React.Fragment key={s.key}>
                     <SubSection
                       subsection={s}
@@ -260,7 +252,7 @@ const EducationPage = () => {
                       lang={lang === 'EN' ? 'en' : 'hi'}
                       aosDelay={idx * 80}
                     />
-                    {idx < EDUCATION_SUBSECTIONS.length - 1 && <hr className="section-divider" />}
+                    {idx < activeSections.length - 1 && <hr className="section-divider" />}
                     {(idx + 1) % 2 === 0 && (
                       <div className="my-3">
                         <AdBanner size="728x90" index={idx} />

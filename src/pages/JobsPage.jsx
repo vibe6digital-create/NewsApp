@@ -354,16 +354,6 @@ const JobsPage = () => {
     JOBS_SUBSECTIONS.forEach(s => {
       map[s.key] = filterByJobSubsection(jobArticles, s.key);
     });
-    // Backfill empty subsections so no section shows the empty state
-    if (jobArticles.length > 0) {
-      let offset = 0;
-      JOBS_SUBSECTIONS.forEach(s => {
-        if (map[s.key].length === 0) {
-          map[s.key] = jobArticles.slice(offset, offset + 4);
-          offset = (offset + 4) % jobArticles.length;
-        }
-      });
-    }
     return map;
   }, [jobArticles]);
 
@@ -442,57 +432,21 @@ const JobsPage = () => {
                 )}
                 {latestJobs.length > 0 && <hr className="section-divider" />}
 
-                {/* Government Jobs */}
-                <SubSection
-                  subsection={JOBS_SUBSECTIONS[0]}
-                  articles={subsectionMap['govtjobs']}
-                  lang={lang === 'EN' ? 'en' : 'hi'}
-                  aosDelay={80}
-                />
+                {JOBS_SUBSECTIONS.filter(s => subsectionMap[s.key]?.length > 0).map((s, idx, arr) => (
+                  <React.Fragment key={s.key}>
+                    <SubSection
+                      subsection={s}
+                      articles={subsectionMap[s.key]}
+                      lang={lang === 'EN' ? 'en' : 'hi'}
+                      aosDelay={(idx + 1) * 80}
+                    />
+                    {idx < arr.length - 1 && <hr className="section-divider" />}
+                  </React.Fragment>
+                ))}
+
+                {/* Career Portals — always shown */}
                 <hr className="section-divider" />
-
-                {/* National Big Companies */}
-                <SubSection
-                  subsection={JOBS_SUBSECTIONS[1]}
-                  articles={subsectionMap['nationalco']}
-                  lang={lang === 'EN' ? 'en' : 'hi'}
-                  aosDelay={160}
-                />
-                <hr className="section-divider" />
-
-                <div className="my-3">
-                  <AdBanner size="728x90" index={1} />
-                </div>
-
-                {/* International Big Companies */}
-                <SubSection
-                  subsection={JOBS_SUBSECTIONS[2]}
-                  articles={subsectionMap['intljobs']}
-                  lang={lang === 'EN' ? 'en' : 'hi'}
-                  aosDelay={240}
-                />
-                <hr className="section-divider" />
-
-                {/* Career Portals */}
                 <CareerPortals lang={lang} />
-                <hr className="section-divider" />
-
-                {/* Freelance & Remote Jobs */}
-                <SubSection
-                  subsection={JOBS_SUBSECTIONS[3]}
-                  articles={subsectionMap['remote']}
-                  lang={lang === 'EN' ? 'en' : 'hi'}
-                  aosDelay={320}
-                />
-                <hr className="section-divider" />
-
-                {/* State Government Recruitment */}
-                <SubSection
-                  subsection={JOBS_SUBSECTIONS[4]}
-                  articles={subsectionMap['statejobs']}
-                  lang={lang === 'EN' ? 'en' : 'hi'}
-                  aosDelay={400}
-                />
 
               </div>
 

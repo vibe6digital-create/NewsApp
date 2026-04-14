@@ -291,16 +291,6 @@ const HealthPage = () => {
       articles.forEach(a => claimedIds.add(a.id));
       map[s.key] = articles;
     });
-    // Backfill empty subsections so no section shows the empty state
-    if (healthArticles.length > 0) {
-      let offset = 0;
-      HEALTH_SUBSECTIONS.forEach(s => {
-        if (map[s.key].length === 0) {
-          map[s.key] = healthArticles.slice(offset, offset + 4);
-          offset = (offset + 4) % healthArticles.length;
-        }
-      });
-    }
     return map;
   }, [healthArticles, heroSlides]);
 
@@ -314,7 +304,7 @@ const HealthPage = () => {
   }, [healthArticles, heroSlides, subsectionMap]);
   const showHero = heroSlides.length >= 3;
 
-  const activeSections = healthArticles.length > 0 ? HEALTH_SUBSECTIONS : HEALTH_SUBSECTIONS.filter(s => subsectionMap[s.key]?.length > 0);
+  const activeSections = HEALTH_SUBSECTIONS.filter(s => subsectionMap[s.key]?.length > 0);
 
   return (
     <>
