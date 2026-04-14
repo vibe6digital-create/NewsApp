@@ -1,10 +1,14 @@
-import { RSS_FEEDS, CACHE_KEY, CACHE_DURATION, CATEGORY_KEYWORDS } from '../utils/constants';
+import { RSS_FEEDS, CACHE_KEY, CACHE_DURATION, CATEGORY_KEYWORDS, API_BASE } from '../utils/constants';
 
-// Multiple CORS proxies — tried in order until one succeeds
+// Backend RSS proxy — uses relative /api/rss which Vercel rewrites to Render backend
+// Falls back to public CORS proxies if backend is unavailable
+const BACKEND_RSS_PROXY = `${API_BASE}/api/rss?url=`;
+
+// Public CORS proxies as fallback
 const CORS_PROXIES = [
   { url: 'https://api.allorigins.win/get?url=', responseKey: 'contents' },
-  { url: 'https://api.codetabs.com/v1/proxy?quest=', responseKey: null },   // returns raw text
-  { url: 'https://corsproxy.io/?', responseKey: null },                      // returns raw text
+  { url: 'https://api.codetabs.com/v1/proxy?quest=', responseKey: null },
+  { url: 'https://corsproxy.io/?', responseKey: null },
 ];
 
 /**
@@ -197,6 +201,24 @@ const fetchWithTimeout = (url, ms = 6000) => {
 };
 
 const fetchSingleFeed = async (feedConfig) => {
+  // Try backend proxy first (most reliable)
+  if (BACKEND_RSS_PROXY) {
+    try {
+      const proxyUrl = `${BACKEND_RSS_PROXY}${encodeURIComponent(feedConfig.url)}`;
+      const response = await fetchWithTimeout(proxyUrl, 8000);
+      if (response.ok) {
+        const xmlText = await response.text();
+        if (xmlText && xmlText.length > 100) {
+          const articles = parseFeed(xmlText, feedConfig);
+          if (articles.length > 0) return articles;
+        }
+      }
+    } catch (err) {
+      // Fall through to public proxies
+    }
+  }
+
+  // Fallback: public CORS proxies
   for (const proxy of CORS_PROXIES) {
     try {
       const proxyUrl = `${proxy.url}${encodeURIComponent(feedConfig.url)}`;

@@ -15,6 +15,29 @@ app.use(express.json());
 // Health check
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
+// RSS feed proxy — fetches any RSS/Atom feed server-side (no CORS limits)
+app.get('/api/rss', async (req, res) => {
+  const { url } = req.query;
+  if (!url) return res.status(400).send('Missing url param');
+  try {
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; NewsBot/1.0)',
+        'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+      },
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!response.ok) return res.status(502).send('Feed fetch failed');
+    const xml = await response.text();
+    res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+    res.setHeader('Cache-Control', 'max-age=300');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.send(xml);
+  } catch (err) {
+    res.status(502).send('Feed fetch failed');
+  }
+});
+
 // Article content proxy — fetches full article HTML server-side (no CORS limits)
 app.get('/api/fetch-article', async (req, res) => {
   const { url } = req.query;
