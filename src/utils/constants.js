@@ -8,7 +8,7 @@ export const ADMIN_USER = "admin";
 export const ADMIN_PASS = "news@2026";
 export const SUBSCRIPTION_KEY = "portal_subscribers";
 export const ARTICLES_KEY = "portal_articles";
-export const CACHE_KEY = "rss_cache_v25";
+export const CACHE_KEY = "rss_cache_v26";
 export const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
 // Backend API URL — change this to your Render URL after deploying
@@ -163,14 +163,14 @@ export const RSS_FEEDS = [
 
   // Gujarat
   { name: "Dainik Bhaskar Gujarat", url: "https://www.bhaskar.com/rss-feed/1066/", lang: "hi", priority: true, categories: ["national"], state: "gujarat" },
-  { name: "Divya Bhaskar Gujarat", url: "https://www.divyabhaskar.co.in/rss-feed/1062/", lang: "hi", categories: ["national"], state: "gujarat" },
-  { name: "Sandesh Gujarat", url: "https://www.sandesh.com/rss/gujarat-news", lang: "hi", categories: ["national"], state: "gujarat" },
+  { name: "Divya Bhaskar Gujarat", url: "https://www.divyabhaskar.co.in/rss-feed/1062/", lang: "gu", categories: ["national"], state: "gujarat" },
+  { name: "Sandesh Gujarat", url: "https://www.sandesh.com/rss/gujarat-news", lang: "gu", categories: ["national"], state: "gujarat" },
 
   // Maharashtra
   { name: "Navbharat Times Mumbai", url: "https://navbharattimes.indiatimes.com/rssfeeds/maharashtra.cms", lang: "hi", priority: true, categories: ["national"], state: "maharashtra" },
-  { name: "Maharashtra Times", url: "https://maharashtratimes.com/rssfeeds/4719148.cms", lang: "hi", categories: ["national"], state: "maharashtra" },
+  { name: "Maharashtra Times", url: "https://maharashtratimes.com/rssfeeds/4719148.cms", lang: "mr", categories: ["national"], state: "maharashtra" },
   { name: "Times of India Mumbai", url: "https://timesofindia.indiatimes.com/rssfeeds/1221656.cms", lang: "en", categories: ["national"], state: "maharashtra" },
-  { name: "Lokmat Maharashtra", url: "https://www.lokmat.com/rss/maharashtra.xml", lang: "hi", categories: ["national"], state: "maharashtra" },
+  { name: "Lokmat Maharashtra", url: "https://www.lokmat.com/rss/maharashtra.xml", lang: "mr", categories: ["national"], state: "maharashtra" },
 
   // Punjab
   { name: "Amar Ujala Punjab", url: "https://www.amarujala.com/rss/punjab.xml", lang: "hi", priority: true, categories: ["national"], state: "punjab" },
@@ -208,7 +208,7 @@ export const RSS_FEEDS = [
   { name: "Times of India Bengaluru", url: "https://timesofindia.indiatimes.com/rssfeeds/4719148.cms", lang: "en", priority: true, categories: ["national"], state: "karnataka" },
   { name: "Deccan Herald Karnataka", url: "https://www.deccanherald.com/rss-feed/state", lang: "en", categories: ["national"], state: "karnataka" },
   { name: "The Hindu Karnataka", url: "https://www.thehindu.com/news/national/karnataka/feeder/default.rss", lang: "en", categories: ["national"], state: "karnataka" },
-  { name: "Udayavani Karnataka", url: "https://www.udayavani.com/feed/", lang: "hi", categories: ["national"], state: "karnataka" },
+  { name: "Udayavani Karnataka", url: "https://www.udayavani.com/feed/", lang: "kn", categories: ["national"], state: "karnataka" },
 
   // Kerala
   { name: "Times of India Kerala", url: "https://timesofindia.indiatimes.com/rssfeeds/kerala.cms", lang: "en", priority: true, categories: ["national"], state: "kerala" },
@@ -233,8 +233,8 @@ export const RSS_FEEDS = [
 
   // Odisha
   { name: "Odisha TV", url: "https://odishatv.in/feed", lang: "en", priority: true, categories: ["national"], state: "odisha" },
-  { name: "Sambad Odisha", url: "https://sambad.in/feed/", lang: "hi", categories: ["national"], state: "odisha" },
-  { name: "Dharitri Odisha", url: "https://www.dharitri.com/feed/", lang: "hi", categories: ["national"], state: "odisha" },
+  { name: "Sambad Odisha", url: "https://sambad.in/feed/", lang: "or", categories: ["national"], state: "odisha" },
+  { name: "Dharitri Odisha", url: "https://www.dharitri.com/feed/", lang: "or", categories: ["national"], state: "odisha" },
   { name: "New Indian Express Odisha", url: "https://www.newindianexpress.com/states/odisha/rss", lang: "en", categories: ["national"], state: "odisha" },
 
   // Assam
@@ -260,7 +260,7 @@ export const RSS_FEEDS = [
   // Goa
   { name: "Navhind Times Goa", url: "https://www.navhindtimes.in/feed/", lang: "en", categories: ["national"], state: "goa" },
   { name: "Herald Goa", url: "https://www.heraldgoa.in/feed", lang: "en", categories: ["national"], state: "goa" },
-  { name: "Gomantak Times", url: "https://www.gomantak.com/rss", lang: "hi", categories: ["national"], state: "goa" },
+  { name: "Gomantak Times", url: "https://www.gomantak.com/rss", lang: "kok", categories: ["national"], state: "goa" },
 
   // Technology feeds ──
   {
