@@ -8,7 +8,7 @@ export const ADMIN_USER = "admin";
 export const ADMIN_PASS = "news@2026";
 export const SUBSCRIPTION_KEY = "portal_subscribers";
 export const ARTICLES_KEY = "portal_articles";
-export const CACHE_KEY = "rss_cache_v29";
+export const CACHE_KEY = "rss_cache_v30";
 export const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
 // Backend API URL — change this to your Render URL after deploying
@@ -33,7 +33,12 @@ export const STATES = [
 ];
 
 export const CATEGORY_KEYWORDS = {
-  education: ["education", "school", "admission", "college", "university", "scholarship", "शिक्षा", "विद्यालय", "प्रवेश"],
+  education: [
+    "education", "school", "admission", "college", "university", "scholarship",
+    "exam", "result", "cbse", "icse", "neet", "jee", "upsc", "board exam",
+    "syllabus", "teacher", "student", "coaching", "tuition", "degree",
+    "शिक्षा", "विद्यालय", "प्रवेश", "परीक्षा", "परिणाम", "छात्र", "अध्यापक", "पाठ्यक्रम", "विश्वविद्यालय",
+  ],
   jobs: [
     "job", "recruitment", "vacancy", "sarkari naukri", "hiring", "भर्ती", "नौकरी", "रोजगार",
     "UPSC", "SSC CGL", "SSC MTS", "railway recruitment", "IBPS PO", "SBI PO", "NDA",
@@ -261,6 +266,44 @@ export const RSS_FEEDS = [
   { name: "Navhind Times Goa", url: "https://www.navhindtimes.in/feed/", lang: "en", categories: ["national"], state: "goa" },
   { name: "Herald Goa", url: "https://www.heraldgoa.in/feed", lang: "en", categories: ["national"], state: "goa" },
   { name: "Gomantak Times", url: "https://www.gomantak.com/rss", lang: "kok", categories: ["national"], state: "goa" },
+
+  // ── Education feeds ──
+  {
+    name: "Jagran Education",
+    url: "https://www.jagran.com/rss/education.xml",
+    lang: "hi", priority: true,
+    categories: ["education"]
+  },
+  {
+    name: "Amar Ujala Education",
+    url: "https://www.amarujala.com/rss/education.xml",
+    lang: "hi", priority: true,
+    categories: ["education"]
+  },
+  {
+    name: "Live Hindustan Education",
+    url: "https://www.livehindustan.com/rss/education.xml",
+    lang: "hi", priority: true,
+    categories: ["education"]
+  },
+  {
+    name: "NDTV Education",
+    url: "https://feeds.feedburner.com/ndtv/education",
+    lang: "en", priority: true,
+    categories: ["education"]
+  },
+  {
+    name: "India Today Education",
+    url: "https://www.indiatoday.in/education-today/rss",
+    lang: "en",
+    categories: ["education"]
+  },
+  {
+    name: "Navbharat Times Education",
+    url: "https://navbharattimes.indiatimes.com/rssfeeds/4719333.cms",
+    lang: "hi",
+    categories: ["education"]
+  },
 
   // Technology feeds ──
   {
