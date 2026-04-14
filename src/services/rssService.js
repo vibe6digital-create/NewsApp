@@ -97,18 +97,22 @@ const categorizeFeedItem = (title, description, feedCategories) => {
 
   // 3. Multi-category feeds (e.g. ["national","education"] or ["national","jobs"]):
   //    reclassify ONLY to categories the feed itself lists — never to unrelated ones.
-  //    Require 2+ keyword hits to avoid false positives.
+  //    Pick the secondary category with the MOST keyword hits (min 1).
+  let bestCat = null;
+  let bestHits = 0;
   for (const cat of feedCategories.slice(1)) {
-    if (!SPECIALIST_CATS.has(cat)) continue; // only reclassify into specialist categories
+    if (!SPECIALIST_CATS.has(cat)) continue;
     const keywords = CATEGORY_KEYWORDS[cat] || [];
     let hits = 0;
     for (const kw of keywords) {
-      if (text.includes(kw.toLowerCase())) {
-        hits++;
-        if (hits >= 2) return cat;
-      }
+      if (text.includes(kw.toLowerCase())) hits++;
+    }
+    if (hits > bestHits) {
+      bestHits = hits;
+      bestCat = cat;
     }
   }
+  if (bestHits >= 1 && bestCat) return bestCat;
 
   return primaryCat;
 };
@@ -297,12 +301,24 @@ export const fetchPriorityFeeds = async () => {
     const batchResults = await Promise.allSettled(batch.map(f => fetchSingleFeed(f)));
     allResults = allResults.concat(batchResults);
   }
-  return processResults(allResults);
+  const articles = processResults(allResults);
+
+  // Save priority results to cache immediately — this also prevents fetchAllFeeds(false)
+  // from re-fetching the same feeds seconds later (it will find fresh cache and return).
+  if (articles.length > 0) {
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ data: articles, timestamp: Date.now() }));
+    } catch (e) {
+      localStorage.removeItem(CACHE_KEY);
+    }
+  }
+
+  return articles;
 };
 
 export const fetchAllFeeds = async (force = false) => {
   // Remove old cache keys from previous versions
-  ['rss_cache', 'rss_cache_v2', 'rss_cache_v3', 'rss_cache_v4', 'rss_cache_v5', 'rss_cache_v6', 'rss_cache_v7', 'rss_cache_v8', 'rss_cache_v9', 'rss_cache_v10', 'rss_cache_v11', 'rss_cache_v12', 'rss_cache_v13', 'rss_cache_v14', 'rss_cache_v15', 'rss_cache_v16', 'rss_cache_v17', 'rss_cache_v18', 'rss_cache_v19', 'rss_cache_v20', 'rss_cache_v21', 'rss_cache_v22', 'rss_cache_v23', 'rss_cache_v24', 'rss_cache_v25', 'rss_cache_v26', 'rss_cache_v27', 'rss_cache_v28', 'rss_cache_v29'].forEach(k => localStorage.removeItem(k));
+  ['rss_cache', 'rss_cache_v2', 'rss_cache_v3', 'rss_cache_v4', 'rss_cache_v5', 'rss_cache_v6', 'rss_cache_v7', 'rss_cache_v8', 'rss_cache_v9', 'rss_cache_v10', 'rss_cache_v11', 'rss_cache_v12', 'rss_cache_v13', 'rss_cache_v14', 'rss_cache_v15', 'rss_cache_v16', 'rss_cache_v17', 'rss_cache_v18', 'rss_cache_v19', 'rss_cache_v20', 'rss_cache_v21', 'rss_cache_v22', 'rss_cache_v23', 'rss_cache_v24', 'rss_cache_v25', 'rss_cache_v26', 'rss_cache_v27', 'rss_cache_v28', 'rss_cache_v29', 'rss_cache_v30'].forEach(k => localStorage.removeItem(k));
 
   // Check current cache (skip if force refresh)
   if (!force) {

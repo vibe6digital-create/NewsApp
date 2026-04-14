@@ -8,7 +8,7 @@ export const ADMIN_USER = "admin";
 export const ADMIN_PASS = "news@2026";
 export const SUBSCRIPTION_KEY = "portal_subscribers";
 export const ARTICLES_KEY = "portal_articles";
-export const CACHE_KEY = "rss_cache_v30";
+export const CACHE_KEY = "rss_cache_v31";
 export const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
 // Backend API URL — change this to your Render URL after deploying
@@ -101,19 +101,19 @@ export const RSS_FEEDS = [
   {
     name: "Navbharat Times Astrology",
     url: "https://navbharattimes.indiatimes.com/rssfeeds/astrology.cms",
-    lang: "hi",
+    lang: "hi", priority: true,
     categories: ["astro"]
   },
   {
     name: "Live Hindustan Rashifal",
     url: "https://www.livehindustan.com/rss/jyotish.xml",
-    lang: "hi",
+    lang: "hi", priority: true,
     categories: ["astro"]
   },
   {
     name: "Patrika Rashifal",
     url: "https://www.patrika.com/rss/horoscope-news.xml",
-    lang: "hi",
+    lang: "hi", priority: true,
     categories: ["astro"]
   },
 
@@ -295,13 +295,25 @@ export const RSS_FEEDS = [
   {
     name: "India Today Education",
     url: "https://www.indiatoday.in/education-today/rss",
-    lang: "en",
+    lang: "en", priority: true,
     categories: ["education"]
   },
   {
     name: "Navbharat Times Education",
     url: "https://navbharattimes.indiatimes.com/rssfeeds/4719333.cms",
-    lang: "hi",
+    lang: "hi", priority: true,
+    categories: ["education"]
+  },
+  {
+    name: "The Hindu Education",
+    url: "https://www.thehindu.com/education/feeder/default.rss",
+    lang: "en", priority: true,
+    categories: ["education"]
+  },
+  {
+    name: "Times of India Education",
+    url: "https://timesofindia.indiatimes.com/rss/feeds/education.cms",
+    lang: "en", priority: true,
     categories: ["education"]
   },
 
@@ -419,7 +431,13 @@ export const RSS_FEEDS = [
   {
     name: "Times of India Health",
     url: "https://timesofindia.indiatimes.com/rss/feeds/health-news.cms",
-    lang: "en",
+    lang: "en", priority: true,
+    categories: ["health"]
+  },
+  {
+    name: "The Hindu Health",
+    url: "https://www.thehindu.com/sci-tech/health/feeder/default.rss",
+    lang: "en", priority: true,
     categories: ["health"]
   },
 
