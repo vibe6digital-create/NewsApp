@@ -371,7 +371,6 @@ export const searchArticles = (articles, query) => {
   const q = query.toLowerCase();
   return articles.filter(a =>
     a.title.toLowerCase().includes(q) ||
-    a.summary.toLowerCase().includes(q) ||
-    a.source.toLowerCase().includes(q)
+    a.summary.toLowerCase().includes(q)
   );
 };

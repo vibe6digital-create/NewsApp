@@ -88,10 +88,6 @@
   color: rgba(255,255,255,0.7);
 }
 
-.hero-slider .hero-meta .source {
-  color: var(--accent);
-  font-weight: 600;
-}
 
 .hero-slider .carousel-control-prev,
 .hero-slider .carousel-control-next {

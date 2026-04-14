@@ -130,11 +130,6 @@
   margin-top: auto;
 }
 
-.news-card .card-source {
-  color: var(--accent);
-  font-weight: 600;
-}
-
 .news-card .card-time {
   color: var(--text-muted);
 }
@@ -257,7 +252,3 @@
   color: var(--text-muted);
 }
 
-.news-card-horizontal .card-meta .source {
-  color: var(--accent);
-  font-weight: 600;
-}

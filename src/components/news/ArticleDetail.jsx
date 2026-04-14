@@ -97,7 +97,7 @@ const fetchFullArticle = async (articleUrl) => {
 const markdownToHtml = (text) => {
   return text
     // Remove Jina metadata lines at the top (Title:, URL:, etc.)
-    .replace(/^(Title|URL|Published Time|Description|Keywords|Author)[^\n]*\n/gim, '')
+    .replace(/^(Title|URL|Published Time|Description|Keywords|Author|Source|Publisher|Website|Site)[^\n]*\n/gim, '')
     // Remove markdown image syntax
     .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
     // Remove markdown links with text: [text](url) or [text](url "title")
