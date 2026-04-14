@@ -8,7 +8,7 @@ export const ADMIN_USER = "admin";
 export const ADMIN_PASS = "news@2026";
 export const SUBSCRIPTION_KEY = "portal_subscribers";
 export const ARTICLES_KEY = "portal_articles";
-export const CACHE_KEY = "rss_cache_v32";
+export const CACHE_KEY = "rss_cache_v33";
 export const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
 // Backend API URL — change this to your Render URL after deploying
@@ -683,37 +683,37 @@ export const RSS_FEEDS = [
   {
     name: "The Hindu",
     url: "https://www.thehindu.com/feeder/default.rss",
-    lang: "en",
+    lang: "en", priority: true,
     categories: ["national", "world", "technology", "education"]
   },
   {
     name: "Hindustan Times",
     url: "https://www.hindustantimes.com/feeds/rss/india-news/rssfeed.xml",
-    lang: "en",
+    lang: "en", priority: true,
     categories: ["national", "world"]
   },
   {
     name: "NDTV Top Stories",
     url: "https://feeds.feedburner.com/ndtvnews-top-stories",
-    lang: "en",
+    lang: "en", priority: true,
     categories: ["national", "world"]
   },
   {
     name: "India Today",
     url: "https://www.indiatoday.in/rss/1206550",
-    lang: "en",
+    lang: "en", priority: true,
     categories: ["national", "world", "technology"]
   },
   {
     name: "Economic Times",
     url: "https://economictimes.indiatimes.com/rssfeedstopstories.cms",
-    lang: "en",
+    lang: "en", priority: true,
     categories: ["national", "technology", "education"]
   },
   {
     name: "The Print",
     url: "https://theprint.in/feed/",
-    lang: "en",
+    lang: "en", priority: true,
     categories: ["national"]
   },
   {
@@ -725,7 +725,7 @@ export const RSS_FEEDS = [
   {
     name: "Firstpost",
     url: "https://www.firstpost.com/rss/home.xml",
-    lang: "en",
+    lang: "en", priority: true,
     categories: ["national", "world"]
   },
   {
@@ -737,7 +737,7 @@ export const RSS_FEEDS = [
   {
     name: "News18 English",
     url: "https://www.news18.com/rss/india.xml",
-    lang: "en",
+    lang: "en", priority: true,
     categories: ["national"]
   },
   {
