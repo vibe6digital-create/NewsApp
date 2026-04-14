@@ -181,6 +181,16 @@ const EducationPage = () => {
     EDUCATION_SUBSECTIONS.forEach(s => {
       map[s.key] = filterByEduSubsection(eduArticles, s.key);
     });
+    // Backfill empty subsections so no section shows the empty state
+    if (eduArticles.length > 0) {
+      let offset = 0;
+      EDUCATION_SUBSECTIONS.forEach(s => {
+        if (map[s.key].length === 0) {
+          map[s.key] = eduArticles.slice(offset, offset + 4);
+          offset = (offset + 4) % eduArticles.length;
+        }
+      });
+    }
     return map;
   }, [eduArticles]);
 

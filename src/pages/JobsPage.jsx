@@ -354,6 +354,16 @@ const JobsPage = () => {
     JOBS_SUBSECTIONS.forEach(s => {
       map[s.key] = filterByJobSubsection(jobArticles, s.key);
     });
+    // Backfill empty subsections so no section shows the empty state
+    if (jobArticles.length > 0) {
+      let offset = 0;
+      JOBS_SUBSECTIONS.forEach(s => {
+        if (map[s.key].length === 0) {
+          map[s.key] = jobArticles.slice(offset, offset + 4);
+          offset = (offset + 4) % jobArticles.length;
+        }
+      });
+    }
     return map;
   }, [jobArticles]);
 
