@@ -318,7 +318,7 @@ export const fetchPriorityFeeds = async () => {
 
 export const fetchAllFeeds = async (force = false) => {
   // Remove old cache keys from previous versions
-  ['rss_cache', 'rss_cache_v2', 'rss_cache_v3', 'rss_cache_v4', 'rss_cache_v5', 'rss_cache_v6', 'rss_cache_v7', 'rss_cache_v8', 'rss_cache_v9', 'rss_cache_v10', 'rss_cache_v11', 'rss_cache_v12', 'rss_cache_v13', 'rss_cache_v14', 'rss_cache_v15', 'rss_cache_v16', 'rss_cache_v17', 'rss_cache_v18', 'rss_cache_v19', 'rss_cache_v20', 'rss_cache_v21', 'rss_cache_v22', 'rss_cache_v23', 'rss_cache_v24', 'rss_cache_v25', 'rss_cache_v26', 'rss_cache_v27', 'rss_cache_v28', 'rss_cache_v29', 'rss_cache_v30', 'rss_cache_v31', 'rss_cache_v32', 'rss_cache_v33'].forEach(k => localStorage.removeItem(k));
+  ['rss_cache', 'rss_cache_v2', 'rss_cache_v3', 'rss_cache_v4', 'rss_cache_v5', 'rss_cache_v6', 'rss_cache_v7', 'rss_cache_v8', 'rss_cache_v9', 'rss_cache_v10', 'rss_cache_v11', 'rss_cache_v12', 'rss_cache_v13', 'rss_cache_v14', 'rss_cache_v15', 'rss_cache_v16', 'rss_cache_v17', 'rss_cache_v18', 'rss_cache_v19', 'rss_cache_v20', 'rss_cache_v21', 'rss_cache_v22', 'rss_cache_v23', 'rss_cache_v24', 'rss_cache_v25', 'rss_cache_v26', 'rss_cache_v27', 'rss_cache_v28', 'rss_cache_v29', 'rss_cache_v30', 'rss_cache_v31', 'rss_cache_v32', 'rss_cache_v33', 'rss_cache_v34'].forEach(k => localStorage.removeItem(k));
 
   // Check current cache (skip if force refresh)
   if (!force) {

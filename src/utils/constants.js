@@ -8,7 +8,7 @@ export const ADMIN_USER = "admin";
 export const ADMIN_PASS = "news@2026";
 export const SUBSCRIPTION_KEY = "portal_subscribers";
 export const ARTICLES_KEY = "portal_articles";
-export const CACHE_KEY = "rss_cache_v34";
+export const CACHE_KEY = "rss_cache_v35";
 export const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
 // Backend API URL — change this to your Render URL after deploying
@@ -373,58 +373,34 @@ export const RSS_FEEDS = [
     categories: ["technology"]
   },
   {
-    name: "Jagran Tech",
-    url: "https://www.jagran.com/rss/technology.xml",
+    name: "ABP Live Tech",
+    url: "https://www.abplive.com/technology/feed",
     lang: "hi", priority: true,
     categories: ["technology"]
   },
   {
-    name: "Live Hindustan Tech",
-    url: "https://www.livehindustan.com/rss/technology.xml",
+    name: "TV9 Hindi Tech",
+    url: "https://www.tv9hindi.com/topic/technology/feed",
     lang: "hi",
     categories: ["technology"]
   },
 
   // ── Health feeds ──
   {
+    name: "ABP Live Health",
+    url: "https://www.abplive.com/health/feed",
+    lang: "hi", priority: true,
+    categories: ["health"]
+  },
+  {
+    name: "TV9 Hindi Health",
+    url: "https://www.tv9hindi.com/topic/health/feed",
+    lang: "hi", priority: true,
+    categories: ["health"]
+  },
+  {
     name: "WHO News",
     url: "https://www.who.int/rss-feeds/news-english.xml",
-    lang: "en", priority: true,
-    categories: ["health"]
-  },
-  {
-    name: "ICMR News",
-    url: "https://main.icmr.nic.in/sites/default/files/icmr_news.xml",
-    lang: "en",
-    categories: ["health"]
-  },
-  {
-    name: "Health Ministry India",
-    url: "https://mohfw.gov.in/rss.xml",
-    lang: "en",
-    categories: ["health"]
-  },
-  {
-    name: "Dainik Jagran Health",
-    url: "https://www.jagran.com/rss/health.xml",
-    lang: "hi", priority: true,
-    categories: ["health"]
-  },
-  {
-    name: "Amar Ujala Health",
-    url: "https://www.amarujala.com/rss/health.xml",
-    lang: "hi", priority: true,
-    categories: ["health"]
-  },
-  {
-    name: "NDTV Health",
-    url: "https://feeds.feedburner.com/ndtv/health",
-    lang: "en",
-    categories: ["health"]
-  },
-  {
-    name: "Times of India Health",
-    url: "https://timesofindia.indiatimes.com/rss/feeds/health-news.cms",
     lang: "en", priority: true,
     categories: ["health"]
   },
@@ -434,47 +410,59 @@ export const RSS_FEEDS = [
     lang: "en", priority: true,
     categories: ["health"]
   },
-
-  // ── Jobs / Employment feeds (Priority) ──
   {
-    name: "Employment News",
-    url: "https://www.employmentnews.gov.in/rss/en/notification.xml",
+    name: "Hindustan Times Health",
+    url: "https://www.hindustantimes.com/feeds/rss/health/rssfeed.xml",
     lang: "en", priority: true,
-    categories: ["jobs"]
+    categories: ["health"]
   },
   {
-    name: "Sarkari Result",
-    url: "https://www.sarkariresult.com/news/feed/",
+    name: "Times of India Health",
+    url: "https://timesofindia.indiatimes.com/rssfeeds/health-fitness.cms",
+    lang: "en", priority: true,
+    categories: ["health"]
+  },
+  {
+    name: "Indian Express Health",
+    url: "https://indianexpress.com/section/lifestyle/health/feed/",
+    lang: "en",
+    categories: ["health"]
+  },
+
+  // ── Jobs / Employment feeds ──
+  {
+    name: "ABP Live Jobs",
+    url: "https://www.abplive.com/jobs/feed",
     lang: "hi", priority: true,
     categories: ["jobs"]
   },
   {
-    name: "Freshers World",
-    url: "https://www.fresherslive.com/rss/jobs",
-    lang: "en",
+    name: "TV9 Hindi Jobs",
+    url: "https://www.tv9hindi.com/topic/jobs/feed",
+    lang: "hi", priority: true,
     categories: ["jobs"]
   },
   {
-    name: "TimesJobs Blog",
-    url: "https://content.timesjobs.com/category/jobs-careers/feed/",
-    lang: "en",
+    name: "Amar Ujala Jobs",
+    url: "https://www.amarujala.com/rss/jobs.xml",
+    lang: "hi", priority: true,
     categories: ["jobs"]
   },
   {
     name: "Economic Times Jobs",
     url: "https://economictimes.indiatimes.com/jobs/rssfeeds/1098593.cms",
-    lang: "en",
+    lang: "en", priority: true,
     categories: ["jobs"]
   },
   {
-    name: "Naukri Blog",
-    url: "https://www.naukriblog.com/feed/",
-    lang: "en",
+    name: "Hindustan Times Jobs",
+    url: "https://www.hindustantimes.com/feeds/rss/jobs/rssfeed.xml",
+    lang: "en", priority: true,
     categories: ["jobs"]
   },
   {
-    name: "LinkedIn India Blog",
-    url: "https://blog.linkedin.com/feed",
+    name: "Indian Express Jobs",
+    url: "https://indianexpress.com/section/jobs/feed/",
     lang: "en",
     categories: ["jobs"]
   },
@@ -584,7 +572,7 @@ export const RSS_FEEDS = [
   },
   {
     name: "Aaj Tak",
-    url: "https://aajtak.intoday.in/rssfeeds/2127546909.cms",
+    url: "https://www.aajtak.in/rss/home.xml",
     lang: "hi",
     categories: ["national", "world"]
   },
