@@ -55,8 +55,14 @@ export const NewsProvider = ({ children }) => {
     // Wake up Render backend immediately (free tier cold-starts in 30-45s)
     wakeUpBackend();
     fetchNews(false);
+    // Warmup refresh: Render is warm ~45s after startup — re-fetches feeds that
+    // failed due to cold start (state news, Indian sites blocked by CORS proxies).
+    const warmupTimer = setTimeout(() => fetchNews(true), 45000);
     const interval = setInterval(() => fetchNews(true), AUTO_REFRESH_INTERVAL);
-    return () => clearInterval(interval);
+    return () => {
+      clearTimeout(warmupTimer);
+      clearInterval(interval);
+    };
   }, [fetchNews]);
 
   // Strictly filter by selected language — no exceptions.

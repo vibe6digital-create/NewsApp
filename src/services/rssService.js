@@ -217,19 +217,19 @@ const tryBackendProxy = async (feedConfig, timeoutMs) => {
 };
 
 const fetchSingleFeed = async (feedConfig) => {
-  // Stage 1: Backend proxy quick check (fast if already warm)
+  // Backend proxy first (instant if Render is warm)
   if (BACKEND_RSS_PROXY) {
     try {
-      const articles = await tryBackendProxy(feedConfig, 5000);
+      const articles = await tryBackendProxy(feedConfig, 8000);
       if (articles) return articles;
-    } catch {} // cold start → fall through
+    } catch {} // cold start or error → fall through to CORS proxies
   }
 
-  // Stage 2: Public CORS proxies (fast, works for non-Indian sites)
+  // CORS proxies fallback (works for open/Western feeds)
   for (const proxy of CORS_PROXIES) {
     try {
       const proxyUrl = `${proxy.url}${encodeURIComponent(feedConfig.url)}`;
-      const response = await fetchWithTimeout(proxyUrl, 5000);
+      const response = await fetchWithTimeout(proxyUrl, 7000);
       if (!response.ok) continue;
       let xmlText;
       if (proxy.responseKey) {
@@ -241,15 +241,6 @@ const fetchSingleFeed = async (feedConfig) => {
       if (!xmlText || xmlText.length < 100) continue;
       const articles = parseFeed(xmlText, feedConfig);
       if (articles.length > 0) return articles;
-    } catch {}
-  }
-
-  // Stage 3: Backend retry — Render has been warming since Stage 1 (~15-20s ago)
-  // By now Render's cold start (30-45s) should be nearly complete.
-  if (BACKEND_RSS_PROXY) {
-    try {
-      const articles = await tryBackendProxy(feedConfig, 35000);
-      if (articles) return articles;
     } catch {}
   }
 
