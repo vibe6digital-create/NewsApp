@@ -124,7 +124,7 @@ const CategoryCarousel = ({ slides, catColor, lang }) => {
 
 const CategoryPage = () => {
   const { slug } = useParams();
-  const { getByCategory, allArticles, loading } = useNews();
+  const { getCategoryWithFallback, allArticles, loading } = useNews();
   const { lang, t } = useLang();
   const [visibleCount, setVisibleCount] = useState(12);
   const [sortOrder, setSortOrder] = useState('latest');
@@ -136,7 +136,7 @@ const CategoryPage = () => {
 
   const articles = useMemo(() => {
     // If slug doesn't match a known category, show all articles
-    let result = category ? getByCategory(slug) : allArticles;
+    let result = category ? getCategoryWithFallback(slug) : allArticles;
 
     // Sort
     if (sortOrder === 'oldest') {
@@ -144,12 +144,12 @@ const CategoryPage = () => {
     }
 
     return result;
-  }, [slug, category, getByCategory, allArticles, sortOrder]);
+  }, [slug, category, getCategoryWithFallback, allArticles, sortOrder]);
 
   const carouselSlides = useMemo(() => {
-    const source = category ? getByCategory(slug) : allArticles;
+    const source = category ? getCategoryWithFallback(slug) : allArticles;
     return source.filter(a => a.image).slice(0, 5);
-  }, [slug, category, getByCategory, allArticles]);
+  }, [slug, category, getCategoryWithFallback, allArticles]);
 
   const topStories = articles.filter(a => a.image).slice(0, 5);
 

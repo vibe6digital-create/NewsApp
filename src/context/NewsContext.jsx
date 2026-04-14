@@ -96,14 +96,25 @@ export const NewsProvider = ({ children }) => {
     return rawArticles.find(a => a.id === id) || null;
   }, [rawArticles]);
 
+  // Returns category-filtered articles from allArticles; falls back to rawArticles
+  // (same language) so sections are never empty.
+  const getCategoryWithFallback = useCallback((cat) => {
+    const primary = filterByCategory(allArticles, cat);
+    if (primary.length > 0) return primary;
+    const preferredLang = lang === 'EN' ? 'en' : 'hi';
+    return rawArticles.filter(a => a.category === cat && a.lang === preferredLang);
+  }, [allArticles, rawArticles, lang]);
+
   const value = {
     allArticles,
+    rawArticles,
     loading,
     error,
     fetchNews,
     getBreakingNews,
     getFeatured,
     getByCategory,
+    getCategoryWithFallback,
     getBySource,
     searchNews,
     getArticleById,

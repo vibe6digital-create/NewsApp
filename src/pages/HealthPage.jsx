@@ -126,7 +126,9 @@ const HEALTH_STRICT_KEYWORDS = [
 ];
 
 function isHealthArticle(article) {
-  return article.category === 'health';
+  if (article.category === 'health') return true;
+  const text = `${article.title || ''} ${article.summary || ''}`.toLowerCase();
+  return HEALTH_STRICT_KEYWORDS.some(kw => text.includes(kw.toLowerCase()));
 }
 
 function filterByHealthSubsection(healthArticles, key) {
@@ -243,17 +245,22 @@ const HealthHeader = ({ lang, count }) => (
 
 // ── Main Page ─────────────────────────────────────────────────
 const HealthPage = () => {
-  const { allArticles, loading } = useNews();
+  const { allArticles, rawArticles, loading } = useNews();
   const { lang, t } = useLang();
   const [sortOrder, setSortOrder] = useState('latest');
 
   const healthArticles = useMemo(() => {
     let result = allArticles.filter(isHealthArticle);
+    // Fallback: older health articles (same language) from cache if current fetch has none
+    if (result.length === 0) {
+      const preferredLang = lang === 'EN' ? 'en' : 'hi';
+      result = rawArticles.filter(a => isHealthArticle(a) && a.lang === preferredLang);
+    }
     if (sortOrder === 'oldest') {
       return [...result].sort((a, b) => new Date(a.pubDate) - new Date(b.pubDate));
     }
     return result;
-  }, [allArticles, sortOrder]);
+  }, [allArticles, rawArticles, sortOrder]);
 
   // Hero slides — computed first so their IDs can be excluded below
   const heroSlides = useMemo(() => {

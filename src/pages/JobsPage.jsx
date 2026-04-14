@@ -123,7 +123,9 @@ const JOB_STRICT_KEYWORDS = [
 ];
 
 function isJobArticle(article) {
-  return article.category === 'jobs';
+  if (article.category === 'jobs') return true;
+  const text = `${article.title || ''} ${article.summary || ''}`.toLowerCase();
+  return JOB_STRICT_KEYWORDS.some(kw => text.includes(kw.toLowerCase()));
 }
 
 // Subsection filter: runs only on already-filtered job articles
@@ -319,18 +321,23 @@ const CareerPortals = ({ lang }) => {
 
 // ── Main Page ─────────────────────────────────────────────────
 const JobsPage = () => {
-  const { allArticles, loading } = useNews();
+  const { allArticles, rawArticles, loading } = useNews();
   const { lang, t } = useLang();
   const [sortOrder, setSortOrder] = useState('latest');
 
   // Filter to strictly job-related articles only
   const jobArticles = useMemo(() => {
     let result = allArticles.filter(isJobArticle);
+    // Fallback: older job articles (same language) from cache if current fetch has none
+    if (result.length === 0) {
+      const preferredLang = lang === 'EN' ? 'en' : 'hi';
+      result = rawArticles.filter(a => isJobArticle(a) && a.lang === preferredLang);
+    }
     if (sortOrder === 'oldest') {
       return [...result].sort((a, b) => new Date(a.pubDate) - new Date(b.pubDate));
     }
     return result;
-  }, [allArticles, sortOrder]);
+  }, [allArticles, rawArticles, sortOrder]);
 
   // Build subsection maps — search only within already-filtered job articles
   const subsectionMap = useMemo(() => {

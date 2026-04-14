@@ -100,12 +100,16 @@ const CollageCard = ({ article, height = '220px', fontSize = '16px' }) => {
 
 
 const WorldSection = () => {
-  const { allArticles, loading } = useNews();
-  const { t } = useLang();
+  const { allArticles, rawArticles, loading } = useNews();
+  const { lang, t } = useLang();
 
   const articles = useMemo(() => {
-    return allArticles.filter(a => a.category === 'world').slice(0, 10);
-  }, [allArticles]);
+    const primary = allArticles.filter(a => a.category === 'world');
+    if (primary.length > 0) return primary.slice(0, 10);
+    // Fallback: older world articles, same language
+    const preferredLang = lang === 'EN' ? 'en' : 'hi';
+    return rawArticles.filter(a => a.category === 'world' && a.lang === preferredLang).slice(0, 10);
+  }, [allArticles, rawArticles, lang]);
 
   if (loading) return <div className="container"><LoadingSpinner /></div>;
   if (articles.length === 0) return null;

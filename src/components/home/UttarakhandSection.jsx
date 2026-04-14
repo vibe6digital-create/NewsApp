@@ -122,17 +122,24 @@ const UKSmallCard = ({ article }) => {
   );
 };
 
+const filterUK = (articles) =>
+  articles.filter((a) => {
+    if (a.category === 'uttarakhand') return true;
+    const text = `${a.title || ''} ${a.summary || ''} ${a.source || ''}`.toLowerCase();
+    return UK_KEYWORDS.some((kw) => text.includes(kw.toLowerCase()));
+  });
+
 const UttarakhandSection = () => {
-  const { allArticles, loading } = useNews();
-  const { t } = useLang();
+  const { allArticles, rawArticles, loading } = useNews();
+  const { lang, t } = useLang();
 
   const ukArticles = useMemo(() => {
-    return allArticles.filter((a) => {
-      if (a.category === 'uttarakhand') return true;
-      const text = `${a.title || ''} ${a.summary || ''} ${a.source || ''}`.toLowerCase();
-      return UK_KEYWORDS.some((kw) => text.includes(kw.toLowerCase()));
-    }).slice(0, 30);
-  }, [allArticles]);
+    const primary = filterUK(allArticles);
+    if (primary.length > 0) return primary.slice(0, 30);
+    // Fallback: older Uttarakhand articles, same language
+    const preferredLang = lang === 'EN' ? 'en' : 'hi';
+    return filterUK(rawArticles.filter(a => a.lang === preferredLang)).slice(0, 30);
+  }, [allArticles, rawArticles, lang]);
 
   if (loading) return <div><LoadingSpinner /></div>;
   if (ukArticles.length === 0) return null;

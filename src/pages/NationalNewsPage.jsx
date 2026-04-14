@@ -90,20 +90,22 @@ const NationalHeroSlider = ({ slides, lang }) => {
 };
 
 const NationalNewsPage = () => {
-  const { allArticles, loading } = useNews();
+  const { allArticles, rawArticles, loading } = useNews();
   const { lang, t } = useLang();
   const [sortOrder, setSortOrder] = useState('latest');
 
   const nationalArticles = useMemo(() => {
     const langCode = lang === 'EN' ? 'en' : 'hi';
-    const result = allArticles.filter(a =>
+    let result = allArticles.filter(a =>
       a.category === 'national' && a.lang === langCode
     );
+    // Fallback: older national articles (same language) from cache if current fetch has none
+    if (result.length === 0) result = rawArticles.filter(a => a.category === 'national' && a.lang === langCode);
     if (sortOrder === 'oldest') {
       return [...result].sort((a, b) => new Date(a.pubDate) - new Date(b.pubDate));
     }
     return result;
-  }, [allArticles, sortOrder, lang]);
+  }, [allArticles, rawArticles, sortOrder, lang]);
 
   const filteredMap = useMemo(() => {
     const map = {};

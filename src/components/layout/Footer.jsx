@@ -89,7 +89,7 @@ const Footer = () => {
             <ul className="footer-links">
               {stateLinks.map((state) => (
                 <li key={state.slug}>
-                  <Link to={`/category/${state.slug}`}>
+                  <Link to={`/state/${state.slug}`}>
                     {lang === 'EN' ? state.nameEn : state.name}
                   </Link>
                 </li>

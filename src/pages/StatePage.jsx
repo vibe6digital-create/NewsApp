@@ -84,9 +84,17 @@ export const STATES_CONFIG = [
     keywords: ['dadra','daman','diu','silvassa','दादरा','दमन','दीव'] },
 ];
 
+const matchesState = (a, stateConfig, slug) => {
+  // Tier 1: article from a state-dedicated RSS feed
+  if (a.stateSlug) return a.stateSlug === slug;
+  // Tier 2: keyword in title or summary
+  const text = `${a.title || ''} ${a.summary || ''}`.toLowerCase();
+  return stateConfig.keywords.some(kw => text.includes(kw.toLowerCase()));
+};
+
 const StatePage = () => {
   const { slug } = useParams();
-  const { allArticles } = useNews();
+  const { allArticles, rawArticles } = useNews();
   const { lang } = useLang();
 
   const stateConfig = STATES_CONFIG.find(s => s.slug === slug);
@@ -94,16 +102,11 @@ const StatePage = () => {
   const articles = useMemo(() => {
     if (!stateConfig) return [];
     const langCode = lang === 'EN' ? 'en' : 'hi';
-    return allArticles.filter(a => {
-      // Language filter — strict match
-      if (a.lang !== langCode) return false;
-      // Tier 1: article came from a state-dedicated RSS feed — always include
-      if (a.stateSlug) return a.stateSlug === slug;
-      // Tier 2: general feed article — only include if state keyword is in the title
-      const title = (a.title || '').toLowerCase();
-      return stateConfig.keywords.some(kw => title.includes(kw.toLowerCase()));
-    });
-  }, [allArticles, stateConfig, slug, lang]);
+    const primary = allArticles.filter(a => a.lang === langCode && matchesState(a, stateConfig, slug));
+    if (primary.length > 0) return primary;
+    // Fallback: older articles (same language) from cache
+    return rawArticles.filter(a => a.lang === langCode && matchesState(a, stateConfig, slug));
+  }, [allArticles, rawArticles, stateConfig, slug, lang]);
 
   if (!stateConfig) {
     return (

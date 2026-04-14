@@ -145,23 +145,23 @@ const StateTile = ({ state, article, lang }) => {
   );
 };
 
+const findStateArticle = (articles, state) =>
+  articles.find((a) => {
+    const text = `${a.title || ''} ${(a.summary || '').substring(0, 120)}`.toLowerCase();
+    return state.keywords.some((kw) => text.includes(kw.toLowerCase()));
+  }) || null;
+
 const StatesCollage = () => {
-  const { allArticles, loading } = useNews();
+  const { allArticles, rawArticles, loading } = useNews();
   const { lang, t } = useLang();
 
   const stateArticles = useMemo(() => {
     return INDIA_STATES.map((state) => {
-      const article = allArticles.find((a) => {
-        const title = (a.title || '').toLowerCase();
-        const lead = (a.summary || '').toLowerCase().substring(0, 120);
-        return state.keywords.some((kw) => {
-          const k = kw.toLowerCase();
-          return title.includes(k) || lead.includes(k);
-        });
-      });
-      return { state, article: article || null };
+      // Try current articles first, fall back to older cached articles
+      const article = findStateArticle(allArticles, state) || findStateArticle(rawArticles, state);
+      return { state, article };
     });
-  }, [allArticles]);
+  }, [allArticles, rawArticles]);
 
   if (loading) return null;
 

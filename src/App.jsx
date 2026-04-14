@@ -147,6 +147,7 @@ function App() {
                     </Routes>
                   </main>
                   <Footer />
+                  <MobileBottomNav />
                 </>
               } />
             </Routes>

@@ -10,7 +10,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 const INDIA_SOURCES = ['Dainik Bhaskar', 'Amar Ujala', 'Dainik Jagran', 'The Hindu', 'Hindustan Times'];
 
 const IndiaSection = () => {
-  const { getByCategory, getBySource, loading } = useNews();
+  const { getByCategory, getCategoryWithFallback, getBySource, loading } = useNews();
   const { t } = useLang();
 
   const articles = useMemo(() => {
@@ -20,8 +20,10 @@ const IndiaSection = () => {
     sourceArticles.forEach(a => {
       if (!merged.find(m => m.id === a.id)) merged.push(a);
     });
-    return merged.slice(0, 10);
-  }, [getByCategory, getBySource]);
+    if (merged.length > 0) return merged.slice(0, 10);
+    // Fallback: older national articles from cache
+    return getCategoryWithFallback('national').slice(0, 10);
+  }, [getByCategory, getCategoryWithFallback, getBySource]);
 
   if (loading) return <div className="container"><LoadingSpinner /></div>;
   if (articles.length === 0) return null;

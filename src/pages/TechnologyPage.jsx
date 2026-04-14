@@ -170,7 +170,11 @@ const TECH_STRICT_KEYWORDS = [
 ];
 
 function isTechArticle(article) {
-  return article.category === 'technology';
+  if (article.category === 'technology') return true;
+  // Also match articles from any category whose title/summary contains tech keywords
+  // (catches Hindi national-feed articles about tech topics)
+  const text = `${article.title || ''} ${article.summary || ''}`.toLowerCase();
+  return TECH_STRICT_KEYWORDS.some(kw => text.includes(kw.toLowerCase()));
 }
 
 function filterByTechSubsection(techArticles, key) {
@@ -285,17 +289,22 @@ const TechHeader = ({ lang }) => (
 
 // ── Main Page ────────────────────────────────────────────────────
 const TechnologyPage = () => {
-  const { allArticles, loading } = useNews();
+  const { allArticles, rawArticles, loading } = useNews();
   const { lang, t } = useLang();
   const [sortOrder, setSortOrder] = useState('latest');
 
   const techArticles = useMemo(() => {
     let result = allArticles.filter(isTechArticle);
+    // Fallback: older tech articles (same language) from cache if current fetch has none
+    if (result.length === 0) {
+      const preferredLang = lang === 'EN' ? 'en' : 'hi';
+      result = rawArticles.filter(a => isTechArticle(a) && a.lang === preferredLang);
+    }
     if (sortOrder === 'oldest') {
       return [...result].sort((a, b) => new Date(a.pubDate) - new Date(b.pubDate));
     }
     return result;
-  }, [allArticles, sortOrder]);
+  }, [allArticles, rawArticles, sortOrder]);
 
   // Hero slides — computed first so IDs can be excluded below
   const heroSlides = useMemo(() => {

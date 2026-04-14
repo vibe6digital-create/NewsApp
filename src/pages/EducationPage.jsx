@@ -148,18 +148,22 @@ const EducationHeroSlider = ({ slides, lang }) => {
 };
 
 const EducationPage = () => {
-  const { allArticles, loading } = useNews();
+  const { allArticles, rawArticles, loading } = useNews();
   const { lang, t } = useLang();
   const [sortOrder, setSortOrder] = useState('latest');
 
   const eduArticles = useMemo(() => {
     let result = allArticles.filter(a => a.category === 'education');
-
+    // Fallback: older education articles (same language) from cache if current fetch has none
+    if (result.length === 0) {
+      const preferredLang = lang === 'EN' ? 'en' : 'hi';
+      result = rawArticles.filter(a => a.category === 'education' && a.lang === preferredLang);
+    }
     if (sortOrder === 'oldest') {
       return [...result].sort((a, b) => new Date(a.pubDate) - new Date(b.pubDate));
     }
     return result;
-  }, [allArticles, sortOrder]);
+  }, [allArticles, rawArticles, sortOrder]);
 
   const filteredMap = useMemo(() => {
     const map = {};
