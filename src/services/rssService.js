@@ -287,10 +287,16 @@ export const fetchPriorityFeeds = async () => {
     }
   } catch (e) {}
 
-  // No cache — fetch only priority feeds from network
+  // No cache — fetch priority feeds in small batches to avoid CORS rate limiting
   const priority = RSS_FEEDS.filter(f => f.priority);
-  const results = await Promise.allSettled(priority.map(f => fetchSingleFeed(f)));
-  return processResults(results);
+  const BATCH_SIZE = 6;
+  let allResults = [];
+  for (let i = 0; i < priority.length; i += BATCH_SIZE) {
+    const batch = priority.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.allSettled(batch.map(f => fetchSingleFeed(f)));
+    allResults = allResults.concat(batchResults);
+  }
+  return processResults(allResults);
 };
 
 export const fetchAllFeeds = async (force = false) => {

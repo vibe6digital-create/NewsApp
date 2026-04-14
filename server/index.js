@@ -15,10 +15,24 @@ app.use(express.json());
 // Health check
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
+// In-memory RSS feed cache — survives between requests while server is warm
+const feedCache = new Map();
+const FEED_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
 // RSS feed proxy — fetches any RSS/Atom feed server-side (no CORS limits)
 app.get('/api/rss', async (req, res) => {
   const { url } = req.query;
   if (!url) return res.status(400).send('Missing url param');
+
+  // Serve from cache if still fresh
+  const cached = feedCache.get(url);
+  if (cached && Date.now() - cached.ts < FEED_CACHE_TTL) {
+    res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+    res.setHeader('Cache-Control', 'max-age=300');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    return res.send(cached.xml);
+  }
+
   try {
     const response = await fetch(url, {
       headers: {
@@ -29,6 +43,7 @@ app.get('/api/rss', async (req, res) => {
     });
     if (!response.ok) return res.status(502).send('Feed fetch failed');
     const xml = await response.text();
+    feedCache.set(url, { xml, ts: Date.now() });
     res.setHeader('Content-Type', 'application/xml; charset=utf-8');
     res.setHeader('Cache-Control', 'max-age=300');
     res.setHeader('Access-Control-Allow-Origin', '*');
