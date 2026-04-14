@@ -8,7 +8,7 @@ export const ADMIN_USER = "admin";
 export const ADMIN_PASS = "news@2026";
 export const SUBSCRIPTION_KEY = "portal_subscribers";
 export const ARTICLES_KEY = "portal_articles";
-export const CACHE_KEY = "rss_cache_v33";
+export const CACHE_KEY = "rss_cache_v34";
 export const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
 // Backend API URL — change this to your Render URL after deploying
@@ -269,38 +269,20 @@ export const RSS_FEEDS = [
 
   // ── Education feeds ──
   {
-    name: "Jagran Education",
-    url: "https://www.jagran.com/rss/education.xml",
-    lang: "hi", priority: true,
-    categories: ["education"]
-  },
-  {
     name: "Amar Ujala Education",
     url: "https://www.amarujala.com/rss/education.xml",
     lang: "hi", priority: true,
     categories: ["education"]
   },
   {
-    name: "Live Hindustan Education",
-    url: "https://www.livehindustan.com/rss/education.xml",
+    name: "ABP Live Education",
+    url: "https://www.abplive.com/education/feed",
     lang: "hi", priority: true,
     categories: ["education"]
   },
   {
-    name: "NDTV Education",
-    url: "https://feeds.feedburner.com/ndtv/education",
-    lang: "en", priority: true,
-    categories: ["education"]
-  },
-  {
-    name: "India Today Education",
-    url: "https://www.indiatoday.in/education-today/rss",
-    lang: "en", priority: true,
-    categories: ["education"]
-  },
-  {
-    name: "Navbharat Times Education",
-    url: "https://navbharattimes.indiatimes.com/rssfeeds/4719333.cms",
+    name: "TV9 Hindi Education",
+    url: "https://www.tv9hindi.com/topic/education/feed",
     lang: "hi", priority: true,
     categories: ["education"]
   },
@@ -312,7 +294,19 @@ export const RSS_FEEDS = [
   },
   {
     name: "Times of India Education",
-    url: "https://timesofindia.indiatimes.com/rss/feeds/education.cms",
+    url: "https://timesofindia.indiatimes.com/rssfeeds/913168846.cms",
+    lang: "en", priority: true,
+    categories: ["education"]
+  },
+  {
+    name: "Hindustan Times Education",
+    url: "https://www.hindustantimes.com/feeds/rss/education/rssfeed.xml",
+    lang: "en", priority: true,
+    categories: ["education"]
+  },
+  {
+    name: "Indian Express Education",
+    url: "https://indianexpress.com/section/education/feed/",
     lang: "en", priority: true,
     categories: ["education"]
   },
