@@ -8,7 +8,7 @@ export const ADMIN_USER = "admin";
 export const ADMIN_PASS = "news@2026";
 export const SUBSCRIPTION_KEY = "portal_subscribers";
 export const ARTICLES_KEY = "portal_articles";
-export const CACHE_KEY = "rss_cache_v35";
+export const CACHE_KEY = "rss_cache_v36";
 export const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
 // Backend API URL — change this to your Render URL after deploying
@@ -95,25 +95,25 @@ export const RSS_FEEDS = [
   {
     name: "Jagran Jyotish",
     url: "https://www.jagran.com/rss/astrology.xml",
-    lang: "hi", priority: true,
+    lang: "hi",
     categories: ["astro"]
   },
   {
     name: "Navbharat Times Astrology",
     url: "https://navbharattimes.indiatimes.com/rssfeeds/astrology.cms",
-    lang: "hi", priority: true,
+    lang: "hi",
     categories: ["astro"]
   },
   {
     name: "Live Hindustan Rashifal",
     url: "https://www.livehindustan.com/rss/jyotish.xml",
-    lang: "hi", priority: true,
+    lang: "hi",
     categories: ["astro"]
   },
   {
     name: "Patrika Rashifal",
     url: "https://www.patrika.com/rss/horoscope-news.xml",
-    lang: "hi", priority: true,
+    lang: "hi",
     categories: ["astro"]
   },
 
@@ -122,21 +122,21 @@ export const RSS_FEEDS = [
   // exclusively to that state page (no keyword bleed to other states).
 
   // Delhi / NCR
-  { name: "Amar Ujala Delhi", url: "https://www.amarujala.com/rss/delhi-ncr.xml", lang: "hi", priority: true, categories: ["national"], state: "delhi" },
-  { name: "Jagran Delhi", url: "https://www.jagran.com/rss/delhi.xml", lang: "hi", priority: true, categories: ["national"], state: "delhi" },
+  { name: "Amar Ujala Delhi", url: "https://www.amarujala.com/rss/delhi-ncr.xml", lang: "hi", categories: ["national"], state: "delhi" },
+  { name: "Jagran Delhi", url: "https://www.jagran.com/rss/delhi.xml", lang: "hi", categories: ["national"], state: "delhi" },
   { name: "Live Hindustan Delhi", url: "https://www.livehindustan.com/rss/delhi.xml", lang: "hi", categories: ["national"], state: "delhi" },
   { name: "Times of India Delhi", url: "https://timesofindia.indiatimes.com/rssfeeds/2646163.cms", lang: "en", categories: ["national"], state: "delhi" },
   { name: "Navbharat Times Delhi", url: "https://navbharattimes.indiatimes.com/rssfeeds/4705557.cms", lang: "hi", categories: ["national"], state: "delhi" },
 
   // Uttar Pradesh
-  { name: "Amar Ujala UP", url: "https://www.amarujala.com/rss/uttar-pradesh.xml", lang: "hi", priority: true, categories: ["national"], state: "uttar-pradesh" },
-  { name: "Jagran UP", url: "https://www.jagran.com/rss/uttar-pradesh.xml", lang: "hi", priority: true, categories: ["national"], state: "uttar-pradesh" },
+  { name: "Amar Ujala UP", url: "https://www.amarujala.com/rss/uttar-pradesh.xml", lang: "hi", categories: ["national"], state: "uttar-pradesh" },
+  { name: "Jagran UP", url: "https://www.jagran.com/rss/uttar-pradesh.xml", lang: "hi", categories: ["national"], state: "uttar-pradesh" },
   { name: "Live Hindustan UP", url: "https://www.livehindustan.com/rss/uttar-pradesh.xml", lang: "hi", categories: ["national"], state: "uttar-pradesh" },
   { name: "Navbharat Times UP", url: "https://navbharattimes.indiatimes.com/rssfeeds/uttar-pradesh.cms", lang: "hi", categories: ["national"], state: "uttar-pradesh" },
   { name: "Jagran Lucknow", url: "https://www.jagran.com/rss/lucknow-news.xml", lang: "hi", categories: ["national"], state: "uttar-pradesh" },
 
   // Bihar
-  { name: "Amar Ujala Bihar", url: "https://www.amarujala.com/rss/bihar.xml", lang: "hi", priority: true, categories: ["national"], state: "bihar" },
+  { name: "Amar Ujala Bihar", url: "https://www.amarujala.com/rss/bihar.xml", lang: "hi", categories: ["national"], state: "bihar" },
   { name: "Jagran Bihar", url: "https://www.jagran.com/rss/bihar.xml", lang: "hi", categories: ["national"], state: "bihar" },
   { name: "Prabhat Khabar Bihar", url: "https://www.prabhatkhabar.com/rss/state/bihar", lang: "hi", categories: ["national"], state: "bihar" },
   { name: "Live Hindustan Bihar", url: "https://www.livehindustan.com/rss/bihar.xml", lang: "hi", categories: ["national"], state: "bihar" },
@@ -149,7 +149,7 @@ export const RSS_FEEDS = [
   { name: "Amar Ujala Jharkhand", url: "https://www.amarujala.com/rss/jharkhand.xml", lang: "hi", categories: ["national"], state: "jharkhand" },
 
   // Madhya Pradesh
-  { name: "Dainik Bhaskar MP", url: "https://www.bhaskar.com/rss-feed/1064/", lang: "hi", priority: true, categories: ["national"], state: "madhya-pradesh" },
+  { name: "Dainik Bhaskar MP", url: "https://www.bhaskar.com/rss-feed/1064/", lang: "hi", categories: ["national"], state: "madhya-pradesh" },
   { name: "Nai Dunia MP", url: "https://www.naidunia.com/rss/mp", lang: "hi", categories: ["national"], state: "madhya-pradesh" },
   { name: "Patrika Bhopal", url: "https://www.patrika.com/rss/bhopal-news.xml", lang: "hi", categories: ["national"], state: "madhya-pradesh" },
   { name: "Haribhoomi MP", url: "https://www.haribhoomi.com/rss/madhya-pradesh.xml", lang: "hi", categories: ["national"], state: "madhya-pradesh" },
@@ -161,89 +161,89 @@ export const RSS_FEEDS = [
   { name: "Nai Dunia CG", url: "https://www.naidunia.com/rss/chhattisgarh", lang: "hi", categories: ["national"], state: "chhattisgarh" },
 
   // Rajasthan
-  { name: "Dainik Bhaskar Rajasthan", url: "https://www.bhaskar.com/rss-feed/1065/", lang: "hi", priority: true, categories: ["national"], state: "rajasthan" },
+  { name: "Dainik Bhaskar Rajasthan", url: "https://www.bhaskar.com/rss-feed/1065/", lang: "hi", categories: ["national"], state: "rajasthan" },
   { name: "Patrika Jaipur", url: "https://www.patrika.com/rss/jaipur-news.xml", lang: "hi", categories: ["national"], state: "rajasthan" },
   { name: "Amar Ujala Rajasthan", url: "https://www.amarujala.com/rss/rajasthan.xml", lang: "hi", categories: ["national"], state: "rajasthan" },
   { name: "Jagran Rajasthan", url: "https://www.jagran.com/rss/rajasthan.xml", lang: "hi", categories: ["national"], state: "rajasthan" },
 
   // Gujarat
-  { name: "Dainik Bhaskar Gujarat", url: "https://www.bhaskar.com/rss-feed/1066/", lang: "hi", priority: true, categories: ["national"], state: "gujarat" },
+  { name: "Dainik Bhaskar Gujarat", url: "https://www.bhaskar.com/rss-feed/1066/", lang: "hi", categories: ["national"], state: "gujarat" },
   { name: "Divya Bhaskar Gujarat", url: "https://www.divyabhaskar.co.in/rss-feed/1062/", lang: "gu", categories: ["national"], state: "gujarat" },
   { name: "Sandesh Gujarat", url: "https://www.sandesh.com/rss/gujarat-news", lang: "gu", categories: ["national"], state: "gujarat" },
 
   // Maharashtra
-  { name: "Navbharat Times Mumbai", url: "https://navbharattimes.indiatimes.com/rssfeeds/maharashtra.cms", lang: "hi", priority: true, categories: ["national"], state: "maharashtra" },
+  { name: "Navbharat Times Mumbai", url: "https://navbharattimes.indiatimes.com/rssfeeds/maharashtra.cms", lang: "hi", categories: ["national"], state: "maharashtra" },
   { name: "Maharashtra Times", url: "https://maharashtratimes.com/rssfeeds/4719148.cms", lang: "mr", categories: ["national"], state: "maharashtra" },
   { name: "Times of India Mumbai", url: "https://timesofindia.indiatimes.com/rssfeeds/1221656.cms", lang: "en", categories: ["national"], state: "maharashtra" },
   { name: "Lokmat Maharashtra", url: "https://www.lokmat.com/rss/maharashtra.xml", lang: "mr", categories: ["national"], state: "maharashtra" },
 
   // Punjab
-  { name: "Amar Ujala Punjab", url: "https://www.amarujala.com/rss/punjab.xml", lang: "hi", priority: true, categories: ["national"], state: "punjab" },
+  { name: "Amar Ujala Punjab", url: "https://www.amarujala.com/rss/punjab.xml", lang: "hi", categories: ["national"], state: "punjab" },
   { name: "Jagran Punjab", url: "https://www.jagran.com/rss/punjab.xml", lang: "hi", categories: ["national"], state: "punjab" },
   { name: "Live Hindustan Punjab", url: "https://www.livehindustan.com/rss/punjab.xml", lang: "hi", categories: ["national"], state: "punjab" },
   { name: "Punjab Kesari Punjab", url: "https://www.punjabkesari.in/rss/punjab-news.xml", lang: "hi", categories: ["national"], state: "punjab" },
 
   // Haryana
-  { name: "Amar Ujala Haryana", url: "https://www.amarujala.com/rss/haryana.xml", lang: "hi", priority: true, categories: ["national"], state: "haryana" },
+  { name: "Amar Ujala Haryana", url: "https://www.amarujala.com/rss/haryana.xml", lang: "hi", categories: ["national"], state: "haryana" },
   { name: "Jagran Haryana", url: "https://www.jagran.com/rss/haryana.xml", lang: "hi", categories: ["national"], state: "haryana" },
   { name: "Live Hindustan Haryana", url: "https://www.livehindustan.com/rss/haryana.xml", lang: "hi", categories: ["national"], state: "haryana" },
   { name: "Dainik Bhaskar Haryana", url: "https://www.bhaskar.com/rss-feed/1070/", lang: "hi", categories: ["national"], state: "haryana" },
   { name: "Punjab Kesari Haryana", url: "https://www.punjabkesari.in/rss/haryana-news.xml", lang: "hi", categories: ["national"], state: "haryana" },
 
   // Himachal Pradesh
-  { name: "Amar Ujala HP", url: "https://www.amarujala.com/rss/himachal-pradesh.xml", lang: "hi", priority: true, categories: ["national"], state: "himachal-pradesh" },
+  { name: "Amar Ujala HP", url: "https://www.amarujala.com/rss/himachal-pradesh.xml", lang: "hi", categories: ["national"], state: "himachal-pradesh" },
   { name: "Jagran HP", url: "https://www.jagran.com/rss/himachal-pradesh.xml", lang: "hi", categories: ["national"], state: "himachal-pradesh" },
   { name: "Live Hindustan HP", url: "https://www.livehindustan.com/rss/himachal-pradesh.xml", lang: "hi", categories: ["national"], state: "himachal-pradesh" },
   { name: "Divya Himachal", url: "https://www.divyahimachal.com/feed/", lang: "hi", categories: ["national"], state: "himachal-pradesh" },
 
   // Jammu & Kashmir / Ladakh
-  { name: "Amar Ujala JK", url: "https://www.amarujala.com/rss/jammu-kashmir.xml", lang: "hi", priority: true, categories: ["national"], state: "jammu-kashmir" },
+  { name: "Amar Ujala JK", url: "https://www.amarujala.com/rss/jammu-kashmir.xml", lang: "hi", categories: ["national"], state: "jammu-kashmir" },
   { name: "Jagran JK", url: "https://www.jagran.com/rss/jammu-kashmir.xml", lang: "hi", categories: ["national"], state: "jammu-kashmir" },
   { name: "Greater Kashmir", url: "https://www.greaterkashmir.com/feed/", lang: "en", categories: ["national"], state: "jammu-kashmir" },
   { name: "Kashmir Observer", url: "https://kashmirobserver.net/feed/", lang: "en", categories: ["national"], state: "jammu-kashmir" },
   { name: "Daily Excelsior JK", url: "https://www.dailyexcelsior.com/feed/", lang: "en", categories: ["national"], state: "jammu-kashmir" },
 
   // West Bengal
-  { name: "Times of India Kolkata", url: "https://timesofindia.indiatimes.com/rssfeeds/4718869.cms", lang: "en", priority: true, categories: ["national"], state: "west-bengal" },
+  { name: "Times of India Kolkata", url: "https://timesofindia.indiatimes.com/rssfeeds/4718869.cms", lang: "en", categories: ["national"], state: "west-bengal" },
   { name: "Telegraph Kolkata", url: "https://www.telegraphindia.com/feeds/top-stories", lang: "en", categories: ["national"], state: "west-bengal" },
   { name: "Amar Ujala WB", url: "https://www.amarujala.com/rss/west-bengal.xml", lang: "hi", categories: ["national"], state: "west-bengal" },
   { name: "Millennium Post WB", url: "https://www.millenniumpost.in/rss", lang: "en", categories: ["national"], state: "west-bengal" },
 
   // Karnataka
-  { name: "Times of India Bengaluru", url: "https://timesofindia.indiatimes.com/rssfeeds/4719148.cms", lang: "en", priority: true, categories: ["national"], state: "karnataka" },
+  { name: "Times of India Bengaluru", url: "https://timesofindia.indiatimes.com/rssfeeds/4719148.cms", lang: "en", categories: ["national"], state: "karnataka" },
   { name: "Deccan Herald Karnataka", url: "https://www.deccanherald.com/rss-feed/state", lang: "en", categories: ["national"], state: "karnataka" },
   { name: "The Hindu Karnataka", url: "https://www.thehindu.com/news/national/karnataka/feeder/default.rss", lang: "en", categories: ["national"], state: "karnataka" },
   { name: "Udayavani Karnataka", url: "https://www.udayavani.com/feed/", lang: "kn", categories: ["national"], state: "karnataka" },
 
   // Kerala
-  { name: "Times of India Kerala", url: "https://timesofindia.indiatimes.com/rssfeeds/kerala.cms", lang: "en", priority: true, categories: ["national"], state: "kerala" },
+  { name: "Times of India Kerala", url: "https://timesofindia.indiatimes.com/rssfeeds/kerala.cms", lang: "en", categories: ["national"], state: "kerala" },
   { name: "The Hindu Kerala", url: "https://www.thehindu.com/news/national/kerala/feeder/default.rss", lang: "en", categories: ["national"], state: "kerala" },
   { name: "Mathrubhumi English", url: "https://english.mathrubhumi.com/rss", lang: "en", categories: ["national"], state: "kerala" },
   { name: "Manorama Online", url: "https://www.onmanorama.com/rss/kerala-news.xml", lang: "en", categories: ["national"], state: "kerala" },
 
   // Tamil Nadu
-  { name: "Times of India Chennai", url: "https://timesofindia.indiatimes.com/rssfeeds/8682.cms", lang: "en", priority: true, categories: ["national"], state: "tamil-nadu" },
+  { name: "Times of India Chennai", url: "https://timesofindia.indiatimes.com/rssfeeds/8682.cms", lang: "en", categories: ["national"], state: "tamil-nadu" },
   { name: "The Hindu Tamil Nadu", url: "https://www.thehindu.com/news/national/tamil-nadu/feeder/default.rss", lang: "en", categories: ["national"], state: "tamil-nadu" },
   { name: "New Indian Express TN", url: "https://www.newindianexpress.com/states/tamil-nadu/rss", lang: "en", categories: ["national"], state: "tamil-nadu" },
 
   // Andhra Pradesh
-  { name: "The Hindu AP", url: "https://www.thehindu.com/news/national/andhra-pradesh/feeder/default.rss", lang: "en", priority: true, categories: ["national"], state: "andhra-pradesh" },
+  { name: "The Hindu AP", url: "https://www.thehindu.com/news/national/andhra-pradesh/feeder/default.rss", lang: "en", categories: ["national"], state: "andhra-pradesh" },
   { name: "New Indian Express AP", url: "https://www.newindianexpress.com/states/andhra-pradesh/rss", lang: "en", categories: ["national"], state: "andhra-pradesh" },
   { name: "Hans India AP", url: "https://www.thehansindia.com/feed/", lang: "en", categories: ["national"], state: "andhra-pradesh" },
 
   // Telangana
-  { name: "The Hindu Telangana", url: "https://www.thehindu.com/news/national/telangana/feeder/default.rss", lang: "en", priority: true, categories: ["national"], state: "telangana" },
+  { name: "The Hindu Telangana", url: "https://www.thehindu.com/news/national/telangana/feeder/default.rss", lang: "en", categories: ["national"], state: "telangana" },
   { name: "Telangana Today", url: "https://telanganatoday.com/feed/", lang: "en", categories: ["national"], state: "telangana" },
   { name: "New Indian Express Telangana", url: "https://www.newindianexpress.com/states/telangana/rss", lang: "en", categories: ["national"], state: "telangana" },
 
   // Odisha
-  { name: "Odisha TV", url: "https://odishatv.in/feed", lang: "en", priority: true, categories: ["national"], state: "odisha" },
+  { name: "Odisha TV", url: "https://odishatv.in/feed", lang: "en", categories: ["national"], state: "odisha" },
   { name: "Sambad Odisha", url: "https://sambad.in/feed/", lang: "or", categories: ["national"], state: "odisha" },
   { name: "Dharitri Odisha", url: "https://www.dharitri.com/feed/", lang: "or", categories: ["national"], state: "odisha" },
   { name: "New Indian Express Odisha", url: "https://www.newindianexpress.com/states/odisha/rss", lang: "en", categories: ["national"], state: "odisha" },
 
   // Assam
-  { name: "Assam Tribune", url: "https://www.assamtribune.com/rss/todays-news.xml", lang: "en", priority: true, categories: ["national"], state: "assam" },
+  { name: "Assam Tribune", url: "https://www.assamtribune.com/rss/todays-news.xml", lang: "en", categories: ["national"], state: "assam" },
   { name: "Sentinel Assam", url: "https://www.sentinelassam.com/rss.xml", lang: "en", categories: ["national"], state: "assam" },
 
   // Northeast multi-state (no single state tag — keyword-matched)
@@ -283,31 +283,31 @@ export const RSS_FEEDS = [
   {
     name: "TV9 Hindi Education",
     url: "https://www.tv9hindi.com/topic/education/feed",
-    lang: "hi", priority: true,
+    lang: "hi",
     categories: ["education"]
   },
   {
     name: "The Hindu Education",
     url: "https://www.thehindu.com/education/feeder/default.rss",
-    lang: "en", priority: true,
+    lang: "en",
     categories: ["education"]
   },
   {
     name: "Times of India Education",
     url: "https://timesofindia.indiatimes.com/rssfeeds/913168846.cms",
-    lang: "en", priority: true,
+    lang: "en",
     categories: ["education"]
   },
   {
     name: "Hindustan Times Education",
     url: "https://www.hindustantimes.com/feeds/rss/education/rssfeed.xml",
-    lang: "en", priority: true,
+    lang: "en",
     categories: ["education"]
   },
   {
     name: "Indian Express Education",
     url: "https://indianexpress.com/section/education/feed/",
-    lang: "en", priority: true,
+    lang: "en",
     categories: ["education"]
   },
 
@@ -321,19 +321,19 @@ export const RSS_FEEDS = [
   {
     name: "NDTV Gadgets",
     url: "https://feeds.feedburner.com/NdtvGadgets-Latest",
-    lang: "en", priority: true,
+    lang: "en",
     categories: ["technology"]
   },
   {
     name: "Economic Times Tech",
     url: "https://economictimes.indiatimes.com/tech/rssfeeds/13357270.cms",
-    lang: "en", priority: true,
+    lang: "en",
     categories: ["technology"]
   },
   {
     name: "TechCrunch",
     url: "https://techcrunch.com/feed/",
-    lang: "en", priority: true,
+    lang: "en",
     categories: ["technology"]
   },
   {
@@ -369,7 +369,7 @@ export const RSS_FEEDS = [
   {
     name: "Amar Ujala Tech",
     url: "https://www.amarujala.com/rss/technology.xml",
-    lang: "hi", priority: true,
+    lang: "hi",
     categories: ["technology"]
   },
   {
@@ -401,25 +401,25 @@ export const RSS_FEEDS = [
   {
     name: "WHO News",
     url: "https://www.who.int/rss-feeds/news-english.xml",
-    lang: "en", priority: true,
+    lang: "en",
     categories: ["health"]
   },
   {
     name: "The Hindu Health",
     url: "https://www.thehindu.com/sci-tech/health/feeder/default.rss",
-    lang: "en", priority: true,
+    lang: "en",
     categories: ["health"]
   },
   {
     name: "Hindustan Times Health",
     url: "https://www.hindustantimes.com/feeds/rss/health/rssfeed.xml",
-    lang: "en", priority: true,
+    lang: "en",
     categories: ["health"]
   },
   {
     name: "Times of India Health",
     url: "https://timesofindia.indiatimes.com/rssfeeds/health-fitness.cms",
-    lang: "en", priority: true,
+    lang: "en",
     categories: ["health"]
   },
   {
@@ -439,7 +439,7 @@ export const RSS_FEEDS = [
   {
     name: "TV9 Hindi Jobs",
     url: "https://www.tv9hindi.com/topic/jobs/feed",
-    lang: "hi", priority: true,
+    lang: "hi",
     categories: ["jobs"]
   },
   {
@@ -451,13 +451,13 @@ export const RSS_FEEDS = [
   {
     name: "Economic Times Jobs",
     url: "https://economictimes.indiatimes.com/jobs/rssfeeds/1098593.cms",
-    lang: "en", priority: true,
+    lang: "en",
     categories: ["jobs"]
   },
   {
     name: "Hindustan Times Jobs",
     url: "https://www.hindustantimes.com/feeds/rss/jobs/rssfeed.xml",
-    lang: "en", priority: true,
+    lang: "en",
     categories: ["jobs"]
   },
   {
@@ -683,19 +683,19 @@ export const RSS_FEEDS = [
   {
     name: "India Today",
     url: "https://www.indiatoday.in/rss/1206550",
-    lang: "en", priority: true,
+    lang: "en",
     categories: ["national", "world", "technology"]
   },
   {
     name: "Economic Times",
     url: "https://economictimes.indiatimes.com/rssfeedstopstories.cms",
-    lang: "en", priority: true,
+    lang: "en",
     categories: ["national", "technology", "education"]
   },
   {
     name: "The Print",
     url: "https://theprint.in/feed/",
-    lang: "en", priority: true,
+    lang: "en",
     categories: ["national"]
   },
   {
@@ -707,7 +707,7 @@ export const RSS_FEEDS = [
   {
     name: "Firstpost",
     url: "https://www.firstpost.com/rss/home.xml",
-    lang: "en", priority: true,
+    lang: "en",
     categories: ["national", "world"]
   },
   {
@@ -719,7 +719,7 @@ export const RSS_FEEDS = [
   {
     name: "News18 English",
     url: "https://www.news18.com/rss/india.xml",
-    lang: "en", priority: true,
+    lang: "en",
     categories: ["national"]
   },
   {
@@ -751,13 +751,13 @@ export const RSS_FEEDS = [
   {
     name: "Reuters World",
     url: "https://feeds.reuters.com/reuters/worldNews",
-    lang: "en", priority: true,
+    lang: "en",
     categories: ["world"]
   },
   {
     name: "DW World English",
     url: "https://rss.dw.com/rdf/rss-en-world",
-    lang: "en", priority: true,
+    lang: "en",
     categories: ["world"]
   },
   {

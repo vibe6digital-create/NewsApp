@@ -292,9 +292,9 @@ export const fetchPriorityFeeds = async () => {
     }
   } catch (e) {}
 
-  // No cache — fetch priority feeds in small batches to avoid CORS rate limiting
+  // No cache — fetch priority feeds in parallel batches (backend proxy handles concurrency)
   const priority = RSS_FEEDS.filter(f => f.priority);
-  const BATCH_SIZE = 6;
+  const BATCH_SIZE = 12;
   let allResults = [];
   for (let i = 0; i < priority.length; i += BATCH_SIZE) {
     const batch = priority.slice(i, i + BATCH_SIZE);
@@ -318,7 +318,7 @@ export const fetchPriorityFeeds = async () => {
 
 export const fetchAllFeeds = async (force = false) => {
   // Remove old cache keys from previous versions
-  ['rss_cache', 'rss_cache_v2', 'rss_cache_v3', 'rss_cache_v4', 'rss_cache_v5', 'rss_cache_v6', 'rss_cache_v7', 'rss_cache_v8', 'rss_cache_v9', 'rss_cache_v10', 'rss_cache_v11', 'rss_cache_v12', 'rss_cache_v13', 'rss_cache_v14', 'rss_cache_v15', 'rss_cache_v16', 'rss_cache_v17', 'rss_cache_v18', 'rss_cache_v19', 'rss_cache_v20', 'rss_cache_v21', 'rss_cache_v22', 'rss_cache_v23', 'rss_cache_v24', 'rss_cache_v25', 'rss_cache_v26', 'rss_cache_v27', 'rss_cache_v28', 'rss_cache_v29', 'rss_cache_v30', 'rss_cache_v31', 'rss_cache_v32', 'rss_cache_v33', 'rss_cache_v34'].forEach(k => localStorage.removeItem(k));
+  ['rss_cache', 'rss_cache_v2', 'rss_cache_v3', 'rss_cache_v4', 'rss_cache_v5', 'rss_cache_v6', 'rss_cache_v7', 'rss_cache_v8', 'rss_cache_v9', 'rss_cache_v10', 'rss_cache_v11', 'rss_cache_v12', 'rss_cache_v13', 'rss_cache_v14', 'rss_cache_v15', 'rss_cache_v16', 'rss_cache_v17', 'rss_cache_v18', 'rss_cache_v19', 'rss_cache_v20', 'rss_cache_v21', 'rss_cache_v22', 'rss_cache_v23', 'rss_cache_v24', 'rss_cache_v25', 'rss_cache_v26', 'rss_cache_v27', 'rss_cache_v28', 'rss_cache_v29', 'rss_cache_v30', 'rss_cache_v31', 'rss_cache_v32', 'rss_cache_v33', 'rss_cache_v34', 'rss_cache_v35'].forEach(k => localStorage.removeItem(k));
 
   // Check current cache (skip if force refresh)
   if (!force) {
