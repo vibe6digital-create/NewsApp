@@ -8,7 +8,7 @@ export const ADMIN_USER = "admin";
 export const ADMIN_PASS = "news@2026";
 export const SUBSCRIPTION_KEY = "portal_subscribers";
 export const ARTICLES_KEY = "portal_articles";
-export const CACHE_KEY = "rss_cache_v36";
+export const CACHE_KEY = "rss_cache_v37";
 export const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
 // Backend API URL — change this to your Render URL after deploying
@@ -472,13 +472,13 @@ export const RSS_FEEDS = [
     name: "Amar Ujala",
     url: "https://www.amarujala.com/rss/breaking-news.xml",
     lang: "hi", priority: true,
-    categories: ["national", "education"]
+    categories: ["national"]
   },
   {
     name: "Dainik Jagran",
     url: "https://www.jagran.com/rss/news.xml",
     lang: "hi", priority: true,
-    categories: ["national", "jobs"]
+    categories: ["national"]
   },
   {
     name: "Dainik Bhaskar",
@@ -490,7 +490,7 @@ export const RSS_FEEDS = [
     name: "Times of India",
     url: "https://timesofindia.indiatimes.com/rssfeedstopstories.cms",
     lang: "en", priority: true,
-    categories: ["national", "world", "technology"]
+    categories: ["national", "world"]
   },
   {
     name: "NDTV India",
@@ -598,7 +598,7 @@ export const RSS_FEEDS = [
     name: "Live Hindustan",
     url: "https://www.livehindustan.com/rss/national.xml",
     lang: "hi",
-    categories: ["national", "education", "jobs"]
+    categories: ["national"]
   },
   {
     name: "DW Hindi",
@@ -666,7 +666,7 @@ export const RSS_FEEDS = [
     name: "The Hindu",
     url: "https://www.thehindu.com/feeder/default.rss",
     lang: "en", priority: true,
-    categories: ["national", "world", "technology", "education"]
+    categories: ["national", "world"]
   },
   {
     name: "Hindustan Times",
@@ -684,13 +684,13 @@ export const RSS_FEEDS = [
     name: "India Today",
     url: "https://www.indiatoday.in/rss/1206550",
     lang: "en",
-    categories: ["national", "world", "technology"]
+    categories: ["national", "world"]
   },
   {
     name: "Economic Times",
     url: "https://economictimes.indiatimes.com/rssfeedstopstories.cms",
     lang: "en",
-    categories: ["national", "technology", "education"]
+    categories: ["national"]
   },
   {
     name: "The Print",
