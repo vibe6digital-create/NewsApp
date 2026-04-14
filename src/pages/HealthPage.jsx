@@ -254,6 +254,8 @@ const HealthPage = () => {
       const preferredLang = lang === 'EN' ? 'en' : 'hi';
       result = rawArticles.filter(a => isHealthArticle(a) && a.lang === preferredLang);
     }
+    // Last resort: any language (never show empty)
+    if (result.length === 0) result = rawArticles.filter(isHealthArticle);
     if (sortOrder === 'oldest') {
       return [...result].sort((a, b) => new Date(a.pubDate) - new Date(b.pubDate));
     }

@@ -412,7 +412,7 @@ const AstroNewsSlider = ({ articles, navigate, lang, fullWidth = false }) => {
 // ─── Main Page ─────────────────────────────────────────────────────────────────
 
 const AstrologyPage = () => {
-  const { getByCategory } = useNews();
+  const { getByCategory, rawArticles } = useNews();
   const { lang } = useLang();
   const navigate = useNavigate();
 
@@ -423,7 +423,11 @@ const AstrologyPage = () => {
   const [lifePathNum, setLifePathNum] = useState(null);
   const [moonBirthMonth, setMoonBirthMonth] = useState('');
 
-  const astroNews = useMemo(() => getByCategory('astro'), [getByCategory]);
+  const astroNews = useMemo(() => {
+    const primary = getByCategory('astro');
+    if (primary.length > 0) return primary;
+    return rawArticles.filter(a => a.category === 'astro');
+  }, [getByCategory, rawArticles]);
 
   const today = new Date();
   const dateStr = today.toLocaleDateString('hi-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
