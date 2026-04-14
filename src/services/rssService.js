@@ -200,32 +200,37 @@ const fetchWithTimeout = (url, ms = 6000) => {
   return fetch(url, { signal: controller.signal }).finally(() => clearTimeout(timer));
 };
 
+// Fire-and-forget ping to wake Render backend (free tier sleeps after 15 min)
+export const wakeUpBackend = () => {
+  if (!BACKEND_RSS_PROXY) return;
+  fetchWithTimeout('/api/rss', 5000).catch(() => {});
+};
+
+const tryBackendProxy = async (feedConfig, timeoutMs) => {
+  const proxyUrl = `${BACKEND_RSS_PROXY}${encodeURIComponent(feedConfig.url)}`;
+  const response = await fetchWithTimeout(proxyUrl, timeoutMs);
+  if (!response.ok) return null;
+  const xmlText = await response.text();
+  if (!xmlText || xmlText.length < 100) return null;
+  const articles = parseFeed(xmlText, feedConfig);
+  return articles.length > 0 ? articles : null;
+};
+
 const fetchSingleFeed = async (feedConfig) => {
-  // Try backend proxy first (most reliable)
+  // Stage 1: Backend proxy quick check (fast if already warm)
   if (BACKEND_RSS_PROXY) {
     try {
-      const proxyUrl = `${BACKEND_RSS_PROXY}${encodeURIComponent(feedConfig.url)}`;
-      const response = await fetchWithTimeout(proxyUrl, 8000);
-      if (response.ok) {
-        const xmlText = await response.text();
-        if (xmlText && xmlText.length > 100) {
-          const articles = parseFeed(xmlText, feedConfig);
-          if (articles.length > 0) return articles;
-        }
-      }
-    } catch (err) {
-      // Fall through to public proxies
-    }
+      const articles = await tryBackendProxy(feedConfig, 5000);
+      if (articles) return articles;
+    } catch {} // cold start → fall through
   }
 
-  // Fallback: public CORS proxies
+  // Stage 2: Public CORS proxies (fast, works for non-Indian sites)
   for (const proxy of CORS_PROXIES) {
     try {
       const proxyUrl = `${proxy.url}${encodeURIComponent(feedConfig.url)}`;
-      const response = await fetchWithTimeout(proxyUrl, 7000);
-
+      const response = await fetchWithTimeout(proxyUrl, 5000);
       if (!response.ok) continue;
-
       let xmlText;
       if (proxy.responseKey) {
         const data = await response.json();
@@ -233,15 +238,21 @@ const fetchSingleFeed = async (feedConfig) => {
       } else {
         xmlText = await response.text();
       }
-
       if (!xmlText || xmlText.length < 100) continue;
-
       const articles = parseFeed(xmlText, feedConfig);
       if (articles.length > 0) return articles;
-    } catch (err) {
-      // Try next proxy
-    }
+    } catch {}
   }
+
+  // Stage 3: Backend retry — Render has been warming since Stage 1 (~15-20s ago)
+  // By now Render's cold start (30-45s) should be nearly complete.
+  if (BACKEND_RSS_PROXY) {
+    try {
+      const articles = await tryBackendProxy(feedConfig, 35000);
+      if (articles) return articles;
+    } catch {}
+  }
+
   console.warn(`All proxies failed for ${feedConfig.name}`);
   return [];
 };
@@ -293,7 +304,7 @@ export const fetchPriorityFeeds = async () => {
 
 export const fetchAllFeeds = async (force = false) => {
   // Remove old cache keys from previous versions
-  ['rss_cache', 'rss_cache_v2', 'rss_cache_v3', 'rss_cache_v4', 'rss_cache_v5', 'rss_cache_v6', 'rss_cache_v7', 'rss_cache_v8', 'rss_cache_v9', 'rss_cache_v10', 'rss_cache_v11', 'rss_cache_v12', 'rss_cache_v13', 'rss_cache_v14', 'rss_cache_v15', 'rss_cache_v16', 'rss_cache_v17', 'rss_cache_v18', 'rss_cache_v19', 'rss_cache_v20', 'rss_cache_v21'].forEach(k => localStorage.removeItem(k));
+  ['rss_cache', 'rss_cache_v2', 'rss_cache_v3', 'rss_cache_v4', 'rss_cache_v5', 'rss_cache_v6', 'rss_cache_v7', 'rss_cache_v8', 'rss_cache_v9', 'rss_cache_v10', 'rss_cache_v11', 'rss_cache_v12', 'rss_cache_v13', 'rss_cache_v14', 'rss_cache_v15', 'rss_cache_v16', 'rss_cache_v17', 'rss_cache_v18', 'rss_cache_v19', 'rss_cache_v20', 'rss_cache_v21', 'rss_cache_v22', 'rss_cache_v23', 'rss_cache_v24', 'rss_cache_v25', 'rss_cache_v26'].forEach(k => localStorage.removeItem(k));
 
   // Check current cache (skip if force refresh)
   if (!force) {

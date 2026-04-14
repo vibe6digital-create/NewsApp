@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
-import { fetchAllFeeds, fetchPriorityFeeds, filterByCategory, searchArticles as searchFn } from '../services/rssService';
+import { fetchAllFeeds, fetchPriorityFeeds, filterByCategory, searchArticles as searchFn, wakeUpBackend } from '../services/rssService';
 import { getPublishedAdminArticles, getBreakingArticles, getFeaturedArticles } from '../services/adminService';
 import { useLang } from './LanguageContext';
 import { AUTO_REFRESH_INTERVAL } from '../utils/constants';
@@ -52,6 +52,8 @@ export const NewsProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    // Wake up Render backend immediately (free tier cold-starts in 30-45s)
+    wakeUpBackend();
     fetchNews(false);
     const interval = setInterval(() => fetchNews(true), AUTO_REFRESH_INTERVAL);
     return () => clearInterval(interval);
