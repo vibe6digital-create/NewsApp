@@ -126,9 +126,7 @@ const HEALTH_STRICT_KEYWORDS = [
 ];
 
 function isHealthArticle(article) {
-  if (article.category === 'health') return true;
-  const text = `${article.title || ''} ${article.summary || ''}`.toLowerCase();
-  return HEALTH_STRICT_KEYWORDS.some(kw => text.includes(kw.toLowerCase()));
+  return article.category === 'health';
 }
 
 function filterByHealthSubsection(healthArticles, key) {

@@ -123,9 +123,7 @@ const JOB_STRICT_KEYWORDS = [
 ];
 
 function isJobArticle(article) {
-  if (article.category === 'jobs') return true;
-  const text = `${article.title || ''} ${article.summary || ''}`.toLowerCase();
-  return JOB_STRICT_KEYWORDS.some(kw => text.includes(kw.toLowerCase()));
+  return article.category === 'jobs';
 }
 
 // Subsection filter: runs only on already-filtered job articles

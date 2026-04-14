@@ -170,11 +170,7 @@ const TECH_STRICT_KEYWORDS = [
 ];
 
 function isTechArticle(article) {
-  if (article.category === 'technology') return true;
-  // Also match articles from any category whose title/summary contains tech keywords
-  // (catches Hindi national-feed articles about tech topics)
-  const text = `${article.title || ''} ${article.summary || ''}`.toLowerCase();
-  return TECH_STRICT_KEYWORDS.some(kw => text.includes(kw.toLowerCase()));
+  return article.category === 'technology';
 }
 
 function filterByTechSubsection(techArticles, key) {

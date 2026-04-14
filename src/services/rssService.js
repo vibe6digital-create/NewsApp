@@ -92,23 +92,9 @@ const categorizeFeedItem = (title, description, feedCategories) => {
   const ukKeywords = CATEGORY_KEYWORDS.uttarakhand || [];
   if (ukKeywords.some(kw => text.includes(kw.toLowerCase()))) return 'uttarakhand';
 
-  // 2. Specialist feeds: trust the feed's designated category completely.
-  //    A health article about "India" must NOT become national.
-  if (SPECIALIST_CATS.has(primaryCat)) return primaryCat;
-
-  // 3. National / world feeds: try to reclassify into a specific category
-  //    using keyword scoring — require 2+ distinct keyword hits to avoid false positives.
-  for (const cat of RECLASSIFY_ORDER) {
-    const keywords = CATEGORY_KEYWORDS[cat] || [];
-    let hits = 0;
-    for (const kw of keywords) {
-      if (text.includes(kw.toLowerCase())) {
-        hits++;
-        if (hits >= 2) return cat;
-      }
-    }
-  }
-
+  // 2. Always trust the feed's designated category.
+  //    National articles stay national, health stays health, jobs stays jobs.
+  //    No cross-category bleed.
   return primaryCat;
 };
 
@@ -301,7 +287,7 @@ export const fetchPriorityFeeds = async () => {
 
 export const fetchAllFeeds = async (force = false) => {
   // Remove old cache keys from previous versions
-  ['rss_cache', 'rss_cache_v2', 'rss_cache_v3', 'rss_cache_v4', 'rss_cache_v5', 'rss_cache_v6', 'rss_cache_v7', 'rss_cache_v8', 'rss_cache_v9', 'rss_cache_v10', 'rss_cache_v11', 'rss_cache_v12', 'rss_cache_v13', 'rss_cache_v14', 'rss_cache_v15', 'rss_cache_v16', 'rss_cache_v17', 'rss_cache_v18', 'rss_cache_v19', 'rss_cache_v20', 'rss_cache_v21', 'rss_cache_v22', 'rss_cache_v23', 'rss_cache_v24', 'rss_cache_v25', 'rss_cache_v26'].forEach(k => localStorage.removeItem(k));
+  ['rss_cache', 'rss_cache_v2', 'rss_cache_v3', 'rss_cache_v4', 'rss_cache_v5', 'rss_cache_v6', 'rss_cache_v7', 'rss_cache_v8', 'rss_cache_v9', 'rss_cache_v10', 'rss_cache_v11', 'rss_cache_v12', 'rss_cache_v13', 'rss_cache_v14', 'rss_cache_v15', 'rss_cache_v16', 'rss_cache_v17', 'rss_cache_v18', 'rss_cache_v19', 'rss_cache_v20', 'rss_cache_v21', 'rss_cache_v22', 'rss_cache_v23', 'rss_cache_v24', 'rss_cache_v25', 'rss_cache_v26', 'rss_cache_v27'].forEach(k => localStorage.removeItem(k));
 
   // Check current cache (skip if force refresh)
   if (!force) {
