@@ -325,20 +325,19 @@ const JobsPage = () => {
 
   // Filter to strictly job-related articles only
   const jobArticles = useMemo(() => {
+    const preferredLang = lang === 'EN' ? 'en' : 'hi';
     let result = allArticles.filter(isJobArticle);
     // Fallback: older job articles (same language) from cache if current fetch has none
     if (result.length === 0) {
-      const preferredLang = lang === 'EN' ? 'en' : 'hi';
       result = rawArticles.filter(a => isJobArticle(a) && a.lang === preferredLang);
     }
-    // Last resort: any language (never show empty)
-    if (result.length === 0) result = rawArticles.filter(isJobArticle);
-    // Emergency: keyword search across ALL loaded articles when dedicated feeds failed
+    // Emergency: keyword search within same-language articles when dedicated feeds failed
     if (result.length === 0 && rawArticles.length > 0) {
       const jobKws = ['recruitment', 'vacancy', 'sarkari naukri', 'hiring', 'government job',
         'upsc', 'ssc cgl', 'ibps', 'rrb', 'railway recruitment', 'police recruitment',
         'भर्ती', 'नौकरी', 'वैकेंसी', 'रोजगार', 'आवेदन', 'सरकारी नौकरी'];
       result = rawArticles.filter(a =>
+        a.lang === preferredLang &&
         jobKws.some(kw => (a.title + ' ' + (a.summary || '')).toLowerCase().includes(kw))
       ).slice(0, 20);
     }
@@ -346,7 +345,7 @@ const JobsPage = () => {
       return [...result].sort((a, b) => new Date(a.pubDate) - new Date(b.pubDate));
     }
     return result;
-  }, [allArticles, rawArticles, sortOrder]);
+  }, [allArticles, rawArticles, sortOrder, lang]);
 
   // Build subsection maps — search only within already-filtered job articles
   const subsectionMap = useMemo(() => {
