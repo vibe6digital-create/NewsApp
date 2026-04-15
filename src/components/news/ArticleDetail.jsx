@@ -282,7 +282,7 @@ const ArticleDetail = ({ article }) => {
       {/* Meta Row */}
       <div
         className="article-meta d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3"
-        style={{ fontSize: '14px', color: '#999' }}
+        style={{ fontSize: '14px', color: 'var(--text-muted)' }}
       >
         <div className="d-flex align-items-center gap-3">
           <span>{formatNewsDate(article.pubDate)}</span>
@@ -374,7 +374,7 @@ const ArticleDetail = ({ article }) => {
           style={{
             fontSize: '19px',
             lineHeight: 1.9,
-            color: '#e0e0e0',
+            color: 'var(--text-secondary)',
             borderLeft: '4px solid #e53935',
             paddingLeft: '16px',
             marginBottom: '24px',
@@ -386,7 +386,7 @@ const ArticleDetail = ({ article }) => {
       )}
 
       {/* Article Body */}
-      <div className="article-body" style={{ fontSize: '17px', lineHeight: 2, color: '#ddd' }}>
+      <div className="article-body" style={{ fontSize: '17px', lineHeight: 2, color: 'var(--text-primary)' }}>
 
         {/* Show fetched full content if available */}
         {fullContent && (
@@ -400,7 +400,7 @@ const ArticleDetail = ({ article }) => {
 
         {/* Loading indicator */}
         {fetching && (
-          <div className="d-flex align-items-center gap-2 mt-3" style={{ color: '#888', fontSize: '14px' }}>
+          <div className="d-flex align-items-center gap-2 mt-3" style={{ color: 'var(--text-muted)', fontSize: '14px' }}>
             <div className="spinner-border spinner-border-sm text-danger" role="status" style={{ width: '1rem', height: '1rem' }} />
             {lang === 'EN' ? 'Loading full article…' : 'पूरी खबर लोड हो रही है…'}
           </div>
