@@ -279,9 +279,10 @@ const translations = {
 };
 
 export const LanguageProvider = ({ children }) => {
-  const [lang, setLang] = useState('HI');
+  const [lang, setLang] = useState(() => localStorage.getItem('lang') || 'HI');
 
   const setLangPersist = useCallback((newLang) => {
+    localStorage.setItem('lang', newLang);
     setLang(newLang);
   }, []);
 

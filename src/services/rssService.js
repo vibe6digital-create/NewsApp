@@ -84,6 +84,36 @@ const SPECIALIST_CATS = new Set(['education', 'jobs', 'health', 'technology', 'a
 // Ordered list used when reclassifying national/world articles
 const RECLASSIFY_ORDER = ['jobs', 'education', 'health', 'technology', 'astro'];
 
+// Keywords that confirm an article is about India (unambiguous India-specific terms)
+const INDIA_INDICATORS = [
+  'india', 'indian', 'भारत', 'भारतीय', 'modi', 'मोदी', 'bjp', 'aap',
+  'lok sabha', 'rajya sabha', 'new delhi', 'delhi', 'mumbai', 'rupee', 'rbi',
+  'pm modi', 'narendra modi', 'amit shah', 'राजनाथ', 'अमित शाह',
+  'केंद्र सरकार', 'भारत सरकार', 'नई दिल्ली', 'election commission of india',
+  'supreme court of india', 'isro', 'भारतीय जनता',
+];
+
+// Keywords that strongly indicate non-India international news
+const WORLD_INDICATORS = [
+  // Countries
+  'pakistan', 'china', 'united states', 'america', 'russia', 'ukraine',
+  'israel', 'gaza', 'iran', 'nato', 'imf', 'world bank', 'european union',
+  'africa', 'brazil', 'canada', 'australia', 'japan', 'north korea', 'south korea',
+  'france', 'germany', 'saudi arabia', 'turkey', 'egypt', 'myanmar', 'afghanistan',
+  'taiwan', 'hong kong', 'sri lanka', 'bangladesh', 'nepal', 'indonesia',
+  'malaysia', 'singapore', 'vietnam', 'thailand', 'kenya', 'nigeria', 'mexico',
+  'argentina', 'colombia', 'iran', 'iraq', 'syria', 'lebanon', 'yemen', 'qatar',
+  'morocco', 'ethiopia', 'ukraine', 'poland', 'sweden', 'norway', 'denmark',
+  'netherlands', 'spain', 'italy', 'portugal', 'greece', 'hungary',
+  // World leaders & institutions
+  'trump', 'biden', 'putin', 'zelensky', 'netanyahu', 'xi jinping', 'erdogan',
+  'white house', 'kremlin', 'pentagon', 'european commission',
+  // Hindi country names
+  'पाकिस्तान', 'चीन', 'अमेरिका', 'रूस', 'यूक्रेन', 'इजरायल', 'ईरान',
+  'ट्रम्प', 'ट्रंप', 'बाइडेन', 'पुतिन', 'श्रीलंका', 'बांग्लादेश', 'नेपाल',
+  'अफगानिस्तान', 'सऊदी अरब', 'जापान', 'फ्रांस', 'जर्मनी', 'ब्राजील',
+];
+
 const categorizeFeedItem = (title, description, feedCategories) => {
   const text = `${title} ${description}`.toLowerCase();
   const primaryCat = feedCategories[0] || 'national';
@@ -95,7 +125,15 @@ const categorizeFeedItem = (title, description, feedCategories) => {
   // 2. Specialist feeds (health, jobs, technology, astro, education): trust completely.
   if (SPECIALIST_CATS.has(primaryCat)) return primaryCat;
 
-  // 3. Multi-category feeds (e.g. ["national","education"] or ["national","jobs"]):
+  // 3. For ALL national-primary articles: if content is clearly about a foreign country/entity
+  //    and has no India-specific context, reclassify as world.
+  if (primaryCat === 'national') {
+    const hasWorldIndicator = WORLD_INDICATORS.some(kw => text.includes(kw));
+    const hasIndiaIndicator = INDIA_INDICATORS.some(kw => text.includes(kw));
+    if (hasWorldIndicator && !hasIndiaIndicator) return 'world';
+  }
+
+  // 4. Multi-category feeds (e.g. ["national","education"] or ["national","jobs"]):
   //    reclassify ONLY to categories the feed itself lists — never to unrelated ones.
   //    Pick the secondary category with the MOST keyword hits (min 1).
   let bestCat = null;
@@ -318,7 +356,7 @@ export const fetchPriorityFeeds = async () => {
 
 export const fetchAllFeeds = async (force = false) => {
   // Remove old cache keys from previous versions
-  ['rss_cache', 'rss_cache_v2', 'rss_cache_v3', 'rss_cache_v4', 'rss_cache_v5', 'rss_cache_v6', 'rss_cache_v7', 'rss_cache_v8', 'rss_cache_v9', 'rss_cache_v10', 'rss_cache_v11', 'rss_cache_v12', 'rss_cache_v13', 'rss_cache_v14', 'rss_cache_v15', 'rss_cache_v16', 'rss_cache_v17', 'rss_cache_v18', 'rss_cache_v19', 'rss_cache_v20', 'rss_cache_v21', 'rss_cache_v22', 'rss_cache_v23', 'rss_cache_v24', 'rss_cache_v25', 'rss_cache_v26', 'rss_cache_v27', 'rss_cache_v28', 'rss_cache_v29', 'rss_cache_v30', 'rss_cache_v31', 'rss_cache_v32', 'rss_cache_v33', 'rss_cache_v34', 'rss_cache_v35', 'rss_cache_v36'].forEach(k => localStorage.removeItem(k));
+  ['rss_cache', 'rss_cache_v2', 'rss_cache_v3', 'rss_cache_v4', 'rss_cache_v5', 'rss_cache_v6', 'rss_cache_v7', 'rss_cache_v8', 'rss_cache_v9', 'rss_cache_v10', 'rss_cache_v11', 'rss_cache_v12', 'rss_cache_v13', 'rss_cache_v14', 'rss_cache_v15', 'rss_cache_v16', 'rss_cache_v17', 'rss_cache_v18', 'rss_cache_v19', 'rss_cache_v20', 'rss_cache_v21', 'rss_cache_v22', 'rss_cache_v23', 'rss_cache_v24', 'rss_cache_v25', 'rss_cache_v26', 'rss_cache_v27', 'rss_cache_v28', 'rss_cache_v29', 'rss_cache_v30', 'rss_cache_v31', 'rss_cache_v32', 'rss_cache_v33', 'rss_cache_v34', 'rss_cache_v35', 'rss_cache_v36', 'rss_cache_v37'].forEach(k => localStorage.removeItem(k));
 
   // Check current cache (skip if force refresh)
   if (!force) {

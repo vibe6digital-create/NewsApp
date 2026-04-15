@@ -8,14 +8,24 @@ import { PORTAL_NAME } from '../utils/constants';
 import ArticleDetail from '../components/news/ArticleDetail';
 import RelatedNews from '../components/news/RelatedNews';
 import AdBanner from '../components/layout/AdBanner';
+import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const ArticlePage = () => {
   const { id } = useParams();
-  const { getArticleById, allArticles } = useNews();
+  const { getArticleById, allArticles, loading } = useNews();
   const { getArticle } = useAdmin();
   const { t } = useLang();
 
   const article = getArticleById(id) || getArticle(id);
+
+  // Still fetching feeds — don't show "not found" yet
+  if (!article && loading) {
+    return (
+      <div className="container py-5" style={{ minHeight: '60vh' }}>
+        <LoadingSpinner count={3} />
+      </div>
+    );
+  }
 
   if (!article) {
     return (

@@ -7,23 +7,16 @@ import SectionTitle from '../common/SectionTitle';
 import AdBanner from '../layout/AdBanner';
 import LoadingSpinner from '../common/LoadingSpinner';
 
-const INDIA_SOURCES = ['Dainik Bhaskar', 'Amar Ujala', 'Dainik Jagran', 'The Hindu', 'Hindustan Times'];
-
 const IndiaSection = () => {
-  const { getByCategory, getCategoryWithFallback, getBySource, loading } = useNews();
+  const { getByCategory, getCategoryWithFallback, loading } = useNews();
   const { t } = useLang();
 
   const articles = useMemo(() => {
     const catArticles = getByCategory('national');
-    const sourceArticles = getBySource(INDIA_SOURCES);
-    const merged = [...catArticles];
-    sourceArticles.forEach(a => {
-      if (!merged.find(m => m.id === a.id)) merged.push(a);
-    });
-    if (merged.length > 0) return merged.slice(0, 10);
+    if (catArticles.length > 0) return catArticles.slice(0, 10);
     // Fallback: older national articles from cache
     return getCategoryWithFallback('national').slice(0, 10);
-  }, [getByCategory, getCategoryWithFallback, getBySource]);
+  }, [getByCategory, getCategoryWithFallback]);
 
   if (loading) return <div className="container"><LoadingSpinner /></div>;
   if (articles.length === 0) return null;

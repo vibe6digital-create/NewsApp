@@ -8,7 +8,7 @@ export const ADMIN_USER = "admin";
 export const ADMIN_PASS = "news@2026";
 export const SUBSCRIPTION_KEY = "portal_subscribers";
 export const ARTICLES_KEY = "portal_articles";
-export const CACHE_KEY = "rss_cache_v37";
+export const CACHE_KEY = "rss_cache_v40";
 export const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
 // Backend API URL — change this to your Render URL after deploying
@@ -289,7 +289,7 @@ export const RSS_FEEDS = [
   {
     name: "The Hindu Education",
     url: "https://www.thehindu.com/education/feeder/default.rss",
-    lang: "en",
+    lang: "en", priority: true,
     categories: ["education"]
   },
   {
@@ -401,7 +401,7 @@ export const RSS_FEEDS = [
   {
     name: "WHO News",
     url: "https://www.who.int/rss-feeds/news-english.xml",
-    lang: "en",
+    lang: "en", priority: true,
     categories: ["health"]
   },
   {
@@ -451,7 +451,7 @@ export const RSS_FEEDS = [
   {
     name: "Economic Times Jobs",
     url: "https://economictimes.indiatimes.com/jobs/rssfeeds/1098593.cms",
-    lang: "en",
+    lang: "en", priority: true,
     categories: ["jobs"]
   },
   {
