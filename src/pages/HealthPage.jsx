@@ -243,7 +243,7 @@ const HealthHeader = ({ lang, count }) => (
 
 // ── Main Page ─────────────────────────────────────────────────
 const HealthPage = () => {
-  const { allArticles, rawArticles, loading } = useNews();
+  const { allArticles, rawArticles, loading, feedsComplete } = useNews();
   const { lang, t } = useLang();
   const [sortOrder, setSortOrder] = useState('latest');
 
@@ -314,7 +314,7 @@ const HealthPage = () => {
           <AdBanner size="728x90" index={0} />
         </div>
 
-        {loading ? (
+        {loading || (!feedsComplete && healthArticles.length === 0) ? (
           <div className="container py-4">
             <LoadingSpinner count={6} />
           </div>

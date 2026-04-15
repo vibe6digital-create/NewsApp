@@ -24,11 +24,13 @@ const mergeArticles = (existing, incoming) => {
 export const NewsProvider = ({ children }) => {
   const [rawArticles, setRawArticles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [feedsComplete, setFeedsComplete] = useState(false);
   const [error, setError] = useState(null);
   const { lang } = useLang();
 
   const fetchNews = useCallback(async (force = false) => {
     setError(null);
+    setFeedsComplete(false);
     const adminArticles = getPublishedAdminArticles();
 
     try {
@@ -44,10 +46,12 @@ export const NewsProvider = ({ children }) => {
       if (allRss.length > 0) {
         setRawArticles(prev => mergeArticles(prev, [...adminArticles, ...allRss]));
       }
+      setFeedsComplete(true);
     } catch (err) {
       console.error('Feed fetch error:', err);
       setError('कुछ समाचार स्रोतों से कनेक्ट नहीं हो पाया।');
       setLoading(false);
+      setFeedsComplete(true);
     }
   }, []);
 
@@ -118,6 +122,7 @@ export const NewsProvider = ({ children }) => {
     allArticles,
     rawArticles,
     loading,
+    feedsComplete,
     error,
     fetchNews,
     getBreakingNews,

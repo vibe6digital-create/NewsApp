@@ -285,7 +285,7 @@ const TechHeader = ({ lang }) => (
 
 // ── Main Page ────────────────────────────────────────────────────
 const TechnologyPage = () => {
-  const { allArticles, rawArticles, loading } = useNews();
+  const { allArticles, rawArticles, loading, feedsComplete } = useNews();
   const { lang, t } = useLang();
   const [sortOrder, setSortOrder] = useState('latest');
 
@@ -354,7 +354,7 @@ const TechnologyPage = () => {
           <AdBanner size="728x90" index={0} />
         </div>
 
-        {loading ? (
+        {loading || (!feedsComplete && techArticles.length === 0) ? (
           <div className="container py-4">
             <LoadingSpinner count={6} />
           </div>

@@ -91,7 +91,7 @@ const WorldHeroSlider = ({ slides, lang }) => {
 };
 
 const WorldNewsPage = () => {
-  const { allArticles, rawArticles, loading } = useNews();
+  const { allArticles, rawArticles, loading, feedsComplete } = useNews();
   const { lang, t } = useLang();
   const [sortOrder, setSortOrder] = useState('latest');
 
@@ -147,7 +147,7 @@ const WorldNewsPage = () => {
           <AdBanner size="728x90" index={0} />
         </div>
 
-        {loading ? (
+        {loading || (!feedsComplete && worldArticles.length === 0) ? (
           <div className="container py-2">
             <LoadingSpinner count={6} />
           </div>

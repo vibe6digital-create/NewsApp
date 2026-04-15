@@ -148,7 +148,7 @@ const EducationHeroSlider = ({ slides, lang }) => {
 };
 
 const EducationPage = () => {
-  const { allArticles, rawArticles, loading } = useNews();
+  const { allArticles, rawArticles, loading, feedsComplete } = useNews();
   const { lang, t } = useLang();
   const [sortOrder, setSortOrder] = useState('latest');
 
@@ -198,7 +198,7 @@ const EducationPage = () => {
           <AdBanner size="728x90" index={0} />
         </div>
 
-        {loading ? (
+        {loading || (!feedsComplete && eduArticles.length === 0) ? (
           <div className="container py-2">
             <LoadingSpinner count={6} />
           </div>

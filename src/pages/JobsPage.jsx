@@ -319,7 +319,7 @@ const CareerPortals = ({ lang }) => {
 
 // ── Main Page ─────────────────────────────────────────────────
 const JobsPage = () => {
-  const { allArticles, rawArticles, loading } = useNews();
+  const { allArticles, rawArticles, loading, feedsComplete } = useNews();
   const { lang, t } = useLang();
   const [sortOrder, setSortOrder] = useState('latest');
 
@@ -386,7 +386,7 @@ const JobsPage = () => {
           <AdBanner size="728x90" index={0} />
         </div>
 
-        {loading ? (
+        {loading || (!feedsComplete && jobArticles.length === 0) ? (
           <div className="container py-2">
             <LoadingSpinner count={6} />
           </div>
