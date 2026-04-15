@@ -155,6 +155,14 @@ const categorizeFeedItem = (title, description, feedCategories) => {
   return primaryCat;
 };
 
+// Decode HTML entities AND strip tags — handles doubly-encoded RSS descriptions
+const htmlToText = (html) => {
+  if (!html) return '';
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return (tmp.textContent || '').replace(/\s+/g, ' ').trim();
+};
+
 const parseFeed = (xmlText, feedConfig) => {
   try {
     const parser = new DOMParser();
@@ -179,7 +187,7 @@ const parseFeed = (xmlText, feedConfig) => {
         const image = extractImage(entry);
 
         // Only use content element as body — summary is already stored in summary field
-        const cleanSummary = summaryRaw.replace(/<[^>]*>/g, '').trim();
+        const cleanSummary = htmlToText(summaryRaw);
         const body = fullBody.length > 100 ? fullBody : null;
 
         return {
@@ -213,7 +221,7 @@ const parseFeed = (xmlText, feedConfig) => {
       const fullBody = encodedEl?.textContent?.trim() || '';
 
       // Only use content:encoded as body — description is already stored in summary
-      const cleanDesc = description.replace(/<[^>]*>/g, '').trim();
+      const cleanDesc = htmlToText(description);
       const body = fullBody.length > 100 ? fullBody : null;
 
       return {
@@ -356,7 +364,7 @@ export const fetchPriorityFeeds = async () => {
 
 export const fetchAllFeeds = async (force = false) => {
   // Remove old cache keys from previous versions
-  ['rss_cache', 'rss_cache_v2', 'rss_cache_v3', 'rss_cache_v4', 'rss_cache_v5', 'rss_cache_v6', 'rss_cache_v7', 'rss_cache_v8', 'rss_cache_v9', 'rss_cache_v10', 'rss_cache_v11', 'rss_cache_v12', 'rss_cache_v13', 'rss_cache_v14', 'rss_cache_v15', 'rss_cache_v16', 'rss_cache_v17', 'rss_cache_v18', 'rss_cache_v19', 'rss_cache_v20', 'rss_cache_v21', 'rss_cache_v22', 'rss_cache_v23', 'rss_cache_v24', 'rss_cache_v25', 'rss_cache_v26', 'rss_cache_v27', 'rss_cache_v28', 'rss_cache_v29', 'rss_cache_v30', 'rss_cache_v31', 'rss_cache_v32', 'rss_cache_v33', 'rss_cache_v34', 'rss_cache_v35', 'rss_cache_v36', 'rss_cache_v37'].forEach(k => localStorage.removeItem(k));
+  ['rss_cache', 'rss_cache_v2', 'rss_cache_v3', 'rss_cache_v4', 'rss_cache_v5', 'rss_cache_v6', 'rss_cache_v7', 'rss_cache_v8', 'rss_cache_v9', 'rss_cache_v10', 'rss_cache_v11', 'rss_cache_v12', 'rss_cache_v13', 'rss_cache_v14', 'rss_cache_v15', 'rss_cache_v16', 'rss_cache_v17', 'rss_cache_v18', 'rss_cache_v19', 'rss_cache_v20', 'rss_cache_v21', 'rss_cache_v22', 'rss_cache_v23', 'rss_cache_v24', 'rss_cache_v25', 'rss_cache_v26', 'rss_cache_v27', 'rss_cache_v28', 'rss_cache_v29', 'rss_cache_v30', 'rss_cache_v31', 'rss_cache_v32', 'rss_cache_v33', 'rss_cache_v34', 'rss_cache_v35', 'rss_cache_v36', 'rss_cache_v37', 'rss_cache_v38', 'rss_cache_v39', 'rss_cache_v40'].forEach(k => localStorage.removeItem(k));
 
   // Check current cache (skip if force refresh)
   if (!force) {
