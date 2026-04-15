@@ -92,35 +92,6 @@ const JOBS_KEYWORDS = {
   ],
 };
 
-// Strict top-level job keywords — compound phrases that ONLY appear in job news
-const JOB_STRICT_KEYWORDS = [
-  // Government recruitment
-  'sarkari naukri', 'government job', 'सरकारी नौकरी',
-  'recruitment notification', 'recruitment rally', 'recruitment drive',
-  'vacancy notification', 'vacancy announced', 'vacancies announced',
-  'भर्ती नोटिफिकेशन', 'भर्ती अधिसूचना', 'पदों पर भर्ती', 'पदों की भर्ती',
-  'रेलवे भर्ती', 'बैंक भर्ती', 'सेना भर्ती', 'पुलिस भर्ती',
-  'SSC CGL', 'SSC MTS', 'SSC CHSL',
-  'IBPS PO', 'IBPS clerk', 'SBI PO', 'SBI clerk',
-  'railway recruitment', 'UPSC civil services', 'NDA recruitment',
-  'CISF recruitment', 'CRPF recruitment', 'BSF recruitment',
-  'PSU recruitment', 'defence recruitment', 'employment notification',
-  'UKPSC', 'UKSSSC', 'UP Police recruitment', 'RPSC', 'MPSC', 'BPSC',
-  // Private company hiring (compound — company + hiring action)
-  'TCS hiring', 'TCS recruit', 'Infosys hiring', 'Infosys recruit',
-  'Wipro hiring', 'Wipro recruit', 'HCL hiring', 'HCL recruit',
-  'freshers hiring', 'campus placement', 'campus recruitment', 'IT hiring',
-  // International company hiring (compound)
-  'Google hiring', 'Microsoft hiring', 'Amazon hiring', 'Meta hiring',
-  'Apple hiring', 'Netflix hiring', 'Tesla hiring', 'IBM hiring',
-  'global hiring', 'H-1B visa', 'overseas job', 'international job',
-  // Freelance / remote (platform names are distinct enough)
-  'Upwork', 'Fiverr', 'freelance job', 'remote job', 'work from home job',
-  'LinkedIn Jobs', 'Glassdoor salary', 'Naukri.com',
-  // Hindi job terms
-  'नौकरी', 'रोजगार समाचार', 'वैकेंसी', 'नियुक्ति',
-  'फ्रीलांस', 'रिमोट जॉब', 'घर से काम',
-];
 
 function isJobArticle(article) {
   return article.category === 'jobs';

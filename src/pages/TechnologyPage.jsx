@@ -125,50 +125,6 @@ const TECH_KEYWORDS = {
   ],
 };
 
-// ── Strict top-level filter ──────────────────────────────────────
-const TECH_STRICT_KEYWORDS = [
-  // AI
-  'artificial intelligence', 'machine learning', 'ChatGPT', 'OpenAI', 'GPT-4', 'GPT-5',
-  'Gemini AI', 'generative AI', 'LLM', 'deep learning', 'neural network', 'AI model',
-  // Smartphones
-  'smartphone', 'iPhone', 'Samsung Galaxy', 'OnePlus', 'Xiaomi', 'Redmi', 'Realme',
-  'Oppo', 'Vivo', 'Nothing Phone', 'Snapdragon', 'MediaTek', 'foldable phone',
-  // Cybersecurity
-  'cybersecurity', 'cyber attack', 'hacking', 'data breach', 'ransomware', 'malware',
-  'phishing', 'cyber crime', 'cyber fraud', 'deepfake', 'spyware',
-  // Internet & Social
-  'WhatsApp update', 'Instagram update', 'YouTube update', 'Meta', 'internet shutdown',
-  // Space
-  'ISRO', 'SpaceX', 'satellite launch', 'rocket launch', 'Chandrayaan', 'Gaganyaan',
-  // Startups
-  'startup funding', 'unicorn', 'fintech', 'edtech',
-  // Indian Tech
-  'Digital India', 'IT sector India', 'Infosys', 'TCS', 'Wipro', 'HCL Technologies',
-  'semiconductor India', 'NASSCOM',
-  // Gaming
-  'esports', 'BGMI', 'video game launch', 'gaming tournament', 'PC gaming',
-  // EV & Green
-  'electric vehicle', 'EV charging', 'Ola Electric', 'Ather Energy', 'Tesla India',
-  'solar power India', 'renewable energy India',
-  // Crypto
-  'cryptocurrency', 'Bitcoin', 'Ethereum', 'blockchain', 'NFT', 'Web3', 'DeFi',
-  'crypto exchange', 'crypto ban',
-  // Cloud
-  'cloud computing', 'Amazon Web Services', 'Microsoft Azure', 'Google Cloud',
-  'quantum computing', 'data center',
-  // Telecom
-  '5G rollout', '5G launch', 'Jio 5G', 'Airtel 5G', 'spectrum auction',
-  'Starlink India', 'TRAI',
-  // Apps
-  'app launch', 'app ban', 'Android update', 'iOS update', 'Windows update',
-  // Hindi
-  'आर्टिफिशियल इंटेलिजेंस', 'मशीन लर्निंग', 'एआई', 'स्मार्टफोन',
-  'साइबर सुरक्षा', 'साइबर अपराध', 'साइबर हमला', 'डेटा चोरी',
-  'सोशल मीडिया', '5जी', 'इसरो', 'स्टार्टअप', 'डिजिटल इंडिया',
-  'इलेक्ट्रिक वाहन', 'फिनटेक', 'क्रिप्टोकरेंसी', 'ब्लॉकचेन',
-  'गेमिंग', 'क्लाउड कंप्यूटिंग', 'टेलीकॉम', 'ब्रॉडबैंड',
-];
-
 function isTechArticle(article) {
   return article.category === 'technology';
 }

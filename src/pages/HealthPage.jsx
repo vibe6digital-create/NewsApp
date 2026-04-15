@@ -76,54 +76,6 @@ const HEALTH_KEYWORDS = {
   ],
 };
 
-// ── Strict top-level filter — only unambiguously health-specific terms ──
-// Single common words removed: 'hospital','surgery','depression','vaccine','pandemic',
-// 'stress','wellness','WHO' alone,'स्वास्थ्य' alone,'बीमारी' alone,'चिकित्सा' alone,
-// 'अस्पताल' alone,'तनाव','बुखार','वायरस','दवा','इलाज','ऑपरेशन','ध्यान'
-const HEALTH_STRICT_KEYWORDS = [
-  // Disease names — specific enough
-  'cancer', 'tumour', 'tumor', 'chemotherapy', 'oncology',
-  'dengue', 'malaria', 'tuberculosis', 'TB cases', 'TB patient',
-  'diabetes', 'diabetic', 'insulin', 'blood sugar',
-  'heart disease', 'heart attack', 'cardiac arrest', 'cardiovascular', 'heart failure',
-  'brain stroke', 'blood pressure', 'hypertension',
-  'kidney disease', 'kidney failure', 'liver disease', 'liver failure',
-  'COVID', 'coronavirus', 'H1N1', 'bird flu', 'swine flu', 'monkeypox',
-  'cholera', 'typhoid', 'hepatitis', 'HIV positive', 'AIDS',
-  'drug resistant', 'antibiotic resistance', 'clinical trial',
-  'vaccination drive', 'vaccination campaign', 'immunization',
-  'mRNA vaccine', 'HPV vaccine', 'HIV vaccine',
-  // Govt health — compound phrases only
-  'Ayushman Bharat', 'PM-JAY', 'Jan Arogya Yojana', 'Jan Aushadhi',
-  'National Health Mission', 'ASHA worker', 'health ministry',
-  'health scheme', 'health insurance scheme', 'health budget',
-  'World Health Organization',
-  // Mental health — compound only
-  'mental health', 'mental illness', 'anxiety disorder', 'anxiety attack',
-  'NIMHANS', 'PTSD', 'schizophrenia', 'bipolar disorder',
-  'insomnia treatment', 'suicide prevention',
-  // Yoga / Ayurveda
-  'yoga day', 'International Yoga', 'Ayurveda', 'AYUSH',
-  'naturopathy', 'homeopathy', 'pranayama',
-  // Hospitals & research — specific orgs only, not generic 'hospital'
-  'AIIMS', 'ICMR', 'eSanjeevani', 'telemedicine',
-  'medical research', 'organ transplant', 'heart transplant', 'robotic surgery',
-  'primary health centre',
-  // Hindi disease names — specific
-  'कैंसर', 'डेंगू', 'मलेरिया', 'टीबी', 'मधुमेह', 'डायबिटीज',
-  'हृदय रोग', 'दिल का दौरा', 'रक्तचाप', 'हाई ब्लड प्रेशर',
-  'कोरोना', 'कोविड', 'संक्रमण', 'महामारी',
-  'टीकाकरण', 'वैक्सीन',
-  // Hindi health schemes — compound phrases
-  'आयुष्मान भारत', 'स्वास्थ्य मंत्रालय', 'जन औषधि', 'राष्ट्रीय स्वास्थ्य मिशन',
-  'आशा कार्यकर्ता', 'मुफ्त इलाज', 'स्वास्थ्य योजना', 'स्वास्थ्य बीमा',
-  'एम्स', 'टेलीमेडिसिन', 'चिकित्सा अनुसंधान',
-  // Hindi mental & yoga — compound
-  'मानसिक स्वास्थ्य', 'डिप्रेशन', 'एंग्जाइटी', 'अनिद्रा',
-  'योग दिवस', 'आयुर्वेद', 'आयुष', 'प्राणायाम',
-  // Hindi global
-  'विश्व स्वास्थ्य संगठन', 'एंटीबायोटिक प्रतिरोध',
-];
 
 function isHealthArticle(article) {
   return article.category === 'health';

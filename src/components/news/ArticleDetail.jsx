@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import parse from 'html-react-parser';
 import { formatNewsDate } from '../../utils/formatDate';
@@ -142,9 +142,7 @@ const ArticleDetail = ({ article }) => {
   const { isSubscribed, openAuthModal } = useAuth();
   const [fullContent, setFullContent] = useState(null);
   const [fetching, setFetching] = useState(false);
-  const [fetchFailed, setFetchFailed] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
-  const articleRef = useRef(null);
 
   const handleDownloadPdf = useCallback(async () => {
     if (!article || pdfLoading) return;
@@ -236,20 +234,16 @@ const ArticleDetail = ({ article }) => {
     let cancelled = false;
     setFetching(true);
     setFullContent(null);
-    setFetchFailed(false);
 
     fetchFullArticle(article.link).then(text => {
       if (cancelled) return;
       if (text && text.length > 200) {
-        // If it already contains HTML tags, use as-is; otherwise convert markdown
         const isHtml = /<\/?[a-z][\s\S]*>/i.test(text);
         setFullContent(isHtml ? text : markdownToHtml(text));
-      } else {
-        setFetchFailed(true);
       }
       setFetching(false);
     }).catch(() => {
-      if (!cancelled) { setFetchFailed(true); setFetching(false); }
+      if (!cancelled) { setFetching(false); }
     });
 
     return () => { cancelled = true; };

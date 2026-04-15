@@ -97,7 +97,7 @@ const matchesState = (a, stateConfig, slug) => {
 
 const StatePage = () => {
   const { slug } = useParams();
-  const { allArticles, rawArticles, loading } = useNews();
+  const { allArticles, rawArticles, loading, feedsComplete } = useNews();
   const { lang } = useLang();
 
   const stateConfig = STATES_CONFIG.find(s => s.slug === slug);
@@ -112,7 +112,7 @@ const StatePage = () => {
     return rawArticles.filter(a => a.lang === langCode && matchesState(a, stateConfig, slug));
   }, [allArticles, rawArticles, stateConfig, slug, lang]);
 
-  if (loading && articles.length === 0) {
+  if ((loading || !feedsComplete) && articles.length === 0) {
     return <div className="container py-4"><LoadingSpinner count={6} /></div>;
   }
 

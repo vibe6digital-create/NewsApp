@@ -29,20 +29,20 @@ import MobileCategoryBar from './components/layout/MobileCategoryBar';
 import LoadingSpinner from './components/common/LoadingSpinner';
 import ScrollToTop from './components/common/ScrollToTop';
 
-import HomePage from './pages/HomePage';
-import NationalNewsPage from './pages/NationalNewsPage';
-import WorldNewsPage from './pages/WorldNewsPage';
-import EducationPage from './pages/EducationPage';
-import JobsPage from './pages/JobsPage';
-import HealthPage from './pages/HealthPage';
-import TechnologyPage from './pages/TechnologyPage';
-import CategoryPage from './pages/CategoryPage';
-import AstrologyPage from './pages/AstrologyPage';
-import ArticlePage from './pages/ArticlePage';
-import SearchPage from './pages/SearchPage';
-import NotFoundPage from './pages/NotFoundPage';
-import StatePage from './pages/StatePage';
-import LegalPage from './pages/LegalPage';
+const HomePage = lazy(() => import('./pages/HomePage'));
+const NationalNewsPage = lazy(() => import('./pages/NationalNewsPage'));
+const WorldNewsPage = lazy(() => import('./pages/WorldNewsPage'));
+const EducationPage = lazy(() => import('./pages/EducationPage'));
+const JobsPage = lazy(() => import('./pages/JobsPage'));
+const HealthPage = lazy(() => import('./pages/HealthPage'));
+const TechnologyPage = lazy(() => import('./pages/TechnologyPage'));
+const CategoryPage = lazy(() => import('./pages/CategoryPage'));
+const AstrologyPage = lazy(() => import('./pages/AstrologyPage'));
+const ArticlePage = lazy(() => import('./pages/ArticlePage'));
+const SearchPage = lazy(() => import('./pages/SearchPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
+const StatePage = lazy(() => import('./pages/StatePage'));
+const LegalPage = lazy(() => import('./pages/LegalPage'));
 
 const AdminLogin = lazy(() => import('./components/admin/AdminLogin'));
 const AdminDashboard = lazy(() => import('./components/admin/AdminDashboard'));
@@ -128,22 +128,24 @@ function App() {
                   </div>
                   <MobileCategoryBar />
                   <main style={{ minHeight: '60vh' }}>
-                    <Routes>
-                      <Route path="/" element={<HomePage />} />
-                      <Route path="/category/national" element={<NationalNewsPage />} />
-                      <Route path="/category/world" element={<WorldNewsPage />} />
-                      <Route path="/category/education" element={<EducationPage />} />
-                      <Route path="/category/jobs" element={<JobsPage />} />
-                      <Route path="/category/health" element={<HealthPage />} />
-                      <Route path="/category/technology" element={<TechnologyPage />} />
-                      <Route path="/category/astro" element={<AstrologyPage />} />
-                      <Route path="/category/:slug" element={<CategoryPage />} />
-                      <Route path="/article/:id" element={<ArticlePage />} />
-                      <Route path="/state/:slug" element={<StatePage />} />
-                      <Route path="/search" element={<SearchPage />} />
-                      <Route path="/:slug" element={<LegalPage />} />
-                      <Route path="*" element={<NotFoundPage />} />
-                    </Routes>
+                    <Suspense fallback={<div className="container py-4"><LoadingSpinner count={6} /></div>}>
+                      <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/category/national" element={<NationalNewsPage />} />
+                        <Route path="/category/world" element={<WorldNewsPage />} />
+                        <Route path="/category/education" element={<EducationPage />} />
+                        <Route path="/category/jobs" element={<JobsPage />} />
+                        <Route path="/category/health" element={<HealthPage />} />
+                        <Route path="/category/technology" element={<TechnologyPage />} />
+                        <Route path="/category/astro" element={<AstrologyPage />} />
+                        <Route path="/category/:slug" element={<CategoryPage />} />
+                        <Route path="/article/:id" element={<ArticlePage />} />
+                        <Route path="/state/:slug" element={<StatePage />} />
+                        <Route path="/search" element={<SearchPage />} />
+                        <Route path="/:slug" element={<LegalPage />} />
+                        <Route path="*" element={<NotFoundPage />} />
+                      </Routes>
+                    </Suspense>
                   </main>
                   <Footer />
                 </>

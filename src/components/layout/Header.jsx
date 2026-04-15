@@ -29,19 +29,6 @@ const Header = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const handleSubscribeClick = () => {
-    const section = document.getElementById('subscription-section');
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      navigate('/');
-      setTimeout(() => {
-        const el = document.getElementById('subscription-section');
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      }, 500);
-    }
-  };
-
   const formattedDate = lang === 'EN'
     ? formatNewsDate(currentTime)
     : formatNewsDateHindi(currentTime);

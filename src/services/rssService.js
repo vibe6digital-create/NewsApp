@@ -81,9 +81,6 @@ const extractImage = (item) => {
 // Categories that have dedicated feeds — articles must stay strictly in their category
 const SPECIALIST_CATS = new Set(['education', 'jobs', 'health', 'technology', 'astro', 'rental', 'podcast', 'quiz']);
 
-// Ordered list used when reclassifying national/world articles
-const RECLASSIFY_ORDER = ['jobs', 'education', 'health', 'technology', 'astro'];
-
 // Keywords that confirm an article is about India (unambiguous India-specific terms)
 const INDIA_INDICATORS = [
   'india', 'indian', 'भारत', 'भारतीय', 'modi', 'मोदी', 'bjp', 'aap',
@@ -338,9 +335,9 @@ export const fetchPriorityFeeds = async () => {
     }
   } catch (e) {}
 
-  // No cache — fetch priority feeds in parallel batches (backend proxy handles concurrency)
+  // No cache — fetch all priority feeds in one parallel round (Vercel handles concurrency)
   const priority = RSS_FEEDS.filter(f => f.priority);
-  const BATCH_SIZE = 12;
+  const BATCH_SIZE = 30;
   let allResults = [];
   for (let i = 0; i < priority.length; i += BATCH_SIZE) {
     const batch = priority.slice(i, i + BATCH_SIZE);
@@ -381,8 +378,8 @@ export const fetchAllFeeds = async (force = false) => {
     }
   }
 
-  // Fetch feeds in batches of 6 to avoid overwhelming the CORS proxy
-  const BATCH_SIZE = 6;
+  // Fetch feeds in larger batches — Vercel serverless handles concurrency well
+  const BATCH_SIZE = 20;
   let allResults = [];
   for (let i = 0; i < RSS_FEEDS.length; i += BATCH_SIZE) {
     const batch = RSS_FEEDS.slice(i, i + BATCH_SIZE);
