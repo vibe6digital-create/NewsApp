@@ -426,8 +426,9 @@ const AstrologyPage = () => {
   const astroNews = useMemo(() => {
     const primary = getByCategory('astro');
     if (primary.length > 0) return primary;
-    return rawArticles.filter(a => a.category === 'astro');
-  }, [getByCategory, rawArticles]);
+    const preferredLang = lang === 'EN' ? 'en' : 'hi';
+    return rawArticles.filter(a => a.category === 'astro' && a.lang === preferredLang);
+  }, [getByCategory, rawArticles, lang]);
 
   const today = new Date();
   const dateStr = today.toLocaleDateString('hi-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });

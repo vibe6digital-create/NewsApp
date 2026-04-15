@@ -109,10 +109,7 @@ const StatePage = () => {
     const primary = allArticles.filter(a => matchesState(a, stateConfig, slug));
     if (primary.length > 0) return primary;
     // Fallback: older cached articles, same language
-    const cached = rawArticles.filter(a => a.lang === langCode && matchesState(a, stateConfig, slug));
-    if (cached.length > 0) return cached;
-    // Last resort: ignore language filter (show any language)
-    return rawArticles.filter(a => matchesState(a, stateConfig, slug));
+    return rawArticles.filter(a => a.lang === langCode && matchesState(a, stateConfig, slug));
   }, [allArticles, rawArticles, stateConfig, slug, lang]);
 
   if (loading && articles.length === 0) {

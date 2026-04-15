@@ -254,22 +254,11 @@ const HealthPage = () => {
       const preferredLang = lang === 'EN' ? 'en' : 'hi';
       result = rawArticles.filter(a => isHealthArticle(a) && a.lang === preferredLang);
     }
-    // Last resort: any language (never show empty)
-    if (result.length === 0) result = rawArticles.filter(isHealthArticle);
-    // Emergency: keyword search across ALL loaded articles when dedicated feeds failed
-    if (result.length === 0 && rawArticles.length > 0) {
-      const healthKws = ['health', 'hospital', 'disease', 'medicine', 'covid', 'cancer',
-        'diabetes', 'heart attack', 'vaccine', 'who report', 'स्वास्थ्य', 'अस्पताल',
-        'बीमारी', 'दवाई', 'चिकित्सा', 'कैंसर', 'डेंगू', 'टीकाकरण'];
-      result = rawArticles.filter(a =>
-        healthKws.some(kw => (a.title + ' ' + (a.summary || '')).toLowerCase().includes(kw))
-      ).slice(0, 20);
-    }
     if (sortOrder === 'oldest') {
       return [...result].sort((a, b) => new Date(a.pubDate) - new Date(b.pubDate));
     }
     return result;
-  }, [allArticles, rawArticles, sortOrder]);
+  }, [allArticles, rawArticles, sortOrder, lang]);
 
   // Hero slides — computed first so their IDs can be excluded below
   const heroSlides = useMemo(() => {

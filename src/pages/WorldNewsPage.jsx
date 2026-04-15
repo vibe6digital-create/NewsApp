@@ -102,13 +102,11 @@ const WorldNewsPage = () => {
       const preferredLang = lang === 'EN' ? 'en' : 'hi';
       result = rawArticles.filter(a => a.category === 'world' && a.lang === preferredLang);
     }
-    // Last resort: any language (never show empty)
-    if (result.length === 0) result = rawArticles.filter(a => a.category === 'world');
     if (sortOrder === 'oldest') {
       return [...result].sort((a, b) => new Date(a.pubDate) - new Date(b.pubDate));
     }
     return result;
-  }, [allArticles, rawArticles, sortOrder]);
+  }, [allArticles, rawArticles, sortOrder, lang]);
 
   // Build subsections with strict deduplication — each article appears in ONE section only
   const { filteredMap, latestArticles, activeSubsections } = useMemo(() => {

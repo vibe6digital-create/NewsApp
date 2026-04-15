@@ -159,22 +159,11 @@ const EducationPage = () => {
       const preferredLang = lang === 'EN' ? 'en' : 'hi';
       result = rawArticles.filter(a => a.category === 'education' && a.lang === preferredLang);
     }
-    // Last resort: any language (never show empty)
-    if (result.length === 0) result = rawArticles.filter(a => a.category === 'education');
-    // Emergency: keyword search across ALL loaded articles when dedicated feeds failed
-    if (result.length === 0 && rawArticles.length > 0) {
-      const eduKws = ['cbse', 'neet', 'jee', 'board exam', 'scholarship', 'admission',
-        'university', 'school result', 'exam result', 'बोर्ड परीक्षा', 'नीट', 'जेईई',
-        'परीक्षा परिणाम', 'शिक्षा', 'विद्यालय', 'छात्रवृत्ति', 'upsc result', 'ssc result'];
-      result = rawArticles.filter(a =>
-        eduKws.some(kw => (a.title + ' ' + (a.summary || '')).toLowerCase().includes(kw))
-      ).slice(0, 20);
-    }
     if (sortOrder === 'oldest') {
       return [...result].sort((a, b) => new Date(a.pubDate) - new Date(b.pubDate));
     }
     return result;
-  }, [allArticles, rawArticles, sortOrder]);
+  }, [allArticles, rawArticles, sortOrder, lang]);
 
   const filteredMap = useMemo(() => {
     const map = {};

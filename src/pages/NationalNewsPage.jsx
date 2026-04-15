@@ -101,8 +101,6 @@ const NationalNewsPage = () => {
     );
     // Fallback: older national articles (same language) from cache if current fetch has none
     if (result.length === 0) result = rawArticles.filter(a => a.category === 'national' && a.lang === langCode);
-    // Last resort: any language (never show empty)
-    if (result.length === 0) result = rawArticles.filter(a => a.category === 'national');
     if (sortOrder === 'oldest') {
       return [...result].sort((a, b) => new Date(a.pubDate) - new Date(b.pubDate));
     }
