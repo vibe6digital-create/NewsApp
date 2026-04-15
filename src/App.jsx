@@ -25,7 +25,6 @@ import Header from './components/layout/Header';
 import Navbar from './components/layout/Navbar';
 import BreakingTicker from './components/layout/BreakingTicker';
 import Footer from './components/layout/Footer';
-import MobileBottomNav from './components/layout/MobileBottomNav';
 import MobileCategoryBar from './components/layout/MobileCategoryBar';
 import LoadingSpinner from './components/common/LoadingSpinner';
 import ScrollToTop from './components/common/ScrollToTop';
@@ -147,7 +146,6 @@ function App() {
                     </Routes>
                   </main>
                   <Footer />
-                  <MobileBottomNav />
                 </>
               } />
             </Routes>

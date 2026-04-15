@@ -226,12 +226,6 @@ a:hover {
   margin-bottom: 2px;
 }
 
-/* Add padding at bottom on mobile for bottom nav */
-@media (max-width: 767px) {
-  body {
-    padding-bottom: 60px;
-  }
-}
 
 /* ── Sidebar ─────────────────────────────────────────── */
 .sidebar-sticky {
