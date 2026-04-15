@@ -341,6 +341,10 @@ const JobsPage = () => {
         jobKws.some(kw => (a.title + ' ' + (a.summary || '')).toLowerCase().includes(kw))
       ).slice(0, 20);
     }
+    // Absolute last resort: any-language job articles only when ALL above fail (feed outage)
+    if (result.length === 0) {
+      result = rawArticles.filter(isJobArticle);
+    }
     if (sortOrder === 'oldest') {
       return [...result].sort((a, b) => new Date(a.pubDate) - new Date(b.pubDate));
     }
