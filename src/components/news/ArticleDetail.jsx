@@ -56,9 +56,19 @@ const extractArticleFromHtml = (html) => {
     'main article', 'main .content', 'main',
   ];
 
+  // Strip inline color/background styles so our theme CSS takes control
+  const stripInlineColors = (el) => {
+    el.querySelectorAll('*').forEach(node => {
+      node.style.removeProperty('color');
+      node.style.removeProperty('background');
+      node.style.removeProperty('background-color');
+    });
+  };
+
   for (const sel of selectors) {
     const el = doc.querySelector(sel);
     if (el) {
+      stripInlineColors(el);
       const text = el.innerHTML.trim();
       if (text.replace(/<[^>]*>/g, '').trim().length > 150) return text;
     }

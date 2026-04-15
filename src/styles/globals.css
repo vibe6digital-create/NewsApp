@@ -497,14 +497,16 @@ img {
   border-bottom-color: #ddd;
 }
 
-/* Article Detail — override any inline dark colors */
+/* Article Detail — force dark text in light mode */
+[data-theme="light"] .article-detail { color: #111 !important; }
 [data-theme="light"] .article-detail .article-headline { color: #111 !important; }
 [data-theme="light"] .article-detail .article-lead { color: #333 !important; }
-[data-theme="light"] .article-detail .article-body,
-[data-theme="light"] .article-detail .article-body p,
-[data-theme="light"] .article-detail .article-body div,
-[data-theme="light"] .article-detail .article-body span,
-[data-theme="light"] .article-detail .article-body li { color: #222 !important; }
 [data-theme="light"] .article-detail .article-meta { color: #555 !important; }
 [data-theme="light"] .article-detail .breadcrumb-item,
 [data-theme="light"] .article-detail .breadcrumb-item a { color: #555 !important; }
+
+/* Nuke all inline color/bg styles inside article body — catches fetched external HTML */
+[data-theme="light"] .article-body * { color: #222 !important; background-color: transparent !important; }
+[data-theme="light"] .article-body a { color: #CC0000 !important; }
+[data-theme="light"] .article-body strong,
+[data-theme="light"] .article-body b { color: #111 !important; }
