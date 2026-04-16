@@ -42,6 +42,18 @@ const stripSourceAttribution = (text, source) => {
   return result;
 };
 
+// Strip junk markup from admin article body HTML before rendering
+const cleanBodyHtml = (html) => {
+  if (!html) return '';
+  return html
+    .replace(/\s*style\s*=\s*"[^"]*"/gi, '')
+    .replace(/\s*style\s*=\s*'[^']*'/gi, '')
+    .replace(/<[^>]+>\s*(?:Markdown Content:|Posted in\s[^<]*|Share this[^<]*|Our Land Our News[^<]*|Search for:[^<]*|Click to share[^<]*)\s*<\/[^>]+>/gi, '')
+    .replace(/<p[^>]*>\s*(?:Facebook|Twitter|WhatsApp|Telegram|Instagram|LinkedIn|Pinterest|Reddit|Email|Print)\s*<\/p>/gi, '')
+    .replace(/<p[^>]*>\s*The post\s[\s\S]*?appeared first on[\s\S]*?<\/p>/gi, '')
+    .replace(/<[^>]+>\s*https?:\/\/[^\s<]+\s*<\/[^>]+>/gi, '');
+};
+
 // Replace external <a> links with plain <span> to prevent external navigation
 const parseOptions = {
   replace(domNode) {
@@ -290,9 +302,16 @@ const ArticleDetail = ({ article }) => {
       {/* Article Body */}
       <div className="article-body" style={{ fontSize: '17px', lineHeight: 2, color: 'var(--text-primary)' }}>
 
-        {/* Admin-written articles: render body, stripping external links */}
+        {/* Admin-written articles: render body, stripping junk + external links */}
         {!article.isRss && article.body && (
-          <div>{parse(article.body, parseOptions)}</div>
+          <div>{parse(cleanBodyHtml(article.body), parseOptions)}</div>
+        )}
+
+        {/* Admin articles with no body and no summary */}
+        {!article.isRss && !article.body && !article.summary && (
+          <p style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>
+            {lang === 'EN' ? 'Full article content not available.' : 'पूर्ण लेख उपलब्ध नहीं है।'}
+          </p>
         )}
 
         {/* RSS articles: show AI summary only */}

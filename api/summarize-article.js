@@ -60,11 +60,11 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'llama-3.1-8b-instant',
-        max_tokens: 600,
+        max_tokens: 250,
         messages: [
           {
             role: 'system',
-            content: 'You are a news writer. Expand the given news snippet into a well-written article of 4-5 paragraphs covering all key facts. Write in the same language as the input (Hindi or English). Do NOT mention any source name, newspaper, website, author, journalist, or publication. Do not use phrases like "according to" or "reported by". State facts directly.',
+            content: 'Write a concise news summary in 3-4 sentences (80-120 words). Be factual and direct. Write in the same language as the input (Hindi or English). Do NOT mention any source name, website, author, or publication. Do not use "according to" or "reported by".',
           },
           {
             role: 'user',
