@@ -124,7 +124,7 @@ const CategoryCarousel = ({ slides, catColor, lang }) => {
 
 const CategoryPage = () => {
   const { slug } = useParams();
-  const { getCategoryWithFallback, allArticles, loading } = useNews();
+  const { getCategoryWithFallback, allArticles, loading, feedsComplete } = useNews();
   const { lang, t } = useLang();
   const [visibleCount, setVisibleCount] = useState(12);
   const [sortOrder, setSortOrder] = useState('latest');
@@ -153,7 +153,7 @@ const CategoryPage = () => {
 
   const topStories = articles.filter(a => a.image).slice(0, 5);
 
-  if (loading) {
+  if (loading || (!feedsComplete && articles.length === 0)) {
     return (
       <div className="container py-4">
         <LoadingSpinner count={6} />

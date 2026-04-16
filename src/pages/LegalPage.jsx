@@ -78,12 +78,12 @@ const sitemapSections = {
     {
       heading: 'राज्य समाचार',
       links: [
-        { label: 'दिल्ली', to: '/category/delhi' },
-        { label: 'उत्तराखंड', to: '/category/uttarakhand' },
-        { label: 'उत्तर प्रदेश', to: '/category/uttar-pradesh' },
-        { label: 'मध्य प्रदेश', to: '/category/madhya-pradesh' },
-        { label: 'महाराष्ट्र', to: '/category/maharashtra' },
-        { label: 'बिहार', to: '/category/bihar' },
+        { label: 'दिल्ली', to: '/state/delhi' },
+        { label: 'उत्तराखंड', to: '/state/uttarakhand' },
+        { label: 'उत्तर प्रदेश', to: '/state/uttar-pradesh' },
+        { label: 'मध्य प्रदेश', to: '/state/madhya-pradesh' },
+        { label: 'महाराष्ट्र', to: '/state/maharashtra' },
+        { label: 'बिहार', to: '/state/bihar' },
       ],
     },
     {
@@ -112,12 +112,12 @@ const sitemapSections = {
     {
       heading: 'State News',
       links: [
-        { label: 'Delhi', to: '/category/delhi' },
-        { label: 'Uttarakhand', to: '/category/uttarakhand' },
-        { label: 'Uttar Pradesh', to: '/category/uttar-pradesh' },
-        { label: 'Madhya Pradesh', to: '/category/madhya-pradesh' },
-        { label: 'Maharashtra', to: '/category/maharashtra' },
-        { label: 'Bihar', to: '/category/bihar' },
+        { label: 'Delhi', to: '/state/delhi' },
+        { label: 'Uttarakhand', to: '/state/uttarakhand' },
+        { label: 'Uttar Pradesh', to: '/state/uttar-pradesh' },
+        { label: 'Madhya Pradesh', to: '/state/madhya-pradesh' },
+        { label: 'Maharashtra', to: '/state/maharashtra' },
+        { label: 'Bihar', to: '/state/bihar' },
       ],
     },
     {
