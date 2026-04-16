@@ -106,8 +106,9 @@ export const NewsProvider = ({ children }) => {
   }, [allArticles]);
 
   const getArticleById = useCallback((id) => {
-    return rawArticles.find(a => a.id === id) || null;
-  }, [rawArticles]);
+    const preferredLang = lang === 'EN' ? 'en' : 'hi';
+    return rawArticles.find(a => a.id === id && a.lang === preferredLang) || null;
+  }, [rawArticles, lang]);
 
   // Returns category-filtered articles from allArticles; falls back to rawArticles
   // (same language) so sections are never empty.

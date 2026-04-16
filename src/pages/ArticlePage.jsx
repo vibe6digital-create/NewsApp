@@ -10,11 +10,15 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const ArticlePage = () => {
   const { id } = useParams();
-  const { getArticleById, allArticles, loading } = useNews();
+  const { getArticleById, rawArticles, loading } = useNews();
   const { getArticle } = useAdmin();
-  const { t } = useLang();
+  const { t, lang } = useLang();
+  const preferredLang = lang === 'EN' ? 'en' : 'hi';
 
-  const article = getArticleById(id) || getArticle(id);
+  // getArticleById already filters by lang; apply same check to admin fallback
+  const rawAdmin = getArticle(id);
+  const article = getArticleById(id) ||
+    ((rawAdmin?.lang || 'hi') === preferredLang ? rawAdmin : null);
 
   // Still fetching feeds — don't show "not found" yet
   if (!article && loading) {
@@ -26,6 +30,13 @@ const ArticlePage = () => {
   }
 
   if (!article) {
+    // Article exists but is in the other language
+    const existsInOtherLang = rawArticles.some(a => a.id === id) ||
+      (rawAdmin && (rawAdmin.lang || 'hi') !== preferredLang);
+    const langMismatchMsg = lang === 'EN'
+      ? 'This article is not available in English.'
+      : 'यह खबर हिंदी में उपलब्ध नहीं है।';
+
     return (
       <div className="container py-5 text-center" style={{ minHeight: '60vh' }}>
         <div style={{ fontSize: '5rem', marginBottom: '16px' }}>🔍</div>
@@ -39,7 +50,7 @@ const ArticlePage = () => {
           {t('articleNotFound')}
         </h2>
         <p style={{ color: '#999' }}>
-          {t('articleNotFoundDesc')}
+          {existsInOtherLang ? langMismatchMsg : t('articleNotFoundDesc')}
         </p>
         <Link
           to="/"
