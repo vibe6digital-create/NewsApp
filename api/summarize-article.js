@@ -13,21 +13,27 @@ export default async function handler(req, res) {
   try {
     // Pattern-based line-level cleaner — removes junk lines, keeps real article text
     const JUNK_LINE = [
-      /^markdown\s*content\s*:/i,                          // "Markdown Content:"
-      /^(close\s+)?search(\s+for)?\s*:/i,                  // "Search for:", "Close Search for:"
-      /^posted\s+in\b/i,                                   // "Posted in Assam"
-      /^by\s+\S/i,                                         // "By Karthik", "byNE NOW NEWS"
-      /^share\s*(this)?\s*:?$/i,                           // "Share this:", "Share:"
-      /^(click\s+to\s+share|opens?\s+in\s+new\s+window)/i, // share button text
+      /^#{1,6}\s*/,                                          // Markdown headers (##, ###, ####)
+      /^markdown\s*content\s*:/i,
+      /^(close\s+)?search(\s+for)?\s*:/i,
+      /^posted\s+in\b/i,
+      /^by\s+\S/i,
+      /^share\s*(this)?\s*:?$/i,
+      /^(click\s+to\s+share|opens?\s+in\s+new\s+window)/i,
       /^(facebook|twitter|whatsapp|telegram|instagram|linkedin|pinterest|reddit|tumblr|koo|email|print|copy\s*(url|link))\s*$/i,
-      /^(top\s+stories|also\s+read|related(\s+posts?)?|more\s+(news|stories)?|next\s+story)\s*:?$/i,
+      /facebook.*twitter|twitter.*whatsapp|whatsapp.*instagram/i, // concatenated social links
+      /^(top\s+stories|also\s+read|related(\s+posts?)?|more\s+(news|stories)?|next\s+story|trending\s+news|ट्रेंडिंग\s+न्यूज़)\s*:?$/i,
       /^(home|menu|navigation|subscribe|newsletter)\s*$/i,
       /^(national|world|technology|health|education|sports|entertainment|business|politics|state)\s*$/i,
-      /^add\s+.{3,60}\s+as\s+your\s+preferred\s+source/i,  // "Add X as your preferred source"
+      /^add\s+.{3,60}\s+as\s+your\s+preferred\s+source/i,
       /^our\s+land\s+our\s+news/i,
-      /style\s*=\s*["'][^"']*["']/i,                       // inline CSS remnants
-      /^https?:\/\/\S+$/i,                                 // bare URLs
-      /^\s*[*\-–•]\s*(click|share|open|follow)\b/i,        // bullet share items
+      /style\s*=\s*["'][^"']*["']/i,
+      /^https?:\/\/\S+$/i,                                   // bare URLs
+      /\bndtv\.in\b/i,                                       // NDTV domain attribution
+      /ताज़ातरीन\s+खबरों\s+को\s+ट्रैक/i,                   // NDTV tagline
+      /पूरी\s+स्टोरी\s+पढ़ें/i,                            // "Read full story"
+      /read\s+(full\s+)?(story|article|more)/i,              // "Read full story / Read more"
+      /^\s*[*\-–•]\s*(click|share|open|follow)\b/i,
     ];
 
     const cleanText = (t) => {
@@ -36,13 +42,19 @@ export default async function handler(req, res) {
       let text = t
         .replace(/<[^>]+>/g, ' ')
         .replace(/&[a-z#0-9]+;/gi, ' ');
-      // 2. Remove lines matching junk patterns
+      // 2. Strip markdown formatting (headers, bold, italic, bullets)
+      text = text
+        .replace(/^#{1,6}\s+/gm, '')
+        .replace(/\*\*([^*]+)\*\*/g, '$1')
+        .replace(/\*([^*]+)\*/g, '$1')
+        .replace(/^\s*[\*\-]\s+/gm, '');
+      // 3. Remove lines matching junk patterns
       text = text
         .split('\n')
         .map(line => line.trim())
         .filter(line => line.length > 0 && !JUNK_LINE.some(re => re.test(line)))
         .join('\n');
-      // 3. Collapse excess whitespace
+      // 4. Collapse excess whitespace
       return text.replace(/[ \t]{2,}/g, ' ').trim();
     };
 
@@ -64,7 +76,7 @@ export default async function handler(req, res) {
         messages: [
           {
             role: 'system',
-            content: 'Write a concise news summary in 3-4 sentences (80-120 words). Be factual and direct. Write in the same language as the input (Hindi or English). Do NOT mention any source name, website, author, or publication. Do not use "according to" or "reported by".',
+            content: 'Write a concise news summary in 3-4 sentences (80-120 words). Be factual and direct. Write in the same language as the input (Hindi or English). Do NOT use markdown, bullet points, headers, or any formatting symbols. Write plain prose only. Do NOT mention any source name, website, domain, author, or publication.',
           },
           {
             role: 'user',

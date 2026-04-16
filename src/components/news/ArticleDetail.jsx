@@ -17,7 +17,16 @@ const cleanBodyHtml = (html) => {
     .replace(/<[^>]+>\s*(?:Markdown Content:|Posted in\s[^<]*|Share this[^<]*|Our Land Our News[^<]*|Search for:[^<]*|Click to share[^<]*)\s*<\/[^>]+>/gi, '')
     .replace(/<p[^>]*>\s*(?:Facebook|Twitter|WhatsApp|Telegram|Instagram|LinkedIn|Pinterest|Reddit|Email|Print)\s*<\/p>/gi, '')
     .replace(/<p[^>]*>\s*The post\s[\s\S]*?appeared first on[\s\S]*?<\/p>/gi, '')
-    .replace(/<[^>]+>\s*https?:\/\/[^\s<]+\s*<\/[^>]+>/gi, '');
+    .replace(/<[^>]+>\s*https?:\/\/[^\s<]+\s*<\/[^>]+>/gi, '')
+    // NDTV / network taglines
+    .replace(/<[^>]+>[^<]*ndtv\.in[^<]*<\/[^>]+>/gi, '')
+    .replace(/<[^>]+>[^<]*ताज़ातरीन\s+खबरों[^<]*<\/[^>]+>/gi, '')
+    // "Read full story" links
+    .replace(/<[^>]+>[^<]*(?:पूरी\s+स्टोरी\s+पढ़ें|read\s+full\s+story|read\s+more)[^<]*<\/[^>]+>/gi, '')
+    // Trending / navigation headings
+    .replace(/<[^>]+>[^<]*(?:ट्रेंडिंग\s+न्यूज़|trending\s+news)[^<]*<\/[^>]+>/gi, '')
+    // Markdown headers that leaked as text
+    .replace(/^#{1,6}\s+/gm, '');
 };
 
 // Replace external <a> links with plain <span> to prevent external navigation
@@ -290,15 +299,25 @@ const ArticleDetail = ({ article }) => {
 
         {article.isRss && !summarizing && aiSummary && (
           <div>
-            {aiSummary.split(/\n{2,}/).filter(p => p.trim().length > 0).map((para, i) => (
-              <p key={i}>{para.trim()}</p>
-            ))}
+            {aiSummary
+              .replace(/^#{1,6}\s+/gm, '')      // strip any markdown headers Groq slips in
+              .replace(/\*\*?([^*]+)\*\*?/g, '$1') // strip bold/italic
+              .split(/\n{2,}/)
+              .map(p => p.trim())
+              .filter(p => p.length > 0 && !/ndtv\.in|ताज़ातरीन\s+खबरों|पूरी\s+स्टोरी\s+पढ़ें|ट्रेंडिंग\s+न्यूज़|facebook.*twitter/i.test(p))
+              .map((para, i) => (
+                <p key={i}>{para}</p>
+              ))}
           </div>
         )}
 
         {/* RSS fallback: if AI summary unavailable, show cleaned RSS snippet */}
         {article.isRss && !summarizing && !aiSummary && article.summary && (
-          <p>{stripSourceAttribution(article.summary, article.source)}</p>
+          <p>{stripSourceAttribution(article.summary, article.source)
+            .replace(/पूरी\s+स्टोरी\s+पढ़ें[^।.]*[।.]?/gi, '')
+            .replace(/ndtv\.in[^।.]*[।.]?/gi, '')
+            .replace(/ट्रेंडिंग\s+न्यूज़.*/gi, '')
+            .trim()}</p>
         )}
       </div>
 
