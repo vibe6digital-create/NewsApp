@@ -148,7 +148,7 @@ const DailyHoroscope = ({ lang }) => {
   const pred  = getPrediction(activeIdx);
   const scores = getScores(activeIdx);
   const today  = new Date();
-  const dateStr = today.toLocaleDateString('hi-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const dateStr = today.toLocaleDateString(lang === 'EN' ? 'en-IN' : 'hi-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
   return (
     <div className="dh-wrapper">
@@ -431,7 +431,7 @@ const AstrologyPage = () => {
   }, [getByCategory, rawArticles, lang]);
 
   const today = new Date();
-  const dateStr = today.toLocaleDateString('hi-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  const dateStr = today.toLocaleDateString(lang === 'EN' ? 'en-IN' : 'hi-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
   const moonSign = useMemo(() => {
     if (!moonBirthMonth) return null;
