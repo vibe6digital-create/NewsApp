@@ -5,6 +5,7 @@ import { timeAgo } from '../../utils/formatDate';
 import { useLang } from '../../context/LanguageContext';
 import { getCategoryFallbackImage, SAFE_FALLBACK } from '../../utils/categoryImages';
 import '../../styles/newscard.css';
+import { stripSourceAttribution } from '../../utils/stripSource';
 
 const NewsCard = ({ article, size = 'md' }) => {
   const navigate = useNavigate();
@@ -94,7 +95,7 @@ const NewsCard = ({ article, size = 'md' }) => {
         <h3 className="card-headline">{article.title}</h3>
 
         {(size === 'lg' || size === 'md') && article.summary && (
-          <p className="card-summary">{article.summary}</p>
+          <p className="card-summary">{stripSourceAttribution(article.summary, article.source)}</p>
         )}
 
         <div className="card-footer-info">

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { timeAgo } from '../../utils/formatDate';
+import { stripSourceAttribution } from '../../utils/stripSource';
 
 const NationalNewsCard = ({ article, lang, isLead, accentColor, subsectionKey }) => {
   const navigate = useNavigate();
@@ -182,7 +183,7 @@ const NationalNewsCard = ({ article, lang, isLead, accentColor, subsectionKey })
             display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
             lineHeight: 1.5,
           }}>
-            {article.summary}
+            {stripSourceAttribution(article.summary, article.source)}
           </p>
         )}
 

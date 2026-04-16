@@ -6,41 +6,7 @@ import { getCategoryLabel, getCategoryLabelEn } from '../../utils/categoryColors
 import { useLang } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { PORTAL_NAME } from '../../utils/constants';
-
-
-// Strip source attribution and share-widget text from RSS summary
-const stripSourceAttribution = (text, source) => {
-  if (!text) return text;
-  let result = text;
-
-  // Strip WordPress "The post ... appeared first on ..." tail
-  result = result.replace(/\s*The post\s.+$/i, '').trim();
-
-  // Strip social share widget text — cut everything from the first share-list keyword
-  result = result.replace(
-    /\s*(share(\s*this)?[\s:]*|related\s*posts?|also\s*read)[\s\S]*(facebook|twitter|whatsapp|telegram|koo|pinterest|linkedin|instagram|tumblr|reddit|email|print)[\s\S]*$/i,
-    ''
-  ).trim();
-  // Also strip if share keywords appear at start of a "list" (no preceding real text)
-  result = result.replace(
-    /\n?(facebook|twitter|whatsapp|telegram|koo|pinterest|linkedin|instagram|tumblr|reddit|email|print|copy url|copy link)(\s*\n[\s\S]*)?$/i,
-    ''
-  ).trim();
-
-  if (source) {
-    const esc = source.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    result = result
-      .replace(new RegExp(`\\s*[-–—|/]\\s*${esc}[\\s.,]*$`, 'gi'), '')
-      .replace(new RegExp(`\\s*\\(${esc}\\)[\\s.,]*$`, 'gi'), '')
-      .replace(new RegExp(`(source|साभार|सौजन्य)\\s*:?\\s*${esc}`, 'gi'), '');
-  }
-  // Generic trailing attribution
-  result = result
-    .replace(/\s*[-–—]\s*[A-Z][a-zA-Z\s]{2,30}[a-z]\s*$/, '')
-    .replace(/\s*\|\s*[A-Z][a-zA-Z\s]{2,30}[a-z]\s*$/, '')
-    .trim();
-  return result;
-};
+import { stripSourceAttribution } from '../../utils/stripSource';
 
 // Strip junk markup from admin article body HTML before rendering
 const cleanBodyHtml = (html) => {

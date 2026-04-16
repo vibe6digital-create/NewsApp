@@ -5,6 +5,7 @@ import { useLang } from '../../context/LanguageContext';
 import { timeAgo } from '../../utils/formatDate';
 import { CATEGORY_KEYWORDS } from '../../utils/constants';
 import { getCategoryFallbackImage } from '../../utils/categoryImages';
+import { stripSourceAttribution } from '../../utils/stripSource';
 import NewsCardHorizontal from '../news/NewsCardHorizontal';
 import LoadingSpinner from '../common/LoadingSpinner';
 
@@ -71,7 +72,7 @@ const UKFeaturedCard = ({ article }) => {
             margin: 0, marginBottom: '10px',
             display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
           }}>
-            {article.summary}
+            {stripSourceAttribution(article.summary, article.source)}
           </p>
         )}
         <div style={{ fontSize: '11px', color: '#aaa' }}>
