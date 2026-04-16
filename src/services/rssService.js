@@ -1,4 +1,5 @@
 import { RSS_FEEDS, CACHE_KEY, CACHE_DURATION, CATEGORY_KEYWORDS, API_BASE } from '../utils/constants';
+import { stripSourceAttribution } from '../utils/stripSource';
 
 // Backend RSS proxy — uses relative /api/rss which Vercel rewrites to Render backend
 // Falls back to public CORS proxies if backend is unavailable
@@ -173,7 +174,7 @@ const parseFeed = (xmlText, feedConfig) => {
       // Try Atom format
       const entries = doc.querySelectorAll('entry');
       return Array.from(entries).slice(0, 10).map(entry => {
-        const title = entry.querySelector('title')?.textContent?.trim() || '';
+        const rawTitle = entry.querySelector('title')?.textContent?.trim() || '';
         const contentEl = entry.querySelector('content');
         const summaryRaw = entry.querySelector('summary')?.textContent?.trim() ||
                         contentEl?.textContent?.trim() || '';
@@ -186,11 +187,12 @@ const parseFeed = (xmlText, feedConfig) => {
         // Only use content element as body — summary is already stored in summary field
         const cleanSummary = htmlToText(summaryRaw);
         const body = fullBody.length > 100 ? fullBody : null;
+        const title = stripSourceAttribution(rawTitle, feedConfig.name);
 
         return {
-          id: generateId(title, feedConfig.name),
+          id: generateId(rawTitle, feedConfig.name),
           title,
-          summary: cleanSummary.substring(0, 600),
+          summary: stripSourceAttribution(cleanSummary, feedConfig.name).substring(0, 600),
           body,
           image,
           link,
@@ -205,7 +207,7 @@ const parseFeed = (xmlText, feedConfig) => {
     }
 
     return Array.from(items).slice(0, 10).map(item => {
-      const title = item.querySelector('title')?.textContent?.trim() || '';
+      const rawTitle = item.querySelector('title')?.textContent?.trim() || '';
       const description = item.querySelector('description')?.textContent?.trim() || '';
       const link = item.querySelector('link')?.textContent?.trim() || '';
       const pubDate = item.querySelector('pubDate')?.textContent ||
@@ -220,11 +222,12 @@ const parseFeed = (xmlText, feedConfig) => {
       // Only use content:encoded as body — description is already stored in summary
       const cleanDesc = htmlToText(description);
       const body = fullBody.length > 100 ? fullBody : null;
+      const title = stripSourceAttribution(rawTitle, feedConfig.name);
 
       return {
-        id: generateId(title, feedConfig.name),
+        id: generateId(rawTitle, feedConfig.name),
         title,
-        summary: cleanDesc.substring(0, 600),
+        summary: stripSourceAttribution(cleanDesc, feedConfig.name).substring(0, 600),
         body,
         image,
         link,
