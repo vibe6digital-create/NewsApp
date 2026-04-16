@@ -304,7 +304,7 @@ const ArticleDetail = ({ article }) => {
               .replace(/\*\*?([^*]+)\*\*?/g, '$1') // strip bold/italic
               .split(/\n{2,}/)
               .map(p => p.trim())
-              .filter(p => p.length > 0 && !/ndtv\.in|ताज़ातरीन\s+खबरों|पूरी\s+स्टोरी\s+पढ़ें|ट्रेंडिंग\s+न्यूज़|facebook.*twitter/i.test(p))
+              .filter(p => p.length > 0 && !/ndtv\.in|ndtv\s+group|dnpa\s+code|all\s+rights\s+reserved|©|copyright|get\s+app|jiosaavn|listen\s+to\s+the\s+latest|only\s+on\s+jio|अन्य\s+समाचार|ताज़ातरीन\s+खबर|पूरी\s+स्टोरी\s+पढ़ें|ट्रेंडिंग\s+न्यूज़|facebook.*twitter|youtube.*instagram/i.test(p))
               .map((para, i) => (
                 <p key={i}>{para}</p>
               ))}
@@ -312,13 +312,14 @@ const ArticleDetail = ({ article }) => {
         )}
 
         {/* RSS fallback: if AI summary unavailable, show cleaned RSS snippet */}
-        {article.isRss && !summarizing && !aiSummary && article.summary && (
-          <p>{stripSourceAttribution(article.summary, article.source)
-            .replace(/पूरी\s+स्टोरी\s+पढ़ें[^।.]*[।.]?/gi, '')
-            .replace(/ndtv\.in[^।.]*[।.]?/gi, '')
-            .replace(/ट्रेंडिंग\s+न्यूज़.*/gi, '')
-            .trim()}</p>
-        )}
+        {article.isRss && !summarizing && !aiSummary && article.summary && (() => {
+          const cleaned = stripSourceAttribution(article.summary, article.source)
+            .split(/\n+/)
+            .filter(line => line.trim().length > 0 && !/ndtv\.in|ndtv\s+group|dnpa\s+code|all\s+rights\s+reserved|©|copyright|get\s+app|jiosaavn|listen\s+to\s+the\s+latest|only\s+on\s+jio|अन्य\s+समाचार|ताज़ातरीन\s+खबर|पूरी\s+स्टोरी\s+पढ़ें|ट्रेंडिंग\s+न्यूज़|facebook.*twitter|youtube.*instagram/i.test(line))
+            .join(' ')
+            .trim();
+          return cleaned ? <p>{cleaned}</p> : null;
+        })()}
       </div>
 
 

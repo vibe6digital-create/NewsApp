@@ -21,7 +21,7 @@ export default async function handler(req, res) {
       /^share\s*(this)?\s*:?$/i,
       /^(click\s+to\s+share|opens?\s+in\s+new\s+window)/i,
       /^(facebook|twitter|whatsapp|telegram|instagram|linkedin|pinterest|reddit|tumblr|koo|email|print|copy\s*(url|link))\s*$/i,
-      /facebook.*twitter|twitter.*whatsapp|whatsapp.*instagram/i, // concatenated social links
+      /facebook.*twitter|twitter.*whatsapp|whatsapp.*instagram|youtube.*instagram|instagram.*threads/i, // concatenated social links
       /^(top\s+stories|also\s+read|related(\s+posts?)?|more\s+(news|stories)?|next\s+story|trending\s+news|ट्रेंडिंग\s+न्यूज़)\s*:?$/i,
       /^(home|menu|navigation|subscribe|newsletter)\s*$/i,
       /^(national|world|technology|health|education|sports|entertainment|business|politics|state)\s*$/i,
@@ -30,10 +30,20 @@ export default async function handler(req, res) {
       /style\s*=\s*["'][^"']*["']/i,
       /^https?:\/\/\S+$/i,                                   // bare URLs
       /\bndtv\.in\b/i,                                       // NDTV domain attribution
+      /ndtv\s+group\s+sites/i,                               // NDTV footer heading
+      /dnpa\s+code\s+of\s+ethics/i,                          // NDTV/DNPA ethics notice
+      /©|copyright\s.*all\s+rights\s+reserved/i,             // copyright lines
+      /all\s+rights\s+reserved/i,
+      /get\s+app\s+(for\s+)?better\s+experience/i,           // app download prompt
+      /jiosaavn/i,                                            // JioSaavn promo
+      /अन्य\s+समाचार.*वीडियो.*फोटो/i,                       // NDTV "search" prompt
       /ताज़ातरीन\s+खबरों\s+को\s+ट्रैक/i,                   // NDTV tagline
+      /ताज़ातरीन\s+खबरें/i,                                  // NDTV "latest news"
       /पूरी\s+स्टोरी\s+पढ़ें/i,                            // "Read full story"
       /read\s+(full\s+)?(story|article|more)/i,              // "Read full story / Read more"
       /^\s*[*\-–•]\s*(click|share|open|follow)\b/i,
+      /listen\s+to\s+the\s+latest\s+songs/i,                 // music streaming promo
+      /only\s+on\s+(jiosaavn|spotify|gaana|wynk)/i,
     ];
 
     const cleanText = (t) => {
