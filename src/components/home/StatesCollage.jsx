@@ -156,12 +156,14 @@ const StatesCollage = () => {
   const { lang, t } = useLang();
 
   const stateArticles = useMemo(() => {
+    const preferredLang = lang === 'EN' ? 'en' : 'hi';
+    const langFilteredRaw = rawArticles.filter(a => a.lang === preferredLang);
     return INDIA_STATES.map((state) => {
-      // Try current articles first, fall back to older cached articles
-      const article = findStateArticle(allArticles, state) || findStateArticle(rawArticles, state);
+      // Try current articles first, fall back to older cached articles (same language)
+      const article = findStateArticle(allArticles, state) || findStateArticle(langFilteredRaw, state);
       return { state, article };
     });
-  }, [allArticles, rawArticles]);
+  }, [allArticles, rawArticles, lang]);
 
   if (loading) return null;
 

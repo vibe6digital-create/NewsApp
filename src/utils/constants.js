@@ -8,7 +8,7 @@ export const ADMIN_USER = "admin";
 export const ADMIN_PASS = "news@2026";
 export const SUBSCRIPTION_KEY = "portal_subscribers";
 export const ARTICLES_KEY = "portal_articles";
-export const CACHE_KEY = "rss_cache_v41";
+export const CACHE_KEY = "rss_cache_v42";
 export const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
 // Backend API URL — change this to your Render URL after deploying
