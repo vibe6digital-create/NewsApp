@@ -409,6 +409,46 @@ const ArticleDetail = ({ article }) => {
             {lang === 'EN' ? 'Loading full article…' : 'पूरी खबर लोड हो रही है…'}
           </div>
         )}
+
+        {/* Read full article on source when content couldn't be fetched */}
+        {!fetching && !fullContent && !article.body && article.link && article.link !== '#' && (
+          <div
+            style={{
+              marginTop: '24px',
+              padding: '20px 24px',
+              background: 'var(--dark-2)',
+              border: '1px solid var(--card-border)',
+              borderRadius: '10px',
+              textAlign: 'center',
+            }}
+          >
+            <p style={{ color: 'var(--text-muted)', fontSize: '15px', marginBottom: '16px' }}>
+              {lang === 'EN'
+                ? 'Full article is available on the original source.'
+                : 'पूरी खबर मूल स्रोत पर उपलब्ध है।'}
+            </p>
+            <a
+              href={article.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                background: '#CC0000',
+                color: '#fff',
+                padding: '10px 24px',
+                borderRadius: '6px',
+                fontWeight: 600,
+                fontSize: '15px',
+                textDecoration: 'none',
+              }}
+            >
+              <i className="fas fa-external-link-alt" />
+              {lang === 'EN' ? `Read on ${article.source}` : `${article.source} पर पढ़ें`}
+            </a>
+          </div>
+        )}
       </div>
 
 
