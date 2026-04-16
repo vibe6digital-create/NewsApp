@@ -504,3 +504,12 @@ img {
 [data-theme="light"] .article-body a { color: #CC0000 !important; }
 [data-theme="light"] .article-body strong,
 [data-theme="light"] .article-body b { color: #111 !important; }
+
+/* Contain all images/SVGs inside article body — prevents social icons from going huge */
+.article-body img, .article-body svg {
+  max-width: 100% !important;
+  max-height: 500px !important;
+  height: auto !important;
+  display: block;
+}
+.article-body svg { display: none !important; }

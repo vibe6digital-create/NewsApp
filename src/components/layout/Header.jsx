@@ -21,7 +21,11 @@ const Header = () => {
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     const q = searchQuery.trim();
-    if (q) { navigate(`/search?q=${encodeURIComponent(q)}`); setIsSearchOpen(false); setSearchQuery(''); }
+    if (q) {
+      navigate(`/search?q=${encodeURIComponent(q)}`);
+      setIsSearchOpen(false);
+      setSearchQuery('');
+    }
   };
 
   useEffect(() => {

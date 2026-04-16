@@ -1,148 +1,65 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import parse from 'html-react-parser';
+import parse, { domToReact } from 'html-react-parser';
 import { formatNewsDate } from '../../utils/formatDate';
 import { getCategoryLabel, getCategoryLabelEn } from '../../utils/categoryColors';
 import { useLang } from '../../context/LanguageContext';
-import ShareButtons from '../common/ShareButtons';
 import { useAuth } from '../../context/AuthContext';
 import { PORTAL_NAME } from '../../utils/constants';
 
-// Multiple reader services — tried in order until one returns good content
-const READER_SERVICES = [
-  // Our own Vercel serverless function — most reliable, no CORS or rate limits
-  (url) => fetch(`/api/fetch-article?url=${encodeURIComponent(url)}`, {
-    signal: AbortSignal.timeout(12000),
-  }).then(r => r.ok ? r.text() : null),
-  // AllOrigins proxy — fetches raw HTML for extraction
-  (url) => fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, {
-    signal: AbortSignal.timeout(10000),
-  }).then(r => r.ok ? r.json() : null).then(d => d?.contents || null),
-  // Jina AI Reader — fallback
-  (url) => fetch(`https://r.jina.ai/${url}`, {
-    headers: { 'Accept': 'text/plain' },
-    signal: AbortSignal.timeout(10000),
-  }).then(r => r.ok ? r.text() : null),
-];
 
-// Extract main article text from raw HTML
-const extractArticleFromHtml = (html) => {
-  if (!html || html.length < 200) return null;
-  const doc = new DOMParser().parseFromString(html, 'text/html');
-  // Remove non-content elements
-  doc.querySelectorAll(
-    'script,style,nav,header,footer,aside,iframe,noscript,button,form,' +
-    '.ad,.ads,.sidebar,.menu,.nav,.comment,.social,.share,.related,' +
-    '.subscription,.paywall,.newsletter,.popup,.modal,.cookie,.banner,' +
-    '.breadcrumb,.tags,.author-bio,.more-stories,.also-read'
-  ).forEach(el => el.remove());
+// Strip source attribution and share-widget text from RSS summary
+const stripSourceAttribution = (text, source) => {
+  if (!text) return text;
+  let result = text;
 
-  // Site-specific selectors (Indian news sites first, then generic)
-  const selectors = [
-    // Indian news sites
-    '.jagran-story-full-text', '.story-details', '.story__content',   // Jagran
-    '.details-body', '.article__body',                                  // Amar Ujala
-    '.art_content', '.bhaskar-article',                                 // Dainik Bhaskar
-    '.readmore_span', '.article_text',                                  // NBT/TOI
-    '.sp-cn', '.ndtv__storycontent',                                    // NDTV
-    '.artText', '.fullstory',                                           // ABP/Zee
-    '.article-body__content', '.article-body',                          // BBC Hindi
-    '.Normal', '.article-txt',                                          // Times of India
-    '.story-body', '.story-content',                                    // LiveHindustan
-    '.content-area', '.post-body',                                      // Generic blogs
-    // Standard selectors
-    '[itemprop="articleBody"]', 'article', '.entry-content',
-    '.post-content', '.article-content', '.story-body',
-    'main article', 'main .content', 'main',
-  ];
+  // Strip WordPress "The post ... appeared first on ..." tail
+  result = result.replace(/\s*The post\s.+$/i, '').trim();
 
-  // Strip inline color/background styles so our theme CSS takes control
-  const stripInlineColors = (el) => {
-    el.querySelectorAll('*').forEach(node => {
-      node.style.removeProperty('color');
-      node.style.removeProperty('background');
-      node.style.removeProperty('background-color');
-    });
-  };
+  // Strip social share widget text — cut everything from the first share-list keyword
+  result = result.replace(
+    /\s*(share(\s*this)?[\s:]*|related\s*posts?|also\s*read)[\s\S]*(facebook|twitter|whatsapp|telegram|koo|pinterest|linkedin|instagram|tumblr|reddit|email|print)[\s\S]*$/i,
+    ''
+  ).trim();
+  // Also strip if share keywords appear at start of a "list" (no preceding real text)
+  result = result.replace(
+    /\n?(facebook|twitter|whatsapp|telegram|koo|pinterest|linkedin|instagram|tumblr|reddit|email|print|copy url|copy link)(\s*\n[\s\S]*)?$/i,
+    ''
+  ).trim();
 
-  for (const sel of selectors) {
-    const el = doc.querySelector(sel);
-    if (el) {
-      stripInlineColors(el);
-      const text = el.innerHTML.trim();
-      if (text.replace(/<[^>]*>/g, '').trim().length > 150) return text;
-    }
+  if (source) {
+    const esc = source.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    result = result
+      .replace(new RegExp(`\\s*[-–—|/]\\s*${esc}[\\s.,]*$`, 'gi'), '')
+      .replace(new RegExp(`\\s*\\(${esc}\\)[\\s.,]*$`, 'gi'), '')
+      .replace(new RegExp(`(source|साभार|सौजन्य)\\s*:?\\s*${esc}`, 'gi'), '');
   }
-
-  // Fallback: grab all <p> tags with real content
-  const paragraphs = Array.from(doc.querySelectorAll('p'))
-    .map(p => p.textContent.trim())
-    .filter(t => t.length > 20);
-  if (paragraphs.length >= 2) {
-    return paragraphs.map(p => `<p>${p}</p>`).join('');
-  }
-  return null;
+  // Generic trailing attribution
+  result = result
+    .replace(/\s*[-–—]\s*[A-Z][a-zA-Z\s]{2,30}[a-z]\s*$/, '')
+    .replace(/\s*\|\s*[A-Z][a-zA-Z\s]{2,30}[a-z]\s*$/, '')
+    .trim();
+  return result;
 };
 
-const fetchFullArticle = async (articleUrl) => {
-  for (const service of READER_SERVICES) {
-    try {
-      const text = await service(articleUrl);
-      if (!text || text.length < 200) continue;
-      // If it looks like HTML from AllOrigins, extract article content
-      if (text.includes('<!DOCTYPE') || text.includes('<html')) {
-        const extracted = extractArticleFromHtml(text);
-        if (extracted) return extracted;
-        continue;
+// Replace external <a> links with plain <span> to prevent external navigation
+const parseOptions = {
+  replace(domNode) {
+    if (domNode.type === 'tag' && domNode.name === 'a') {
+      const href = domNode.attribs?.href || '';
+      if (href.startsWith('http') || href.startsWith('//')) {
+        return <span>{domToReact(domNode.children, parseOptions)}</span>;
       }
-      return text;
-    } catch (_) {
-      // Try next service
     }
-  }
-  return null;
-};
-
-// Convert plain text / markdown from Jina into readable paragraphs
-const markdownToHtml = (text) => {
-  return text
-    // Remove Jina metadata lines at the top (Title:, URL:, etc.)
-    .replace(/^(Title|URL|Published Time|Description|Keywords|Author|Source|Publisher|Website|Site)[^\n]*\n/gim, '')
-    // Remove markdown image syntax
-    .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
-    // Remove markdown links with text: [text](url) or [text](url "title")
-    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
-    // Remove markdown links with empty text: [](url) or [ ](url)
-    .replace(/\[\s*\]\([^)]*\)/g, '')
-    // Remove leftover parenthesized URLs including optional title: (https://... "title")
-    .replace(/\(https?:\/\/[^\s)]*(?:\s+"[^"]*")?\)/g, '')
-    // Remove any remaining bare URLs
-    .replace(/https?:\/\/\S+/g, '')
-    // Remove nav-menu lines: short lines made up of * separated items (e.g. * देश * दुनिया)
-    .replace(/^(\s*\*\s*[^\n*]{1,40}){2,}\s*$/gm, '')
-    // Remove markdown headers — convert to bold paragraphs
-    .replace(/^#{1,6}\s+(.+)$/gm, '<strong>$1</strong>')
-    // Remove horizontal rules
-    .replace(/^[-*_]{3,}$/gm, '')
-    // Bold
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    // Remove leftover empty brackets and stray punctuation from link removal
-    .replace(/\[\s*\]/g, '')
-    .replace(/\(\s*\)/g, '')
-    // Convert double newlines to paragraph breaks
-    .split(/\n{2,}/)
-    .map(p => p.trim())
-    .filter(p => p.length > 15)
-    .map(p => `<p>${p.replace(/\n/g, ' ')}</p>`)
-    .join('');
+  },
 };
 
 const ArticleDetail = ({ article }) => {
   const { lang, t } = useLang();
   const { isSubscribed, openAuthModal } = useAuth();
-  const [fullContent, setFullContent] = useState(null);
-  const [fetching, setFetching] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
+  const [aiSummary, setAiSummary] = useState(null);
+  const [summarizing, setSummarizing] = useState(false);
 
   const handleDownloadPdf = useCallback(async () => {
     if (!article || pdfLoading) return;
@@ -173,7 +90,7 @@ const ArticleDetail = ({ article }) => {
         ${article.image ? `<img src="${article.image}" style="width:100%;max-height:400px;object-fit:cover;border-radius:8px;margin-bottom:16px;" crossorigin="anonymous" />` : ''}
         ${article.summary ? `<p style="font-size:15px;line-height:1.8;color:#444;border-left:4px solid #CC0000;padding-left:14px;font-style:italic;margin-bottom:20px;">${article.summary}</p>` : ''}
         <div style="font-size:15px;line-height:2;color:#222;">
-          ${article.body || fullContent || (article.summary ? `<p>${article.summary}</p>` : '')}
+          ${article.body || (article.summary ? `<p>${article.summary}</p>` : '')}
         </div>
         <div style="border-top:2px solid #eee;margin-top:30px;padding-top:12px;font-size:10px;color:#aaa;text-align:center;">
           ${PORTAL_NAME} &mdash; ${window.location.origin}/article/${article.id}
@@ -226,33 +143,34 @@ const ArticleDetail = ({ article }) => {
     } finally {
       setPdfLoading(false);
     }
-  }, [article, fullContent, pdfLoading, lang]);
+  }, [article, pdfLoading, lang]);
 
   useEffect(() => {
-    if (!article || !article.isRss || !article.link || article.link === '#') return;
+    if (!article || !article.isRss || (!article.summary && !article.title)) return;
 
     let cancelled = false;
-    setFetching(true);
-    setFullContent(null);
+    setAiSummary(null);
+    setSummarizing(true);
 
-    fetchFullArticle(article.link).then(text => {
-      if (cancelled) return;
-      if (text && text.length > 200) {
-        const isHtml = /<\/?[a-z][\s\S]*>/i.test(text);
-        setFullContent(isHtml ? text : markdownToHtml(text));
-      }
-      setFetching(false);
-    }).catch(() => {
-      if (!cancelled) { setFetching(false); }
+    const params = new URLSearchParams({
+      title: article.title || '',
+      summary: article.summary || '',
     });
+    fetch(`/api/summarize-article?${params}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (cancelled) return;
+        if (data?.summary) setAiSummary(data.summary);
+        setSummarizing(false);
+      })
+      .catch(() => { if (!cancelled) setSummarizing(false); });
 
     return () => { cancelled = true; };
   }, [article]);
 
   if (!article) return null;
 
-  const articleUrl = window.location.href;
-  const bodyText = article.body || fullContent || '';
+  const bodyText = article.body || '';
   const wordCount = bodyText.replace(/<[^>]*>/g, '').split(/\s+/).filter(Boolean).length;
   const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 
@@ -295,7 +213,7 @@ const ArticleDetail = ({ article }) => {
         {isSubscribed ? (
           <button
             onClick={handleDownloadPdf}
-            disabled={pdfLoading || fetching}
+            disabled={pdfLoading}
             style={{
               background: pdfLoading ? '#555' : '#CC0000',
               color: '#fff',
@@ -350,29 +268,9 @@ const ArticleDetail = ({ article }) => {
         </div>
       )}
 
-      {/* Ad Banner 728x90 */}
-      <div className="ad-banner text-center mb-4">
-        <div
-          style={{
-            width: '728px',
-            maxWidth: '100%',
-            height: '90px',
-            backgroundColor: '#1a1a2e',
-            border: '1px solid #333',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: '0 auto',
-            color: '#666',
-            fontSize: '12px',
-          }}
-        >
-          Ad 728x90
-        </div>
-      </div>
 
-      {/* Article Summary / Lead */}
-      {article.summary && (
+      {/* Article Summary / Lead — only for admin articles, never for RSS */}
+      {article.summary && !article.isRss && (
         <p
           className="article-lead"
           style={{
@@ -385,69 +283,37 @@ const ArticleDetail = ({ article }) => {
             fontStyle: 'italic',
           }}
         >
-          {article.summary}
+          {stripSourceAttribution(article.summary, article.source)}
         </p>
       )}
 
       {/* Article Body */}
       <div className="article-body" style={{ fontSize: '17px', lineHeight: 2, color: 'var(--text-primary)' }}>
 
-        {/* Show fetched full content if available */}
-        {fullContent && (
-          <div dangerouslySetInnerHTML={{ __html: fullContent }} />
+        {/* Admin-written articles: render body, stripping external links */}
+        {!article.isRss && article.body && (
+          <div>{parse(article.body, parseOptions)}</div>
         )}
 
-        {/* Show RSS body / admin body when no fetched content */}
-        {!fullContent && article.body && (
-          <div>{parse(article.body)}</div>
-        )}
-
-        {/* Loading indicator */}
-        {fetching && (
+        {/* RSS articles: show AI summary only */}
+        {article.isRss && summarizing && (
           <div className="d-flex align-items-center gap-2 mt-3" style={{ color: 'var(--text-muted)', fontSize: '14px' }}>
             <div className="spinner-border spinner-border-sm text-danger" role="status" style={{ width: '1rem', height: '1rem' }} />
-            {lang === 'EN' ? 'Loading full article…' : 'पूरी खबर लोड हो रही है…'}
+            {lang === 'EN' ? 'Preparing article summary…' : 'खबर का सारांश तैयार हो रहा है…'}
           </div>
         )}
 
-        {/* Read full article on source when content couldn't be fetched */}
-        {!fetching && !fullContent && !article.body && article.link && article.link !== '#' && (
-          <div
-            style={{
-              marginTop: '24px',
-              padding: '20px 24px',
-              background: 'var(--dark-2)',
-              border: '1px solid var(--card-border)',
-              borderRadius: '10px',
-              textAlign: 'center',
-            }}
-          >
-            <p style={{ color: 'var(--text-muted)', fontSize: '15px', marginBottom: '16px' }}>
-              {lang === 'EN'
-                ? 'Full article is available on the original source.'
-                : 'पूरी खबर मूल स्रोत पर उपलब्ध है।'}
-            </p>
-            <a
-              href={article.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                background: '#CC0000',
-                color: '#fff',
-                padding: '10px 24px',
-                borderRadius: '6px',
-                fontWeight: 600,
-                fontSize: '15px',
-                textDecoration: 'none',
-              }}
-            >
-              <i className="fas fa-external-link-alt" />
-              {lang === 'EN' ? `Read on ${article.source}` : `${article.source} पर पढ़ें`}
-            </a>
+        {article.isRss && !summarizing && aiSummary && (
+          <div>
+            {aiSummary.split(/\n{2,}/).filter(p => p.trim().length > 0).map((para, i) => (
+              <p key={i}>{para.trim()}</p>
+            ))}
           </div>
+        )}
+
+        {/* RSS fallback: if AI summary unavailable, show cleaned RSS snippet */}
+        {article.isRss && !summarizing && !aiSummary && article.summary && (
+          <p>{stripSourceAttribution(article.summary, article.source)}</p>
         )}
       </div>
 
@@ -474,10 +340,6 @@ const ArticleDetail = ({ article }) => {
         </div>
       )}
 
-      {/* Bottom Share */}
-      <div className="mt-4 pt-3" style={{ borderTop: '1px solid #333' }}>
-        <ShareButtons url={articleUrl} title={article.title} />
-      </div>
     </article>
   );
 };

@@ -9,5 +9,10 @@
     "env": {
       "CI": "false"
     }
+  },
+  "functions": {
+    "api/summarize-article.js": {
+      "maxDuration": 30
+    }
   }
 }

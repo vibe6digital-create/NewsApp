@@ -6,8 +6,6 @@ import { useAdmin } from '../context/AdminContext';
 import { useLang } from '../context/LanguageContext';
 import { PORTAL_NAME } from '../utils/constants';
 import ArticleDetail from '../components/news/ArticleDetail';
-import RelatedNews from '../components/news/RelatedNews';
-import AdBanner from '../components/layout/AdBanner';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const ArticlePage = () => {
@@ -54,11 +52,6 @@ const ArticlePage = () => {
     );
   }
 
-  // Related articles from the same category
-  const relatedArticles = allArticles
-    .filter((a) => a.category === article.category && a.id !== article.id)
-    .slice(0, 6);
-
   const articleUrl = `${window.location.origin}/article/${id}`;
 
   return (
@@ -77,66 +70,9 @@ const ArticlePage = () => {
       </Helmet>
 
       <div className="container py-4">
-        <div className="row">
-          {/* Main Content */}
-          <div className="col-lg-8" data-aos="fade-up">
+        <div className="row justify-content-center">
+          <div className="col-lg-8" data-aos="fade-up" style={{ maxWidth: '780px' }}>
             <ArticleDetail article={article} />
-          </div>
-
-          {/* Sidebar */}
-          <div className="col-lg-4">
-            <div data-aos="fade-up" data-aos-delay="100">
-              <RelatedNews
-                articles={relatedArticles}
-                title={t('relatedNewsTitle')}
-              />
-            </div>
-
-            <div className="mt-4" data-aos="fade-up" data-aos-delay="200">
-              <AdBanner size="300x250" />
-            </div>
-
-            {/* Mini Subscription Widget */}
-            <div
-              className="mt-4 p-3"
-              data-aos="fade-up"
-              data-aos-delay="300"
-              style={{
-                backgroundColor: '#1A1A2E',
-                border: '1px solid #333',
-                borderRadius: '12px',
-                textAlign: 'center',
-              }}
-            >
-              <h6
-                style={{
-                  fontFamily: "'Mukta', 'Noto Sans Devanagari', sans-serif",
-                  color: '#f5c518',
-                  fontSize: '1.3rem',
-                }}
-              >
-                {t('newsletterSidebarTitle')}
-              </h6>
-              <p style={{ color: '#999', fontSize: '13px', marginBottom: '12px' }}>
-                {t('newsletterSidebarDesc')}
-              </p>
-              <input
-                type="email"
-                className="form-control form-control-sm mb-2"
-                placeholder={t('yourEmail')}
-                style={{
-                  backgroundColor: '#111',
-                  border: '1px solid #333',
-                  color: '#fff',
-                }}
-              />
-              <button
-                className="btn btn-danger btn-sm w-100"
-                style={{ borderRadius: '20px', fontWeight: 600 }}
-              >
-                {t('subscribeBtn')}
-              </button>
-            </div>
           </div>
         </div>
       </div>
