@@ -3,6 +3,7 @@ import { fetchAllFeeds, fetchPriorityFeeds, filterByCategory, searchArticles as 
 import { getPublishedAdminArticles, getBreakingArticles, getFeaturedArticles } from '../services/adminService';
 import { useLang } from './LanguageContext';
 import { AUTO_REFRESH_INTERVAL } from '../utils/constants';
+import { isValidArticle } from '../utils/isValidArticle';
 
 const NewsContext = createContext();
 
@@ -70,11 +71,12 @@ export const NewsProvider = ({ children }) => {
     };
   }, [fetchNews]);
 
-  // Strictly filter by selected language — no exceptions.
+  // Strictly filter by selected language and validity — no exceptions.
   const allArticles = useMemo(() => {
     const preferredLang = lang === 'EN' ? 'en' : 'hi';
     return rawArticles
       .filter(a => a.lang === preferredLang)
+      .filter(isValidArticle)
       .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
   }, [rawArticles, lang]);
 
@@ -107,7 +109,7 @@ export const NewsProvider = ({ children }) => {
 
   const getArticleById = useCallback((id) => {
     const preferredLang = lang === 'EN' ? 'en' : 'hi';
-    return rawArticles.find(a => a.id === id && a.lang === preferredLang) || null;
+    return rawArticles.find(a => a.id === id && a.lang === preferredLang && isValidArticle(a)) || null;
   }, [rawArticles, lang]);
 
   // Returns category-filtered articles from allArticles; falls back to rawArticles

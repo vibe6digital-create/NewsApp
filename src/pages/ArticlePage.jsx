@@ -7,6 +7,7 @@ import { useLang } from '../context/LanguageContext';
 import { PORTAL_NAME } from '../utils/constants';
 import ArticleDetail from '../components/news/ArticleDetail';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import { isValidArticle } from '../utils/isValidArticle';
 
 const ArticlePage = () => {
   const { id } = useParams();
@@ -30,12 +31,19 @@ const ArticlePage = () => {
   }
 
   if (!article) {
-    // Article exists but is in the other language
-    const existsInOtherLang = rawArticles.some(a => a.id === id) ||
-      (rawAdmin && (rawAdmin.lang || 'hi') !== preferredLang);
-    const langMismatchMsg = lang === 'EN'
-      ? 'This article is not available in English.'
-      : 'यह खबर हिंदी में उपलब्ध नहीं है।';
+    // Determine why: invalid content, wrong language, or truly missing
+    const rawAny = rawArticles.find(a => a.id === id);
+    const isInvalid = rawAny && !isValidArticle(rawAny);
+    const existsInOtherLang = !isInvalid && (
+      rawArticles.some(a => a.id === id) ||
+      (rawAdmin && (rawAdmin.lang || 'hi') !== preferredLang)
+    );
+
+    const noticeMsg = isInvalid
+      ? (lang === 'EN' ? 'This article is not available for viewing.' : 'यह लेख देखने के लिए उपलब्ध नहीं है।')
+      : existsInOtherLang
+        ? (lang === 'EN' ? 'This article is not available in English.' : 'यह खबर हिंदी में उपलब्ध नहीं है।')
+        : t('articleNotFoundDesc');
 
     return (
       <div className="container py-5 text-center" style={{ minHeight: '60vh' }}>
@@ -49,9 +57,7 @@ const ArticlePage = () => {
         >
           {t('articleNotFound')}
         </h2>
-        <p style={{ color: '#999' }}>
-          {existsInOtherLang ? langMismatchMsg : t('articleNotFoundDesc')}
-        </p>
+        <p style={{ color: '#999' }}>{noticeMsg}</p>
         <Link
           to="/"
           className="btn btn-danger mt-3"
