@@ -232,56 +232,6 @@ const SubscribeWidget = memo(() => {
   );
 });
 
-/* ── Social Follow Widget ───────────────────────────── */
-const SocialWidget = memo(() => {
-  const { t } = useLang();
-  const platforms = [
-    { name: 'WhatsApp', icon: 'fab fa-whatsapp', color: '#25D366', bg: '#0d1f14', count: '2.4K' },
-    { name: 'Facebook', icon: 'fab fa-facebook-f', color: '#1877F2', bg: '#0d1220', count: '8.1K' },
-    { name: 'Instagram', icon: 'fab fa-instagram', color: '#E1306C', bg: '#1f0d14', count: '5.6K' },
-    { name: 'YouTube', icon: 'fab fa-youtube', color: '#FF0000', bg: '#1f0a0a', count: '3.2K' },
-    { name: 'Twitter', icon: 'fab fa-twitter', color: '#1DA1F2', bg: '#0d1620', count: '1.9K' },
-  ];
-
-  return (
-    <div className="sidebar-widget">
-      <div className="sidebar-widget__title">
-        <span className="sidebar-widget__bar" style={{ background: '#1DA1F2' }} />
-        {t('followUs')}
-      </div>
-      <div className="sidebar-widget__body">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {platforms.map((p) => (
-            <a
-              key={p.name}
-              href="/"
-              onClick={(e) => e.preventDefault()}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '10px 14px',
-                background: p.bg,
-                border: `1px solid ${p.color}33`,
-                borderRadius: '8px',
-                textDecoration: 'none',
-                transition: 'border-color 0.2s',
-              }}
-              onMouseEnter={e => e.currentTarget.style.borderColor = p.color}
-              onMouseLeave={e => e.currentTarget.style.borderColor = `${p.color}33`}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <i className={p.icon} style={{ color: p.color, fontSize: '16px', width: '18px' }} />
-                <span style={{ color: '#ccc', fontSize: '13px', fontWeight: 500 }}>{p.name}</span>
-              </div>
-              <span style={{ color: p.color, fontSize: '12px', fontWeight: 700 }}>{p.count}</span>
-            </a>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-});
 
 /* ── Main Sidebar ───────────────────────────────────── */
 const Sidebar = ({ articles: articlesProp } = {}) => {
@@ -310,9 +260,6 @@ const Sidebar = ({ articles: articlesProp } = {}) => {
 
       {/* Ad 3 */}
       <AdBanner size="300x250" index={2} />
-
-      {/* Social Follow */}
-      <SocialWidget />
     </aside>
   );
 };
