@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import { PORTAL_NAME, PORTAL_NAME_EN, PORTAL_SLOGAN, PORTAL_SLOGAN_EN, CATEGORIES } from '../../utils/constants';
 import { useLang } from '../../context/LanguageContext';
-import { addSubscriber } from '../../services/subscriptionService';
 import '../../styles/footer.css';
 
 const stateLinks = [
@@ -15,28 +13,15 @@ const stateLinks = [
   { name: 'बिहार', nameEn: 'Bihar', slug: 'bihar' },
 ];
 
-const Footer = () => {
-  const [email, setEmail] = useState('');
+const Footer = memo(() => {
   const { lang, t } = useLang();
-
-  const handleSubscribe = (e) => {
-    e.preventDefault();
-    if (!email.trim()) return;
-    const result = addSubscriber(email, '');
-    if (result.success) {
-      toast.success(t('subscribeSuccess'));
-      setEmail('');
-    } else {
-      toast.info(t('subscribeDuplicate'));
-    }
-  };
 
   return (
     <footer className="site-footer">
       <div className="container">
         <div className="row">
           {/* Column 1: Logo & About */}
-          <div className="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="0">
+          <div className="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="0">
             <div className="footer-logo">
               {lang === 'EN' ? PORTAL_NAME_EN : PORTAL_NAME}
               <div className="footer-slogan">{lang === 'EN' ? PORTAL_SLOGAN_EN : PORTAL_SLOGAN}</div>
@@ -57,15 +42,11 @@ const Footer = () => {
               <a href="https://youtube.com/@kaushalprimenation" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
                 <i className="fab fa-youtube"></i>
               </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-                <i className="fab fa-twitter"></i>
-              </a>
             </div>
-            <div className="rni-line">RNI No. XXXXXXX</div>
           </div>
 
           {/* Column 2: Quick Links */}
-          <div className="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+          <div className="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
             <h5 className="footer-title">{t('quickLinks')}</h5>
             <ul className="footer-links">
               <li>
@@ -84,7 +65,7 @@ const Footer = () => {
           </div>
 
           {/* Column 3: State News */}
-          <div className="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+          <div className="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
             <h5 className="footer-title">{t('stateNewsFooter')}</h5>
             <ul className="footer-links">
               {stateLinks.map((state) => (
@@ -95,35 +76,6 @@ const Footer = () => {
                 </li>
               ))}
             </ul>
-          </div>
-
-          {/* Column 4: Contact & Subscribe */}
-          <div className="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
-            <h5 className="footer-title">{t('contactUs')}</h5>
-            <ul className="contact-info">
-              <li>
-                <i className="fas fa-map-marker-alt"></i>
-                <span>Office Address Placeholder, City, State - XXXXXX</span>
-              </li>
-              <li>
-                <i className="fas fa-envelope"></i>
-                <span>news@example.com</span>
-              </li>
-              <li>
-                <i className="fas fa-phone-alt"></i>
-                <span>+91 XXXXX XXXXX</span>
-              </li>
-            </ul>
-            <form className="footer-subscribe" onSubmit={handleSubscribe}>
-              <input
-                type="email"
-                placeholder={t('emailPlaceholder')}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <button type="submit">{t('subscribeBtn')}</button>
-            </form>
           </div>
         </div>
       </div>
@@ -146,6 +98,6 @@ const Footer = () => {
       </div>
     </footer>
   );
-};
+});
 
 export default Footer;
