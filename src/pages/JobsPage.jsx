@@ -312,6 +312,10 @@ const JobsPage = () => {
         jobKws.some(kw => (a.title + ' ' + (a.summary || '')).toLowerCase().includes(kw))
       ).slice(0, 20);
     }
+    // Tier 4: general valid articles so page is never empty
+    if (result.length === 0) {
+      result = allArticles.slice(0, 8);
+    }
 
     if (sortOrder === 'oldest') {
       return [...result].sort((a, b) => new Date(a.pubDate) - new Date(b.pubDate));

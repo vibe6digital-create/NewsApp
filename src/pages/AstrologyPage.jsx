@@ -143,12 +143,15 @@ const Stars = ({ score, color }) => (
 // ─── Daily Horoscope Component ────────────────────────────────────────────────
 
 const DailyHoroscope = ({ lang }) => {
+  const { lang: currentLang } = useLang();
   const [activeIdx, setActiveIdx] = useState(0);
   const rashi = RASHIS[activeIdx];
   const pred  = getPrediction(activeIdx);
   const scores = getScores(activeIdx);
-  const today  = new Date();
-  const dateStr = today.toLocaleDateString(lang === 'EN' ? 'en-IN' : 'hi-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const dateStr = new Date().toLocaleDateString(
+    currentLang.toLowerCase() === 'hi' ? 'hi-IN' : 'en-IN',
+    { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }
+  );
 
   return (
     <div className="dh-wrapper">
@@ -383,7 +386,7 @@ const AstroNewsSlider = ({ articles, navigate, lang, fullWidth = false }) => {
                 <div className="astro-slide-content">
                   <span className="astro-slide-badge">{lang === 'EN' ? 'Astrology' : 'ज्योतिष'}</span>
                   <h4 className="astro-slide-title">{a.title}</h4>
-                  <span className="astro-slide-time">{timeAgo(a.publishedAt, lang)}</span>
+                  <span className="astro-slide-time">{timeAgo(a.pubDate, lang.toLowerCase())}</span>
                 </div>
               </div>
             </div>
@@ -430,8 +433,10 @@ const AstrologyPage = () => {
     return rawArticles.filter(a => a.category === 'astro' && a.lang === preferredLang);
   }, [getByCategory, rawArticles, lang]);
 
-  const today = new Date();
-  const dateStr = today.toLocaleDateString(lang === 'EN' ? 'en-IN' : 'hi-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  const dateStr = new Date().toLocaleDateString(
+    lang.toLowerCase() === 'hi' ? 'hi-IN' : 'en-IN',
+    { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }
+  );
 
   const moonSign = useMemo(() => {
     if (!moonBirthMonth) return null;

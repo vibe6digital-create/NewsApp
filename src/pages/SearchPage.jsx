@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useNews } from '../context/NewsContext';
@@ -17,11 +16,6 @@ const SearchPage = () => {
 
   const isVideoSearch = ['video', 'videos', 'वीडियो'].includes(query.trim().toLowerCase());
 
-  useEffect(() => {
-    if (isVideoSearch) {
-      window.location.href = YT_CHANNEL_URL;
-    }
-  }, [isVideoSearch]);
 
   const results = query && !isVideoSearch ? searchNews(query) : [];
 
@@ -39,26 +33,27 @@ const SearchPage = () => {
           </div>
 
         ) : isVideoSearch ? (
-          /* Redirect in progress — show fallback while navigating */
-          <div className="text-center py-5">
-            <i className="fa-brands fa-youtube" style={{ fontSize: '4rem', color: '#CC0000', marginBottom: '16px', display: 'block' }} />
-            <p style={{ color: 'var(--text-secondary)', fontSize: '16px', marginBottom: '20px' }}>
-              {lang === 'EN' ? 'Taking you to KPN YouTube Channel…' : 'KPN YouTube चैनल पर ले जा रहे हैं…'}
-            </p>
-            <a
-              href={YT_CHANNEL_URL}
-              style={{
-                background: '#CC0000', color: '#fff', borderRadius: 20,
-                padding: '10px 28px', fontSize: 14, fontWeight: 600,
-                textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8,
-              }}
-            >
-              <i className="fa-brands fa-youtube" />
-              {lang === 'EN' ? 'Open YouTube Channel' : 'YouTube चैनल खोलें'}
-            </a>
-            <div className="mt-5">
-              <VideoNewsSection />
+          <div className="py-2">
+            <div className="d-flex align-items-center gap-3 mb-4">
+              <i className="fa-brands fa-youtube" style={{ fontSize: '2rem', color: '#CC0000' }} />
+              <h2 style={{ fontFamily: "'Mukta', 'Noto Sans Devanagari', sans-serif", fontSize: '1.5rem', color: '#fff', margin: 0 }}>
+                {lang === 'EN' ? 'KPN YouTube Videos' : 'KPN YouTube वीडियो'}
+              </h2>
+              <a
+                href={YT_CHANNEL_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  background: '#CC0000', color: '#fff', borderRadius: 20,
+                  padding: '6px 18px', fontSize: 13, fontWeight: 600,
+                  textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6, marginLeft: 'auto',
+                }}
+              >
+                <i className="fa-brands fa-youtube" />
+                {lang === 'EN' ? 'View Channel' : 'चैनल देखें'}
+              </a>
             </div>
+            <VideoNewsSection />
           </div>
 
         ) : loading ? (

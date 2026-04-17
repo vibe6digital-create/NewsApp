@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, memo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useNews } from '../../context/NewsContext';
@@ -7,10 +7,11 @@ import { CATEGORIES } from '../../utils/constants';
 import { timeAgo } from '../../utils/formatDate';
 import { addSubscriber } from '../../services/subscriptionService';
 import { getCategoryFallbackImage } from '../../utils/categoryImages';
+import { isBrandedImage } from '../../utils/isBrandedImage';
 import AdBanner from './AdBanner';
 
 /* ── Latest News Widget ─────────────────────────────── */
-const LatestWidget = ({ articles }) => {
+const LatestWidget = memo(({ articles }) => {
   const navigate = useNavigate();
   const { lang, t } = useLang();
 
@@ -22,7 +23,9 @@ const LatestWidget = ({ articles }) => {
       </div>
       <div className="sidebar-widget__body">
         {articles.slice(0, 6).map((article) => {
-          const img = article.image || getCategoryFallbackImage(article.category, article.id, article.title, article.summary);
+          const img = (article.image && !isBrandedImage(article.image))
+            ? article.image
+            : getCategoryFallbackImage(article.category, article.id, article.title, article.summary);
           const handleClick = () => {
             navigate(`/article/${article.id}`);
           };
@@ -46,10 +49,10 @@ const LatestWidget = ({ articles }) => {
       </div>
     </div>
   );
-};
+});
 
 /* ── Categories Widget ──────────────────────────────── */
-const CategoriesWidget = () => {
+const CategoriesWidget = memo(() => {
   const { lang, t } = useLang();
   return (
   <div className="sidebar-widget">
@@ -88,10 +91,10 @@ const CategoriesWidget = () => {
     </div>
   </div>
   );
-};
+});
 
 /* ── Trending Topics Widget ─────────────────────────── */
-const TrendingWidget = ({ articles }) => {
+const TrendingWidget = memo(({ articles }) => {
   const navigate = useNavigate();
   const { t } = useLang();
   const trending = articles.filter(a => a.image).slice(0, 5);
@@ -154,10 +157,10 @@ const TrendingWidget = ({ articles }) => {
       </div>
     </div>
   );
-};
+});
 
 /* ── Subscribe Widget ───────────────────────────────── */
-const SubscribeWidget = () => {
+const SubscribeWidget = memo(() => {
   const [email, setEmail] = useState('');
   const { t } = useLang();
 
@@ -227,10 +230,10 @@ const SubscribeWidget = () => {
       </div>
     </div>
   );
-};
+});
 
 /* ── Social Follow Widget ───────────────────────────── */
-const SocialWidget = () => {
+const SocialWidget = memo(() => {
   const { t } = useLang();
   const platforms = [
     { name: 'WhatsApp', icon: 'fab fa-whatsapp', color: '#25D366', bg: '#0d1f14', count: '2.4K' },
@@ -278,7 +281,7 @@ const SocialWidget = () => {
       </div>
     </div>
   );
-};
+});
 
 /* ── Main Sidebar ───────────────────────────────────── */
 const Sidebar = ({ articles: articlesProp } = {}) => {

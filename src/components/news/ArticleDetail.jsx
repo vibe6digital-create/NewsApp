@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import parse, { domToReact } from 'html-react-parser';
-import { formatNewsDate } from '../../utils/formatDate';
+import { formatNewsDateLocale } from '../../utils/formatDate';
 import { getCategoryLabel, getCategoryLabelEn } from '../../utils/categoryColors';
 import { useLang } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { PORTAL_NAME } from '../../utils/constants';
 import { stripSourceAttribution } from '../../utils/stripSource';
+import { isBrandedImage } from '../../utils/isBrandedImage';
 
 // Strip junk markup from admin article body HTML before rendering
 const cleanBodyHtml = (html) => {
@@ -69,7 +70,7 @@ const ArticleDetail = ({ article }) => {
             <div style="font-size:11px;color:#888;">तेज नज़र तेज़ खबर | Tez Nazar Tez Khabar</div>
           </div>
           <div style="font-size:11px;color:#888;text-align:right;">
-            ${formatNewsDate(article.pubDate)}<br/>
+            ${formatNewsDateLocale(article.pubDate, lang)}<br/>
             ${lang === 'EN' ? getCategoryLabelEn(article.category) : getCategoryLabel(article.category)}
           </div>
         </div>
@@ -194,7 +195,7 @@ const ArticleDetail = ({ article }) => {
         style={{ fontSize: '14px', color: 'var(--text-muted)' }}
       >
         <div className="d-flex align-items-center gap-3">
-          <span>{formatNewsDate(article.pubDate)}</span>
+          <span>{formatNewsDateLocale(article.pubDate, lang)}</span>
           {wordCount > 0 && <span>{readingTime} {t('minuteRead')}</span>}
         </div>
         {isSubscribed ? (
@@ -243,8 +244,8 @@ const ArticleDetail = ({ article }) => {
         )}
       </div>
 
-      {/* Featured Image */}
-      {article.image && (
+      {/* Featured Image — skip branded RSS thumbnails */}
+      {article.image && !(article.isRss && isBrandedImage(article.image)) && (
         <div className="mb-3">
           <img
             src={article.image}

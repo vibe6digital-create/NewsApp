@@ -118,10 +118,13 @@ export const NewsProvider = ({ children }) => {
     const primary = filterByCategory(allArticles, cat);
     if (primary.length > 0) return primary;
     const preferredLang = lang === 'EN' ? 'en' : 'hi';
-    return rawArticles.filter(a => a.category === cat && a.lang === preferredLang);
+    const rawFallback = rawArticles.filter(a => a.category === cat && a.lang === preferredLang);
+    if (rawFallback.length > 0) return rawFallback;
+    // Tier 3: general valid articles (already language + validity filtered) so section is never empty
+    return allArticles.slice(0, 8);
   }, [allArticles, rawArticles, lang]);
 
-  const value = {
+  const value = useMemo(() => ({
     allArticles,
     rawArticles,
     loading,
@@ -135,7 +138,7 @@ export const NewsProvider = ({ children }) => {
     getBySource,
     searchNews,
     getArticleById,
-  };
+  }), [allArticles, rawArticles, loading, feedsComplete, error, fetchNews, getBreakingNews, getFeatured, getByCategory, getCategoryWithFallback, getBySource, searchNews, getArticleById]);
 
   return (
     <NewsContext.Provider value={value}>

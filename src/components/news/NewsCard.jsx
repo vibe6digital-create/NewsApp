@@ -6,8 +6,9 @@ import { useLang } from '../../context/LanguageContext';
 import { getCategoryFallbackImage, SAFE_FALLBACK } from '../../utils/categoryImages';
 import '../../styles/newscard.css';
 import { stripSourceAttribution } from '../../utils/stripSource';
+import { isBrandedImage } from '../../utils/isBrandedImage';
 
-const NewsCard = ({ article, size = 'md' }) => {
+const NewsCard = React.memo(({ article, size = 'md' }) => {
   const navigate = useNavigate();
   const { lang, t } = useLang();
   const [showShare, setShowShare] = useState(false);
@@ -15,7 +16,7 @@ const NewsCard = ({ article, size = 'md' }) => {
   const shareRef = useRef(null);
 
   const fallback = getCategoryFallbackImage(article.category, article.id, article.title, article.summary);
-  const imageSrc = article.image || fallback;
+  const imageSrc = (article.image && !isBrandedImage(article.image)) ? article.image : fallback;
 
   const catLabel = lang === 'EN'
     ? getCategoryLabelEn(article.category)
@@ -128,6 +129,6 @@ const NewsCard = ({ article, size = 'md' }) => {
       </div>
     </div>
   );
-};
+});
 
 export default NewsCard;

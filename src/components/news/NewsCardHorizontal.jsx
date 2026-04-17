@@ -3,13 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { useLang } from '../../context/LanguageContext';
 import { timeAgo } from '../../utils/formatDate';
 import { getCategoryFallbackImage } from '../../utils/categoryImages';
+import { isBrandedImage } from '../../utils/isBrandedImage';
 import '../../styles/newscard.css';
 
-const NewsCardHorizontal = ({ article }) => {
+const NewsCardHorizontal = React.memo(({ article }) => {
   const navigate = useNavigate();
   const { lang } = useLang();
 
-  const imageSrc = article.image || getCategoryFallbackImage(article.category, article.id, article.title, article.summary);
+  const imageSrc = (article.image && !isBrandedImage(article.image))
+    ? article.image
+    : getCategoryFallbackImage(article.category, article.id, article.title, article.summary);
 
   const handleClick = () => {
     navigate(`/article/${article.id}`);
@@ -39,6 +42,6 @@ const NewsCardHorizontal = ({ article }) => {
       </div>
     </div>
   );
-};
+});
 
 export default NewsCardHorizontal;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useNews } from '../../context/NewsContext';
 import { useLang } from '../../context/LanguageContext';
@@ -8,10 +8,10 @@ const BreakingTicker = () => {
   const { getBreakingNews, allArticles, loading } = useNews();
   const { t } = useLang();
 
-  const tickerArticles = (() => {
+  const tickerArticles = useMemo(() => {
     const b = getBreakingNews();
     return b.length > 0 ? b : allArticles.slice(0, 10);
-  })();
+  }, [getBreakingNews, allArticles]);
 
   const handleClick = (article) => {
     if (article.id) {

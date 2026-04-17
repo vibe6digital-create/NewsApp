@@ -2,7 +2,7 @@ import React from 'react';
 import NewsCard from './NewsCard';
 import NewsCardHorizontal from './NewsCardHorizontal';
 
-const NewsGrid = ({
+const NewsGrid = React.memo(({
   articles = [],
   columns = 3,
   showHorizontal = false,
@@ -40,6 +40,6 @@ const NewsGrid = ({
       )}
     </>
   );
-};
+});
 
 export default NewsGrid;

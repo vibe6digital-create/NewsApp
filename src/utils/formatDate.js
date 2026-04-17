@@ -41,6 +41,27 @@ export const timeAgo = (dateString, lang = 'hi') => {
   }
 };
 
+/**
+ * Language-aware date formatter for article display.
+ * Produces: "Friday, 17 April 2026" (en) / "शुक्रवार, 17 अप्रैल 2026" (hi)
+ * lang accepts 'EN'/'en' (English) or 'HI'/'hi' (Hindi).
+ */
+export const formatNewsDateLocale = (dateString, lang) => {
+  try {
+    const date = parseDate(dateString);
+    if (isNaN(date.getTime())) return '';
+    const locale = (lang === 'EN' || lang === 'en') ? 'en-IN' : 'hi-IN';
+    return date.toLocaleDateString(locale, {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+  } catch {
+    return '';
+  }
+};
+
 export const formatDateISO = (dateString) => {
   try {
     const date = typeof dateString === 'string' ? new Date(dateString) : dateString;

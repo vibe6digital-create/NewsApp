@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { timeAgo } from '../../utils/formatDate';
 import { stripSourceAttribution } from '../../utils/stripSource';
+import { isBrandedImage } from '../../utils/isBrandedImage';
 
 const NationalNewsCard = ({ article, lang, isLead, accentColor, subsectionKey }) => {
   const navigate = useNavigate();
@@ -11,6 +12,9 @@ const NationalNewsCard = ({ article, lang, isLead, accentColor, subsectionKey })
   const isOpinion  = subsectionKey === 'opinion';
   const isFactcheck = subsectionKey === 'factcheck';
   const isElection  = subsectionKey === 'election';
+
+  // Use placeholder for branded RSS thumbnails so publisher logos never appear in the card
+  const safeImage = (article.image && !isBrandedImage(article.image)) ? article.image : '/placeholder.jpg';
 
   const factStatus = isFactcheck
     ? (['true','verified','सच'].some(k => article.title.toLowerCase().includes(k)) ? 'verified'
@@ -55,7 +59,7 @@ const NationalNewsCard = ({ article, lang, isLead, accentColor, subsectionKey })
         onMouseLeave={() => setHovered(false)}
       >
         <img
-          src={article.image}
+          src={safeImage}
           alt={article.title}
           loading="lazy"
           className="ncard-img"
@@ -98,7 +102,7 @@ const NationalNewsCard = ({ article, lang, isLead, accentColor, subsectionKey })
       {/* Image */}
       <div style={{ height: imageHeight, position: 'relative', overflow: 'hidden', flexShrink: 0 }}>
         <img
-          src={article.image}
+          src={safeImage}
           alt={article.title}
           loading="lazy"
           className="ncard-img"
@@ -198,7 +202,7 @@ const NationalNewsCard = ({ article, lang, isLead, accentColor, subsectionKey })
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-            <span style={{ color: 'var(--text-muted)', fontSize: '10px' }}>🕐 {timeAgo(article.pubDate, lang)}</span>
+            <span style={{ color: 'var(--text-muted)', fontSize: '10px' }}>🕐 {timeAgo(article.pubDate, lang.toLowerCase())}</span>
           </div>
           <button
             onClick={handleShare}

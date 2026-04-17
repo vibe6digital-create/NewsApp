@@ -159,6 +159,10 @@ const EducationPage = () => {
       const preferredLang = lang === 'EN' ? 'en' : 'hi';
       result = rawArticles.filter(a => a.category === 'education' && a.lang === preferredLang);
     }
+    // Tier 3: general valid articles so page is never empty
+    if (result.length === 0) {
+      result = allArticles.slice(0, 8);
+    }
     if (sortOrder === 'oldest') {
       return [...result].sort((a, b) => new Date(a.pubDate) - new Date(b.pubDate));
     }

@@ -1,9 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useNews } from '../../context/NewsContext';
 import { useLang } from '../../context/LanguageContext';
 import { timeAgo } from '../../utils/formatDate';
 import { getCategoryFallbackImage } from '../../utils/categoryImages';
+import { isBrandedImage } from '../../utils/isBrandedImage';
 import SectionTitle from '../common/SectionTitle';
 
 const INDIA_STATES = [
@@ -21,10 +22,12 @@ const INDIA_STATES = [
   { name: 'छत्तीसगढ़',     nameEn: 'Chhattisgarh',  emoji: '⛏️', color: '#8B5CF6',  keywords: ['chhattisgarh', 'raipur', 'bilaspur', 'छत्तीसगढ़'] },
 ];
 
-const StateTile = ({ state, article, lang }) => {
+const StateTile = memo(({ state, article, lang }) => {
   const navigate = useNavigate();
   const imageSrc = article
-    ? (article.image || getCategoryFallbackImage(article.category, article.id, article.title, article.summary))
+    ? ((article.image && !isBrandedImage(article.image))
+        ? article.image
+        : getCategoryFallbackImage(article.category, article.id, article.title, article.summary))
     : null;
 
   const handleClick = () => {
@@ -143,7 +146,7 @@ const StateTile = ({ state, article, lang }) => {
       </div>
     </div>
   );
-};
+});
 
 const findStateArticle = (articles, state) =>
   articles.find((a) => {

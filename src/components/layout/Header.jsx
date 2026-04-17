@@ -1,19 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { PORTAL_NAME, PORTAL_NAME_EN, PORTAL_SLOGAN, PORTAL_SLOGAN_EN } from '../../utils/constants';
 import { formatNewsDate, formatNewsDateHindi } from '../../utils/formatDate';
 import { useLang } from '../../context/LanguageContext';
-import { useNews } from '../../context/NewsContext';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 import '../../styles/header.css';
 
-const Header = () => {
+// Isolated clock component — only this re-renders every second, not the whole Header
+const DateDisplay = memo(({ lang }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+  const formattedDate = lang === 'EN'
+    ? formatNewsDate(currentTime)
+    : formatNewsDateHindi(currentTime);
+  return (
+    <span className="header-date">
+      <i className="far fa-calendar-alt me-1" />
+      {formattedDate}
+    </span>
+  );
+});
+
+const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { lang, setLang, t } = useLang();
-  useNews();
   const { theme, toggleTheme } = useTheme();
   const { user, logout, unsubscribe, openAuthModal } = useAuth();
   const navigate = useNavigate();
@@ -28,24 +43,12 @@ const Header = () => {
     }
   };
 
-  useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const formattedDate = lang === 'EN'
-    ? formatNewsDate(currentTime)
-    : formatNewsDateHindi(currentTime);
-
   return (
     <header className="site-header">
       {/* ── Top strip ── */}
       <div className="header-topstrip">
         <div className="container d-flex justify-content-between align-items-center">
-          <span className="header-date">
-            <i className="far fa-calendar-alt me-1" />
-            {formattedDate}
-          </span>
+          <DateDisplay lang={lang} />
           <div className="d-flex align-items-center gap-3">
             {/* Theme toggle */}
             <button

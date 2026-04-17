@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import { Carousel } from 'bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useNews } from '../../context/NewsContext';
@@ -6,6 +6,7 @@ import { useLang } from '../../context/LanguageContext';
 import { getCategoryColor, getCategoryLabel, getCategoryLabelEn } from '../../utils/categoryColors';
 import { timeAgo } from '../../utils/formatDate';
 import { getCategoryFallbackImage, SAFE_FALLBACK } from '../../utils/categoryImages';
+import { isBrandedImage } from '../../utils/isBrandedImage';
 import '../../styles/hero.css';
 
 const SLIDE_CATEGORIES = ['uttarakhand', 'national', 'world', 'technology', 'education', 'health'];
@@ -29,11 +30,12 @@ const HeroSlider = () => {
   };
 
   // Pick one fresh article from each category for variety
-  const slides = (() => {
+  const slides = useMemo(() => {
     const adminFeatured = getFeatured();
     if (adminFeatured.length >= 3) {
       return adminFeatured.slice(0, 6).map(a => ({
-        ...a, image: a.image || getCategoryFallbackImage(a.category, a.id, a.title)
+        ...a,
+        image: (a.image && !isBrandedImage(a.image)) ? a.image : getCategoryFallbackImage(a.category, a.id, a.title),
       }));
     }
     const seen = new Set();
@@ -47,8 +49,11 @@ const HeroSlider = () => {
       if (picks.length >= 6) break;
       if (!seen.has(a.id)) { seen.add(a.id); picks.push(a); }
     }
-    return picks.map(a => ({ ...a, image: a.image || getCategoryFallbackImage(a.category, a.id, a.title) }));
-  })();
+    return picks.map(a => ({
+      ...a,
+      image: (a.image && !isBrandedImage(a.image)) ? a.image : getCategoryFallbackImage(a.category, a.id, a.title),
+    }));
+  }, [allArticles, getFeatured]);
 
   useEffect(() => {
     const el = carouselRef.current;

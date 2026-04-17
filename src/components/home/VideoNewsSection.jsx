@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, memo } from 'react';
 import { useLang } from '../../context/LanguageContext';
 
 // ── YouTube Channel Config ────────────────────────────────────
@@ -175,7 +175,7 @@ const VideoNewsSection = () => {
 };
 
 // ── Video Card ────────────────────────────────────────────────
-const VideoCard = ({ video, playing, onPlay, height, titleSize, lang, featured }) => {
+const VideoCard = memo(({ video, playing, onPlay, height, titleSize, lang, featured }) => {
   const thumb = `https://img.youtube.com/vi/${video.videoId}/hqdefault.jpg`;
   const timeAgo = getTimeAgo(video.published, lang);
 
@@ -282,7 +282,7 @@ const VideoCard = ({ video, playing, onPlay, height, titleSize, lang, featured }
       )}
     </div>
   );
-};
+});
 
 // ── Time ago helper ───────────────────────────────────────────
 function getTimeAgo(dateStr, lang) {
