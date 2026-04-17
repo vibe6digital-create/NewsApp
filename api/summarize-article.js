@@ -82,11 +82,11 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'llama-3.1-8b-instant',
-        max_tokens: 250,
+        max_tokens: 350,
         messages: [
           {
             role: 'system',
-            content: 'Write a concise news summary in 3-4 sentences (80-120 words). Be factual and direct. Write in the same language as the input (Hindi or English). Do NOT use markdown, bullet points, headers, or any formatting symbols. Write plain prose only. Do NOT mention any source name, website, domain, author, or publication.',
+            content: 'Write a structured news summary in exactly 3 short paragraphs (100-150 words total). Paragraph 1: the main event (what happened). Paragraph 2: key details (who, where, when, how). Paragraph 3: additional context or impact. Separate paragraphs with a blank line. Be factual and direct. Write in the same language as the input (Hindi or English). Do NOT use markdown, bullet points, headers, bold, or any formatting symbols. Write plain prose only. Do NOT mention any source name, website, domain, author, or publication.',
           },
           {
             role: 'user',
