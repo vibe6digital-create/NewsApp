@@ -4,6 +4,7 @@ import { useNews } from '../../context/NewsContext';
 import { useLang } from '../../context/LanguageContext';
 import { getCategoryColor } from '../../utils/categoryColors';
 import { timeAgo } from '../../utils/formatDate';
+import { isValidArticle } from '../../utils/isValidArticle';
 import { getCategoryFallbackImage } from '../../utils/categoryImages';
 import SectionTitle from '../common/SectionTitle';
 import LoadingSpinner from '../common/LoadingSpinner';
@@ -108,7 +109,7 @@ const WorldSection = () => {
     if (primary.length > 0) return primary.slice(0, 10);
     // Fallback: older world articles, same language
     const preferredLang = lang === 'EN' ? 'en' : 'hi';
-    return rawArticles.filter(a => a.category === 'world' && a.lang === preferredLang).slice(0, 10);
+    return rawArticles.filter(a => a.category === 'world' && a.lang === preferredLang && isValidArticle(a)).slice(0, 10);
   }, [allArticles, rawArticles, lang]);
 
   if (loading) return <div className="container"><LoadingSpinner /></div>;

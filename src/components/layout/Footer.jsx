@@ -21,7 +21,7 @@ const Footer = memo(() => {
       <div className="container">
         <div className="row">
           {/* Column 1: Logo & About */}
-          <div className="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="0">
+          <div className="col-lg-4 col-md-12 mb-4" data-aos="fade-up" data-aos-delay="0">
             <div className="footer-logo">
               {lang === 'EN' ? PORTAL_NAME_EN : PORTAL_NAME}
               <div className="footer-slogan">{lang === 'EN' ? PORTAL_SLOGAN_EN : PORTAL_SLOGAN}</div>
@@ -30,7 +30,7 @@ const Footer = memo(() => {
               {t('portalDesc')}
             </p>
             <div className="footer-social">
-              <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+              <a href="https://whatsapp.com/channel/0029VbCw6MP5K3zYIlGbwg24" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
                 <i className="fab fa-whatsapp"></i>
               </a>
               <a href="https://www.facebook.com/KaushalPrimeNation/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
@@ -46,7 +46,7 @@ const Footer = memo(() => {
           </div>
 
           {/* Column 2: Quick Links */}
-          <div className="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+          <div className="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
             <h5 className="footer-title">{t('quickLinks')}</h5>
             <ul className="footer-links">
               <li>
@@ -65,7 +65,7 @@ const Footer = memo(() => {
           </div>
 
           {/* Column 3: State News */}
-          <div className="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+          <div className="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
             <h5 className="footer-title">{t('stateNewsFooter')}</h5>
             <ul className="footer-links">
               {stateLinks.map((state) => (
@@ -75,6 +75,41 @@ const Footer = memo(() => {
                   </Link>
                 </li>
               ))}
+            </ul>
+          </div>
+
+          {/* Column 4: Contact Us */}
+          <div className="col-lg-2 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
+            <h5 className="footer-title">{t('contactUs')}</h5>
+            <ul className="footer-links" style={{ listStyle: 'none', padding: 0 }}>
+              <li style={{ marginBottom: '10px' }}>
+                <a href="mailto:inf_11@yahoo.com" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <i className="fas fa-envelope" style={{ fontSize: '13px', minWidth: '14px' }}></i>
+                  inf_11@yahoo.com
+                </a>
+              </li>
+              <li style={{ marginBottom: '10px' }}>
+                <a href="tel:+919773818679" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <i className="fas fa-phone" style={{ fontSize: '13px', minWidth: '14px' }}></i>
+                  +91 97738 18679
+                </a>
+              </li>
+              <li style={{ marginBottom: '10px' }}>
+                <a href="https://whatsapp.com/channel/0029VbCw6MP5K3zYIlGbwg24" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#25D366' }}>
+                  <i className="fab fa-whatsapp" style={{ fontSize: '13px', minWidth: '14px' }}></i>
+                  {lang === 'EN' ? 'WhatsApp Channel' : 'व्हाट्सऐप चैनल'}
+                </a>
+              </li>
+              <li>
+                <span style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', fontSize: '13px', color: 'var(--footer-link, #ccc)' }}>
+                  <i className="fas fa-map-marker-alt" style={{ fontSize: '13px', minWidth: '14px', marginTop: '3px' }}></i>
+                  <span>
+                    {lang === 'EN'
+                      ? 'Link Road, Thapaliya, Almora, Uttarakhand — 263601'
+                      : 'लिंक रोड, थापलिया, अल्मोड़ा, उत्तराखंड — 263601'}
+                  </span>
+                </span>
+              </li>
             </ul>
           </div>
         </div>
@@ -88,7 +123,8 @@ const Footer = memo(() => {
             <Link to="/privacy-policy"> Privacy Policy</Link> |
             <Link to="/terms"> Terms</Link> |
             <Link to="/disclaimer"> Disclaimer</Link> |
-            <Link to="/sitemap"> Sitemap</Link>
+            <Link to="/sitemap"> Sitemap</Link> |
+            <Link to="/contact"> {t('contactUs')}</Link>
           </div>
           <div className="powered-by">
             <span className="live-dot"></span>

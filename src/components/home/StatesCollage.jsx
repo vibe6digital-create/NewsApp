@@ -4,6 +4,7 @@ import { useNews } from '../../context/NewsContext';
 import { useLang } from '../../context/LanguageContext';
 import { timeAgo } from '../../utils/formatDate';
 import { getCategoryFallbackImage } from '../../utils/categoryImages';
+import { isValidArticle } from '../../utils/isValidArticle';
 import { isBrandedImage } from '../../utils/isBrandedImage';
 import SectionTitle from '../common/SectionTitle';
 
@@ -160,7 +161,7 @@ const StatesCollage = () => {
 
   const stateArticles = useMemo(() => {
     const preferredLang = lang === 'EN' ? 'en' : 'hi';
-    const langFilteredRaw = rawArticles.filter(a => a.lang === preferredLang);
+    const langFilteredRaw = rawArticles.filter(a => a.lang === preferredLang && isValidArticle(a));
     return INDIA_STATES.map((state) => {
       // Try current articles first, fall back to older cached articles (same language)
       const article = findStateArticle(allArticles, state) || findStateArticle(langFilteredRaw, state);

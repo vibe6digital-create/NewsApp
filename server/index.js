@@ -76,6 +76,107 @@ app.get('/api/fetch-article', async (req, res) => {
   }
 });
 
+// ── Article summarizer — calls Groq API ──
+const SUMMARIZE_JUNK = [
+  /^#{1,6}\s*/,
+  /^markdown\s*content\s*:/i,
+  /^(close\s+)?search(\s+for)?\s*:/i,
+  /^posted\s+in\b/i,
+  /^by\s+\S/i,
+  /^share\s*(this)?\s*:?$/i,
+  /^(click\s+to\s+share|opens?\s+in\s+new\s+window)/i,
+  /^(facebook|twitter|whatsapp|telegram|instagram|linkedin|pinterest|reddit|tumblr|koo|email|print|copy\s*(url|link))\s*$/i,
+  /facebook.*twitter|twitter.*whatsapp|whatsapp.*instagram|youtube.*instagram|instagram.*threads/i,
+  /^(top\s+stories|also\s+read|related(\s+posts?)?|more\s+(news|stories)?|next\s+story|trending\s+news|ट्रेंडिंग\s+न्यूज़)\s*:?$/i,
+  /^(home|menu|navigation|subscribe|newsletter)\s*$/i,
+  /^(national|world|technology|health|education|sports|entertainment|business|politics|state)\s*$/i,
+  /^https?:\/\/\S+$/i,
+  /\bndtv\.in\b/i,
+  /ndtv\s+group\s+sites/i,
+  /dnpa\s+code\s+of\s+ethics/i,
+  /©|copyright\s.*all\s+rights\s+reserved/i,
+  /all\s+rights\s+reserved/i,
+  /get\s+app\s+(for\s+)?better\s+experience/i,
+  /jiosaavn/i,
+  /अन्य\s+समाचार.*वीडियो.*फोटो/i,
+  /ताज़ातरीन\s+खबरों\s+को\s+ट्रैक/i,
+  /ताज़ातरीन\s+खबरें/i,
+  /पूरी\s+स्टोरी\s+पढ़ें/i,
+  /read\s+(full\s+)?(story|article|more)/i,
+  /^\s*[*\-–•]\s*(click|share|open|follow)\b/i,
+  /listen\s+to\s+the\s+latest\s+songs/i,
+  /only\s+on\s+(jiosaavn|spotify|gaana|wynk)/i,
+];
+
+const cleanForSummary = (t) => {
+  if (!t) return '';
+  let text = t
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&[a-z#0-9]+;/gi, ' ');
+  text = text
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/^\s*[\*\-]\s+/gm, '');
+  text = text
+    .split('\n')
+    .map(line => line.trim())
+    .filter(line => line.length > 0 && !SUMMARIZE_JUNK.some(re => re.test(line)))
+    .join('\n');
+  return text.replace(/[ \t]{2,}/g, ' ').trim();
+};
+
+app.get('/api/summarize-article', async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  const { title, summary, body } = req.query;
+  if (!title && !summary && !body) return res.json({ summary: null });
+
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) return res.json({ summary: null });
+
+  try {
+    const cleanedTitle   = cleanForSummary(title);
+    const cleanedSummary = cleanForSummary(summary);
+    const cleanedBody    = cleanForSummary(body);
+    const bodyContext    = cleanedBody.length > 10 ? cleanedBody.substring(0, 1200) : '';
+    const input = [cleanedTitle, cleanedSummary, bodyContext].filter(s => s && s.length > 3).join('\n\n');
+
+    if (!input || input.length < 20) return res.json({ summary: null });
+
+    const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'llama-3.1-8b-instant',
+        max_tokens: 800,
+        messages: [
+          {
+            role: 'system',
+            content: 'Write a structured news summary in exactly 3 paragraphs (150-200 words total). Paragraph 1 (2-3 sentences): describe the main event — what happened and why it matters. Paragraph 2 (2-3 sentences): cover key details — who is involved, where, when, and how. Paragraph 3 (2-3 sentences): provide additional context, background, or impact. Separate paragraphs with a blank line. Each paragraph must have at least 2 complete sentences. Be factual, informative, and easy to read. Write in the same language as the input — if the input is in Hindi, respond entirely in Hindi; if in English, respond entirely in English. Do NOT use markdown, bullet points, headers, bold, italic, or any formatting symbols. Write plain prose only. Do NOT mention any source name, news agency, website, domain, author, publication, or media outlet.',
+          },
+          { role: 'user', content: input },
+        ],
+      }),
+      signal: AbortSignal.timeout(25000),
+    });
+
+    if (!groqRes.ok) return res.json({ summary: null });
+
+    const data = await groqRes.json();
+    const raw = data?.choices?.[0]?.message?.content || null;
+    const result = raw ? cleanForSummary(raw) : null;
+
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    return res.json({ summary: result });
+  } catch (err) {
+    console.error('summarize-article error:', err.message);
+    return res.json({ summary: null });
+  }
+});
+
 // ── Helpers ──
 const signToken = (user) =>
   jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: JWT_EXPIRY });

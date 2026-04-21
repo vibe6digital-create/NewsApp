@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Carousel } from 'bootstrap';
 import { useNews } from '../context/NewsContext';
 import { useLang } from '../context/LanguageContext';
+import { isValidArticle } from '../utils/isValidArticle';
 import SubSection from '../components/national/SubSection';
 import AdBanner from '../components/layout/AdBanner';
 import LoadingSpinner from '../components/common/LoadingSpinner';
@@ -300,7 +301,7 @@ const JobsPage = () => {
     let result = allArticles.filter(isJobArticle);
     // Fallback: older job articles (same language) from cache if current fetch has none
     if (result.length === 0) {
-      result = rawArticles.filter(a => isJobArticle(a) && a.lang === preferredLang);
+      result = rawArticles.filter(a => isJobArticle(a) && a.lang === preferredLang && isValidArticle(a));
     }
     // Emergency: keyword search within same-language articles when dedicated feeds failed
     if (result.length === 0 && rawArticles.length > 0) {
@@ -309,6 +310,7 @@ const JobsPage = () => {
         'भर्ती', 'नौकरी', 'वैकेंसी', 'रोजगार', 'आवेदन', 'सरकारी नौकरी'];
       result = rawArticles.filter(a =>
         a.lang === preferredLang &&
+        isValidArticle(a) &&
         jobKws.some(kw => (a.title + ' ' + (a.summary || '')).toLowerCase().includes(kw))
       ).slice(0, 20);
     }

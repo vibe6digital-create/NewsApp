@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="hi">
+  <head>
+    <meta charset="utf-8" />
+    <title>Kaushal Prime Nation</title>
+    <script>
+      // SPA redirect for GitHub Pages — encodes the full path into the query string
+      // so index.html can restore it via replaceState.
+      (function () {
+        var l = window.location;
+        l.replace(
+          l.protocol + '//' + l.host + l.pathname.split('/').slice(0, 1).join('/') +
+          '/?/' + l.pathname.slice(1).replace(/&/g, '~and~') +
+          (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+          l.hash
+        );
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>

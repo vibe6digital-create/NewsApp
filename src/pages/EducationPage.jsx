@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Carousel } from 'bootstrap';
 import { useNews } from '../context/NewsContext';
 import { useLang } from '../context/LanguageContext';
+import { isValidArticle } from '../utils/isValidArticle';
 import SubSection from '../components/national/SubSection';
 import AdBanner from '../components/layout/AdBanner';
 import LoadingSpinner from '../components/common/LoadingSpinner';
@@ -157,7 +158,7 @@ const EducationPage = () => {
     // Fallback: older education articles (same language) from cache if current fetch has none
     if (result.length === 0) {
       const preferredLang = lang === 'EN' ? 'en' : 'hi';
-      result = rawArticles.filter(a => a.category === 'education' && a.lang === preferredLang);
+      result = rawArticles.filter(a => a.category === 'education' && a.lang === preferredLang && isValidArticle(a));
     }
     // Tier 3: general valid articles so page is never empty
     if (result.length === 0) {

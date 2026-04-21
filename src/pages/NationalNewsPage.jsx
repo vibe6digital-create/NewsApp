@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Carousel } from 'bootstrap';
 import { useNews } from '../context/NewsContext';
 import { useLang } from '../context/LanguageContext';
+import { isValidArticle } from '../utils/isValidArticle';
 import SubSection from '../components/national/SubSection';
 import AdBanner from '../components/layout/AdBanner';
 import LoadingSpinner from '../components/common/LoadingSpinner';
@@ -100,7 +101,7 @@ const NationalNewsPage = () => {
       a.category === 'national' && a.lang === langCode
     );
     // Fallback: older national articles (same language) from cache if current fetch has none
-    if (result.length === 0) result = rawArticles.filter(a => a.category === 'national' && a.lang === langCode);
+    if (result.length === 0) result = rawArticles.filter(a => a.category === 'national' && a.lang === langCode && isValidArticle(a));
     if (sortOrder === 'oldest') {
       return [...result].sort((a, b) => new Date(a.pubDate) - new Date(b.pubDate));
     }

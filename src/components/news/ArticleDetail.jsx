@@ -8,6 +8,7 @@ import { useAuth } from '../../context/AuthContext';
 import { PORTAL_NAME } from '../../utils/constants';
 import { stripSourceAttribution } from '../../utils/stripSource';
 import { isBrandedImage } from '../../utils/isBrandedImage';
+import { buildLocalSummary } from '../../utils/buildLocalSummary';
 
 // Strip junk markup from admin article body HTML before rendering
 const cleanBodyHtml = (html) => {
@@ -140,9 +141,17 @@ const ArticleDetail = ({ article }) => {
     setAiSummary(null);
     setSummarizing(true);
 
+    // Include truncated body as extra context so the AI can generate a richer summary
+    const bodySnippet = (article.body || '')
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .substring(0, 800);
+
     const params = new URLSearchParams({
       title: article.title || '',
       summary: article.summary || '',
+      body: bodySnippet,
     });
     fetch(`/api/summarize-article?${params}`)
       .then(r => r.ok ? r.json() : null)
@@ -252,6 +261,7 @@ const ArticleDetail = ({ article }) => {
             alt={article.title}
             className="img-fluid rounded"
             style={{ width: '100%' }}
+            loading="lazy"
           />
         </div>
       )}
@@ -306,20 +316,37 @@ const ArticleDetail = ({ article }) => {
               .split(/\n{2,}/)
               .map(p => p.trim())
               .filter(p => p.length > 0 && !/ndtv\.in|ndtv\s+group|dnpa\s+code|all\s+rights\s+reserved|©|copyright|get\s+app|jiosaavn|listen\s+to\s+the\s+latest|only\s+on\s+jio|अन्य\s+समाचार|ताज़ातरीन\s+खबर|पूरी\s+स्टोरी\s+पढ़ें|ट्रेंडिंग\s+न्यूज़|facebook.*twitter|youtube.*instagram/i.test(p))
+              // Strip residual source-attribution sentences that the AI may have included
+              .map(p => p
+                .replace(/\(\s*source\s*:\s*[^)]{1,60}\)/gi, '')
+                .replace(/[-–—]\s*[A-Z][a-zA-Z\s]{2,40}$/gm, '')
+                .replace(/\|\s*[A-Z][a-zA-Z\s]{2,40}$/gm, '')
+                .replace(/\b(साभार|सौजन्य)\s*:\s*\S[^\n.]{0,50}/gi, '')
+                .replace(/\bvia\s+[A-Z][a-zA-Z\s]{2,30}\b/g, '')
+                .replace(/\s{2,}/g, ' ')
+                .trim()
+              )
+              .filter(p => p.length > 0)
               .map((para, i) => (
                 <p key={i}>{para}</p>
               ))}
           </div>
         )}
 
-        {/* RSS fallback: if AI summary unavailable, show cleaned RSS snippet */}
-        {article.isRss && !summarizing && !aiSummary && article.summary && (() => {
-          const cleaned = stripSourceAttribution(article.summary, article.source)
-            .split(/\n+/)
-            .filter(line => line.trim().length > 0 && !/ndtv\.in|ndtv\s+group|dnpa\s+code|all\s+rights\s+reserved|©|copyright|get\s+app|jiosaavn|listen\s+to\s+the\s+latest|only\s+on\s+jio|अन्य\s+समाचार|ताज़ातरीन\s+खबर|पूरी\s+स्टोरी\s+पढ़ें|ट्रेंडिंग\s+न्यूज़|facebook.*twitter|youtube.*instagram/i.test(line))
-            .join(' ')
-            .trim();
-          return cleaned ? <p>{cleaned}</p> : null;
+        {/* RSS fallback: AI summary unavailable — build structured local summary from body + summary */}
+        {article.isRss && !summarizing && !aiSummary && (() => {
+          const paragraphs = buildLocalSummary(article, lang);
+          if (paragraphs && paragraphs.length > 0) {
+            return (
+              <div>
+                {paragraphs.map((para, i) => <p key={i}>{para}</p>)}
+              </div>
+            );
+          }
+          // Hard fallback: show stripped raw summary so something always appears
+          const raw = stripSourceAttribution(article.summary || '', article.source)
+            .replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+          return raw ? <p>{raw}</p> : null;
         })()}
       </div>
 

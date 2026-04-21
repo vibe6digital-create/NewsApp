@@ -4,6 +4,7 @@ import { useNews } from '../../context/NewsContext';
 import { useLang } from '../../context/LanguageContext';
 import { timeAgo } from '../../utils/formatDate';
 import { CATEGORY_KEYWORDS } from '../../utils/constants';
+import { isValidArticle } from '../../utils/isValidArticle';
 import { getCategoryFallbackImage } from '../../utils/categoryImages';
 import { stripSourceAttribution } from '../../utils/stripSource';
 import NewsCardHorizontal from '../news/NewsCardHorizontal';
@@ -139,7 +140,7 @@ const UttarakhandSection = () => {
     if (primary.length > 0) return primary.slice(0, 30);
     // Fallback: older Uttarakhand articles, same language
     const preferredLang = lang === 'EN' ? 'en' : 'hi';
-    return filterUK(rawArticles.filter(a => a.lang === preferredLang)).slice(0, 30);
+    return filterUK(rawArticles.filter(a => a.lang === preferredLang && isValidArticle(a))).slice(0, 30);
   }, [allArticles, rawArticles, lang]);
 
   if (loading) return <div><LoadingSpinner /></div>;

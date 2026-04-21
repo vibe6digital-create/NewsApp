@@ -4,8 +4,8 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const { title, summary } = req.query;
-  if (!title && !summary) return res.status(200).json({ summary: null });
+  const { title, summary, body } = req.query;
+  if (!title && !summary && !body) return res.status(200).json({ summary: null });
 
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) return res.status(200).json({ summary: null });
@@ -70,7 +70,10 @@ export default async function handler(req, res) {
 
     const cleanedTitle = cleanText(title);
     const cleanedSummary = cleanText(summary);
-    const input = [cleanedTitle, cleanedSummary].filter(s => s && s.length > 3).join('\n\n');
+    const cleanedBody = cleanText(body);
+    // Include body content (up to 1200 chars after cleaning) as additional context for the AI
+    const bodyContext = cleanedBody.length > 10 ? cleanedBody.substring(0, 1200) : '';
+    const input = [cleanedTitle, cleanedSummary, bodyContext].filter(s => s && s.length > 3).join('\n\n');
 
     if (!input || input.length < 20) return res.status(200).json({ summary: null });
 
@@ -82,11 +85,11 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'llama-3.1-8b-instant',
-        max_tokens: 350,
+        max_tokens: 800,
         messages: [
           {
             role: 'system',
-            content: 'Write a structured news summary in exactly 3 short paragraphs (100-150 words total). Paragraph 1: the main event (what happened). Paragraph 2: key details (who, where, when, how). Paragraph 3: additional context or impact. Separate paragraphs with a blank line. Be factual and direct. Write in the same language as the input (Hindi or English). Do NOT use markdown, bullet points, headers, bold, or any formatting symbols. Write plain prose only. Do NOT mention any source name, website, domain, author, or publication.',
+            content: 'Write a structured news summary in exactly 3 paragraphs (150-200 words total). Paragraph 1 (2-3 sentences): describe the main event — what happened and why it matters. Paragraph 2 (2-3 sentences): cover key details — who is involved, where, when, and how. Paragraph 3 (2-3 sentences): provide additional context, background, or impact. Separate paragraphs with a blank line. Each paragraph must have at least 2 complete sentences. Be factual, informative, and easy to read. Write in the same language as the input — if the input is in Hindi, respond entirely in Hindi; if in English, respond entirely in English. Do NOT use markdown, bullet points, headers, bold, italic, or any formatting symbols. Write plain prose only. Do NOT mention any source name, news agency, website, domain, author, publication, or media outlet.',
           },
           {
             role: 'user',

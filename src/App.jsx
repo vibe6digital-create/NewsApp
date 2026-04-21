@@ -43,6 +43,7 @@ const SearchPage = lazy(() => import('./pages/SearchPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const StatePage = lazy(() => import('./pages/StatePage'));
 const LegalPage = lazy(() => import('./pages/LegalPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
 
 const AdminLogin = lazy(() => import('./components/admin/AdminLogin'));
 const AdminDashboard = lazy(() => import('./components/admin/AdminDashboard'));
@@ -142,6 +143,7 @@ function App() {
                         <Route path="/article/:id" element={<ArticlePage />} />
                         <Route path="/state/:slug" element={<StatePage />} />
                         <Route path="/search" element={<SearchPage />} />
+                        <Route path="/contact" element={<ContactPage />} />
                         <Route path="/:slug" element={<LegalPage />} />
                         <Route path="*" element={<NotFoundPage />} />
                       </Routes>

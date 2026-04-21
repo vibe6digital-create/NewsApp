@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { useNews } from '../context/NewsContext';
 import { useLang } from '../context/LanguageContext';
+import { isValidArticle } from '../utils/isValidArticle';
 import { PORTAL_NAME } from '../utils/constants';
 import { getCategoryFallbackImage, SAFE_FALLBACK } from '../utils/categoryImages';
 import { timeAgo } from '../utils/formatDate';
@@ -430,7 +431,7 @@ const AstrologyPage = () => {
     const primary = getByCategory('astro');
     if (primary.length > 0) return primary;
     const preferredLang = lang === 'EN' ? 'en' : 'hi';
-    return rawArticles.filter(a => a.category === 'astro' && a.lang === preferredLang);
+    return rawArticles.filter(a => a.category === 'astro' && a.lang === preferredLang && isValidArticle(a));
   }, [getByCategory, rawArticles, lang]);
 
   const dateStr = new Date().toLocaleDateString(

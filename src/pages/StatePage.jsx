@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useNews } from '../context/NewsContext';
 import { useLang } from '../context/LanguageContext';
+import { isValidArticle } from '../utils/isValidArticle';
 import NewsCard from '../components/news/NewsCard';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { PORTAL_NAME } from '../utils/constants';
@@ -109,7 +110,7 @@ const StatePage = () => {
     const primary = allArticles.filter(a => matchesState(a, stateConfig, slug));
     if (primary.length > 0) return primary;
     // Fallback: older cached articles, same language
-    return rawArticles.filter(a => a.lang === langCode && matchesState(a, stateConfig, slug));
+    return rawArticles.filter(a => a.lang === langCode && matchesState(a, stateConfig, slug) && isValidArticle(a));
   }, [allArticles, rawArticles, stateConfig, slug, lang]);
 
   if ((loading || !feedsComplete) && articles.length === 0) {

@@ -16,9 +16,20 @@ const CORS_PROXIES = [
  * Use the feed's tagged language as the article's language.
  * Feed lang is the source of truth — Hindi feeds often use English words
  * in titles (e.g., "PM Modi", "SSC CGL") but are still Hindi articles.
+ *
+ * When feedLang is not set, fall back to Unicode-range detection:
+ *   – Devanagari characters (U+0900–U+097F) → Hindi
+ *   – Latin characters with no Devanagari         → English
  */
-const detectLang = (_title, feedLang) => {
-  return feedLang || 'hi';
+const DEVANAGARI_RE = /[\u0900-\u097F]/;
+
+const detectLang = (title, feedLang) => {
+  // Feed language tag is always the primary source of truth
+  if (feedLang) return feedLang;
+
+  // Fallback: detect from title text using Unicode ranges
+  if (DEVANAGARI_RE.test(title)) return 'hi';
+  return 'en';
 };
 
 const generateId = (title, source) => {

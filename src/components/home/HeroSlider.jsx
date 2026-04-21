@@ -127,6 +127,8 @@ const HeroSlider = () => {
                   src={article.image}
                   alt={article.title}
                   className="d-block w-100"
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  fetchpriority={index === 0 ? 'high' : 'low'}
                   onError={(e) => {
                     e.target.onerror = null;
                     const fb = getCategoryFallbackImage(article.category, article.id, article.title, article.summary);
