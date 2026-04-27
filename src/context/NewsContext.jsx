@@ -60,9 +60,18 @@ export const NewsProvider = ({ children }) => {
     // Wake up Render backend immediately (free tier cold-starts in 30-45s)
     wakeUpBackend();
     fetchNews(false);
-    // Warmup refreshes: Render wakes in 30-60s — re-fetch state feeds once warm.
-    const warmupTimer1 = setTimeout(() => fetchNews(true), 45000);
-    const warmupTimer2 = setTimeout(() => fetchNews(true), 90000); // backup for slow cold starts
+    // Warmup refreshes: Render wakes in 30-60s — re-fetch once warm.
+    // warmup1Done flag prevents the 90s backup from double-fetching all 140 feeds
+    // when the 45s warmup already completed successfully.
+    let warmup1Done = false;
+    const warmupTimer1 = setTimeout(async () => {
+      await fetchNews(true);
+      warmup1Done = true;
+    }, 45000);
+    const warmupTimer2 = setTimeout(() => {
+      // Only runs if 45s warmup hasn't finished (very slow cold start)
+      if (!warmup1Done) fetchNews(true);
+    }, 90000);
     const interval = setInterval(() => fetchNews(true), AUTO_REFRESH_INTERVAL);
     return () => {
       clearTimeout(warmupTimer1);

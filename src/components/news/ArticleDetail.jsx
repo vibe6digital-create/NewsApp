@@ -9,6 +9,9 @@ import { PORTAL_NAME } from '../../utils/constants';
 import { stripSourceAttribution } from '../../utils/stripSource';
 import { isBrandedImage } from '../../utils/isBrandedImage';
 import { buildLocalSummary } from '../../utils/buildLocalSummary';
+import GoogleAd from '../common/GoogleAd';
+
+const ADSENSE_SLOT = '6258986892';
 
 // Strip junk markup from admin article body HTML before rendering
 const cleanBodyHtml = (html) => {
@@ -41,6 +44,37 @@ const parseOptions = {
       }
     }
   },
+};
+
+// Split cleaned HTML body into paragraphs and interleave AdSense units after p2 and p5
+const renderBodyWithAds = (html) => {
+  const parts = html.split(/<\/p>/i);
+  const totalParagraphs = parts.length - 1;
+  const elements = [];
+
+  parts.forEach((part, i) => {
+    const isTrailing = i === parts.length - 1;
+    const segment = isTrailing ? part : `${part}</p>`;
+    if (segment.trim()) {
+      elements.push(
+        <React.Fragment key={`seg-${i}`}>{parse(segment, parseOptions)}</React.Fragment>
+      );
+    }
+    if (!isTrailing) {
+      const pNum = i + 1;
+      if (pNum === 2) {
+        elements.push(
+          <GoogleAd key="body-ad-1" slot={ADSENSE_SLOT} style={{ margin: '20px 0' }} />
+        );
+      } else if (pNum === 5 && totalParagraphs > 5) {
+        elements.push(
+          <GoogleAd key="body-ad-2" slot={ADSENSE_SLOT} style={{ margin: '20px 0' }} />
+        );
+      }
+    }
+  });
+
+  return elements;
 };
 
 const ArticleDetail = ({ article }) => {
@@ -288,9 +322,9 @@ const ArticleDetail = ({ article }) => {
       {/* Article Body */}
       <div className="article-body" style={{ fontSize: '17px', lineHeight: 2, color: 'var(--text-primary)' }}>
 
-        {/* Admin-written articles: render body, stripping junk + external links */}
+        {/* Admin-written articles: render body, stripping junk + external links; ads injected after p2/p5 */}
         {!article.isRss && article.body && (
-          <div>{parse(cleanBodyHtml(article.body), parseOptions)}</div>
+          <div>{renderBodyWithAds(cleanBodyHtml(article.body))}</div>
         )}
 
         {/* Admin articles with no body and no summary */}
@@ -327,8 +361,12 @@ const ArticleDetail = ({ article }) => {
                 .trim()
               )
               .filter(p => p.length > 0)
-              .map((para, i) => (
-                <p key={i}>{para}</p>
+              .map((para, i, arr) => (
+                <React.Fragment key={i}>
+                  <p>{para}</p>
+                  {i === 1 && <GoogleAd slot={ADSENSE_SLOT} style={{ margin: '20px 0' }} />}
+                  {i === 4 && arr.length > 5 && <GoogleAd slot={ADSENSE_SLOT} style={{ margin: '20px 0' }} />}
+                </React.Fragment>
               ))}
           </div>
         )}
@@ -339,7 +377,13 @@ const ArticleDetail = ({ article }) => {
           if (paragraphs && paragraphs.length > 0) {
             return (
               <div>
-                {paragraphs.map((para, i) => <p key={i}>{para}</p>)}
+                {paragraphs.map((para, i) => (
+                  <React.Fragment key={i}>
+                    <p>{para}</p>
+                    {i === 1 && <GoogleAd slot={ADSENSE_SLOT} style={{ margin: '20px 0' }} />}
+                    {i === 4 && paragraphs.length > 5 && <GoogleAd slot={ADSENSE_SLOT} style={{ margin: '20px 0' }} />}
+                  </React.Fragment>
+                ))}
               </div>
             );
           }
@@ -372,6 +416,9 @@ const ArticleDetail = ({ article }) => {
           ))}
         </div>
       )}
+
+      {/* End-of-article ad */}
+      <GoogleAd slot={ADSENSE_SLOT} style={{ margin: '24px 0 8px' }} />
 
     </article>
   );

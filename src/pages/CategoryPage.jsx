@@ -231,7 +231,7 @@ const CategoryPage = () => {
 
           {/* Sidebar */}
           <div className="col-lg-4" data-aos="fade-left">
-            <AdBanner size="300x250" />
+            <AdBanner size="300x250" googleSlot="6258986892" />
             <div className="mt-4">
               <h5
                 style={{

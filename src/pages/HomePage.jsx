@@ -2,9 +2,9 @@ import React, { lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet-async';
 import HeroSlider from '../components/home/HeroSlider';
 import AdBanner from '../components/layout/AdBanner';
-import UttarakhandSection from '../components/home/UttarakhandSection';
-import IndiaSection from '../components/home/IndiaSection';
 
+const UttarakhandSection = lazy(() => import('../components/home/UttarakhandSection'));
+const IndiaSection = lazy(() => import('../components/home/IndiaSection'));
 const VideoNewsSection = lazy(() => import('../components/home/VideoNewsSection'));
 const WorldSection = lazy(() => import('../components/home/WorldSection'));
 const SubscriptionBanner = lazy(() => import('../components/home/SubscriptionBanner'));
@@ -24,7 +24,7 @@ const HomePage = () => {
 
         {/* Full-width leaderboard ad */}
         <div className="container my-2">
-          <AdBanner size="728x90" index={0} />
+          <AdBanner size="728x90" index={0} googleSlot="6258986892" />
         </div>
 
         {/* ── Two-column layout: main (col-lg-8) + sidebar (col-lg-4) ── */}
@@ -34,12 +34,9 @@ const HomePage = () => {
             {/* ── Main content ── */}
             <div className="col-lg-8">
               {/* Featured: Uttarakhand */}
-              <UttarakhandSection />
-
-              <hr className="section-divider" />
-
-              {/* National News */}
-              <IndiaSection />
+              <Suspense fallback={null}>
+                <UttarakhandSection />
+              </Suspense>
 
               <hr className="section-divider" />
 
@@ -50,8 +47,15 @@ const HomePage = () => {
 
               <hr className="section-divider" />
 
+              {/* National News */}
+              <Suspense fallback={null}>
+                <IndiaSection />
+              </Suspense>
+
+              <hr className="section-divider" />
+
               <div className="my-2">
-                <AdBanner size="728x90" index={3} />
+                <AdBanner size="728x90" index={3} googleSlot="6258986892" />
               </div>
 
               {/* International News */}
@@ -72,7 +76,7 @@ const HomePage = () => {
 
         {/* Full-width bottom ad */}
         <div className="container my-2">
-          <AdBanner size="970x90" index={5} />
+          <AdBanner size="970x90" index={5} googleSlot="6258986892" />
         </div>
 
         {/* Full-width subscription banner */}

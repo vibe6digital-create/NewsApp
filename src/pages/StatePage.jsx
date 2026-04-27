@@ -106,11 +106,26 @@ const StatePage = () => {
   const articles = useMemo(() => {
     if (!stateConfig) return [];
     const langCode = lang === 'EN' ? 'en' : 'hi';
-    // Try language-filtered allArticles first (already language-filtered in context)
+
+    // Tier 1: latest validity-filtered articles matching this state (already sorted by pubDate)
     const primary = allArticles.filter(a => matchesState(a, stateConfig, slug));
     if (primary.length > 0) return primary;
-    // Fallback: older cached articles, same language
-    return rawArticles.filter(a => a.lang === langCode && matchesState(a, stateConfig, slug) && isValidArticle(a));
+
+    // Tier 2: older cached articles, same state + same language, validity-filtered
+    const rawFallback = rawArticles.filter(
+      a => a.lang === langCode && matchesState(a, stateConfig, slug) && isValidArticle(a)
+    );
+    if (rawFallback.length > 0) return rawFallback;
+
+    // Tier 3: oldest cache, same state + language, no validity filter
+    const deepFallback = rawArticles.filter(
+      a => a.lang === langCode && matchesState(a, stateConfig, slug)
+    );
+    if (deepFallback.length > 0) return deepFallback;
+
+    // Tier 4: this state has zero RSS coverage — show recent general news
+    // so the page is never blank (sorted by pubDate, already ordered in allArticles)
+    return allArticles.slice(0, 12);
   }, [allArticles, rawArticles, stateConfig, slug, lang]);
 
   if ((loading || !feedsComplete) && articles.length === 0) {
@@ -151,7 +166,7 @@ const StatePage = () => {
           <div style={{ textAlign: 'center', padding: '60px 20px', color: '#666' }}>
             <div style={{ fontSize: '3rem', marginBottom: '12px' }}>📰</div>
             <p style={{ fontSize: '16px' }}>
-              {lang === 'EN' ? 'No news available for today in this state.' : 'आज इस राज्य की कोई खबर उपलब्ध नहीं है।'}
+              {lang === 'EN' ? 'No news available for this state right now.' : 'इस राज्य की कोई खबर अभी उपलब्ध नहीं है।'}
             </p>
             <Link to="/" className="btn btn-danger mt-3" style={{ borderRadius: '30px' }}>
               {lang === 'EN' ? 'Back to Home' : 'होम पर जाएं'}

@@ -10,10 +10,11 @@ const AdminDashboard = () => {
   const [subscriberCount, setSubscriberCount] = useState(0);
 
   useEffect(() => {
+    const controller = new AbortController();
     const loadCount = async () => {
       const localSubs = getSubscribers() || [];
       try {
-        const res = await fetch('/api/admin/subscribers');
+        const res = await fetch('/api/admin/subscribers', { signal: controller.signal });
         if (res.ok) {
           const data = await res.json();
           // Deduplicate by email
@@ -24,12 +25,13 @@ const AdminDashboard = () => {
         } else {
           setSubscriberCount(localSubs.length);
         }
-      } catch {
-        setSubscriberCount(localSubs.length);
+      } catch (e) {
+        if (!controller.signal.aborted) setSubscriberCount(localSubs.length);
       }
     };
     loadCount();
-  }, [getSubscribers]);
+    return () => controller.abort();
+  }, []); // getSubscribers is stable (useCallback with [] deps in AdminContext)
 
   if (!isLoggedIn) {
     return <Navigate to="/admin" />;

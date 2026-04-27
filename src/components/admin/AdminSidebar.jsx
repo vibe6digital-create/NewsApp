@@ -68,4 +68,4 @@ const AdminSidebar = ({ activePage }) => {
   );
 };
 
-export default AdminSidebar;
+export default React.memo(AdminSidebar);

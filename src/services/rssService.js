@@ -164,12 +164,20 @@ const categorizeFeedItem = (title, description, feedCategories) => {
   return primaryCat;
 };
 
-// Decode HTML entities AND strip tags — handles doubly-encoded RSS descriptions
+// Decode HTML entities AND strip tags — regex-based to avoid DOM creation per article
 const htmlToText = (html) => {
   if (!html) return '';
-  const tmp = document.createElement('div');
-  tmp.innerHTML = html;
-  return (tmp.textContent || '').replace(/\s+/g, ' ').trim();
+  return html
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#039;/gi, "'")
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
+    .replace(/\s+/g, ' ')
+    .trim();
 };
 
 const parseFeed = (xmlText, feedConfig) => {
@@ -306,7 +314,7 @@ const fetchSingleFeed = async (feedConfig) => {
     } catch {}
   }
 
-  console.warn(`All proxies failed for ${feedConfig.name}`);
+  if (process.env.NODE_ENV !== 'production') console.warn(`All proxies failed for ${feedConfig.name}`);
   return [];
 };
 
@@ -329,9 +337,11 @@ const deduplicateArticles = (articles) => {
 };
 
 const processResults = (results) => {
-  let articles = [];
+  const articles = [];
   results.forEach(r => {
-    if (r.status === 'fulfilled') articles = [...articles, ...r.value];
+    if (r.status === 'fulfilled' && r.value.length > 0) {
+      articles.push(...r.value); // push is O(n) vs spread+concat which is O(n²)
+    }
   });
   articles.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
   return deduplicateArticles(articles);
@@ -373,9 +383,13 @@ export const fetchPriorityFeeds = async () => {
   return articles;
 };
 
-export const fetchAllFeeds = async (force = false) => {
-  // Remove old cache keys from previous versions
+// Run old cache key cleanup once per browser session (not on every refresh)
+if (!sessionStorage.getItem('_kpn_cache_cleaned')) {
   ['rss_cache', 'rss_cache_v2', 'rss_cache_v3', 'rss_cache_v4', 'rss_cache_v5', 'rss_cache_v6', 'rss_cache_v7', 'rss_cache_v8', 'rss_cache_v9', 'rss_cache_v10', 'rss_cache_v11', 'rss_cache_v12', 'rss_cache_v13', 'rss_cache_v14', 'rss_cache_v15', 'rss_cache_v16', 'rss_cache_v17', 'rss_cache_v18', 'rss_cache_v19', 'rss_cache_v20', 'rss_cache_v21', 'rss_cache_v22', 'rss_cache_v23', 'rss_cache_v24', 'rss_cache_v25', 'rss_cache_v26', 'rss_cache_v27', 'rss_cache_v28', 'rss_cache_v29', 'rss_cache_v30', 'rss_cache_v31', 'rss_cache_v32', 'rss_cache_v33', 'rss_cache_v34', 'rss_cache_v35', 'rss_cache_v36', 'rss_cache_v37', 'rss_cache_v38', 'rss_cache_v39', 'rss_cache_v40', 'rss_cache_v41'].forEach(k => localStorage.removeItem(k));
+  sessionStorage.setItem('_kpn_cache_cleaned', '1');
+}
+
+export const fetchAllFeeds = async (force = false) => {
 
   // Check current cache (skip if force refresh)
   if (!force) {

@@ -1046,3 +1046,186 @@
     display: none;
   }
 }
+
+/* ===== Light Mode Overrides ===== */
+
+[data-theme="light"] .admin-layout {
+  background-color: #f8fafc;
+}
+
+[data-theme="light"] .admin-content {
+  background: #f8fafc;
+}
+
+[data-theme="light"] .admin-page-title {
+  color: #111827;
+  border-bottom-color: #e5e7eb;
+}
+
+/* Stat cards */
+[data-theme="light"] .stat-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .stat-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .stat-info h3 {
+  color: #111827;
+}
+
+[data-theme="light"] .stat-info p {
+  color: #6b7280;
+}
+
+/* Quick actions + recent articles panels */
+[data-theme="light"] .quick-actions {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .quick-actions h2 {
+  color: #111827;
+}
+
+[data-theme="light"] .recent-articles {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .recent-articles h2 {
+  color: #111827;
+}
+
+[data-theme="light"] .empty-state {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+/* Table */
+[data-theme="light"] .admin-table-wrapper {
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .admin-table {
+  color: #111827;
+}
+
+[data-theme="light"] .admin-table thead th {
+  background: #f3f4f6;
+  color: #6b7280;
+  border-bottom: 2px solid var(--primary);
+}
+
+[data-theme="light"] .admin-table tbody td {
+  border-bottom: 1px solid #e5e7eb;
+  color: #111827;
+}
+
+[data-theme="light"] .admin-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* Filters */
+[data-theme="light"] .admin-filters .form-control,
+[data-theme="light"] .admin-filters .form-select {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  color: #111827;
+}
+
+[data-theme="light"] .admin-filters .form-control:focus,
+[data-theme="light"] .admin-filters .form-select:focus {
+  background: #ffffff;
+  color: #111827;
+}
+
+/* Article form inputs */
+[data-theme="light"] .article-form .form-control,
+[data-theme="light"] .article-form .form-select {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  color: #111827;
+}
+
+[data-theme="light"] .article-form .form-control:focus,
+[data-theme="light"] .article-form .form-select:focus {
+  background: #ffffff;
+  color: #111827;
+}
+
+/* Pagination */
+[data-theme="light"] .admin-pagination button {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  color: #374151;
+}
+
+[data-theme="light"] .admin-pagination button:hover:not(:disabled) {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* Preview card */
+[data-theme="light"] .preview-card {
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+}
+
+/* Badges — stronger contrast in light mode */
+[data-theme="light"] .badge-published {
+  background: rgba(34, 197, 94, 0.12);
+  color: #15803d;
+}
+
+[data-theme="light"] .badge-draft {
+  background: rgba(234, 179, 8, 0.12);
+  color: #a16207;
+}
+
+[data-theme="light"] .badge-featured {
+  background: rgba(99, 102, 241, 0.12);
+  color: #4f46e5;
+}
+
+[data-theme="light"] .badge-breaking {
+  background: rgba(239, 68, 68, 0.12);
+  color: #dc2626;
+}
+
+/* Sidebar — always keep text white regardless of theme */
+[data-theme="light"] .admin-sidebar .sidebar-logo,
+[data-theme="light"] .admin-sidebar .sidebar-subtitle,
+[data-theme="light"] .admin-sidebar .sidebar-nav .nav-item {
+  color: #cccccc;
+}
+
+[data-theme="light"] .admin-sidebar .sidebar-nav .nav-item:hover {
+  color: #ffffff;
+}
+
+[data-theme="light"] .admin-sidebar .sidebar-nav .nav-item.active {
+  color: #ffffff;
+}
+
+[data-theme="light"] .admin-sidebar .sidebar-nav .logout-btn {
+  color: #ef4444;
+}
+
+/* Secondary button contrast */
+[data-theme="light"] .admin-layout .btn-secondary {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  color: #374151;
+}
+
+[data-theme="light"] .admin-layout .btn-secondary:hover {
+  background: #f3f4f6;
+  color: #111827;
+}

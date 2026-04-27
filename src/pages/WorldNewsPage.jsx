@@ -145,7 +145,7 @@ const WorldNewsPage = () => {
         <WorldHeroSlider slides={worldArticles.slice(0, 5)} lang={lang} />
 
         <div className="container my-2">
-          <AdBanner size="728x90" index={0} />
+          <AdBanner size="728x90" index={0} googleSlot="6258986892" />
         </div>
 
         {loading || (!feedsComplete && worldArticles.length === 0) ? (
@@ -192,7 +192,7 @@ const WorldNewsPage = () => {
                     {idx < activeSubsections.length - 1 && <hr className="section-divider" />}
                     {(idx + 1) % 2 === 0 && (
                       <div className="my-3">
-                        <AdBanner size="728x90" index={idx} />
+                        <AdBanner size="728x90" index={idx} googleSlot="6258986892" />
                       </div>
                     )}
                   </React.Fragment>
@@ -207,7 +207,7 @@ const WorldNewsPage = () => {
         )}
 
         <div className="container my-2">
-          <AdBanner size="970x90" index={5} />
+          <AdBanner size="970x90" index={5} googleSlot="6258986892" />
         </div>
       </div>
     </>

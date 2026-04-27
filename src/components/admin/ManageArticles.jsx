@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Navigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAdmin } from '../../context/AdminContext';
@@ -18,23 +18,31 @@ const ManageArticles = () => {
 
   const ITEMS_PER_PAGE = 10;
 
-  if (!isLoggedIn) {
-    return <Navigate to="/admin" />;
-  }
+  // Memoize articles — getArticles reads localStorage, runs once per getArticles ref change
+  const articles = useMemo(() => getArticles() || [], [getArticles]);
 
-  const articles = getArticles() || [];
-
-  const filteredArticles = articles.filter((article) => {
+  // Memoize filtering — only recalculates when search/filter state changes, not on checkbox clicks
+  const filteredArticles = useMemo(() => articles.filter((article) => {
     const title = (article.titleHindi || article.title || '').toLowerCase();
     const matchesSearch = title.includes(searchTerm.toLowerCase());
     const matchesCategory = !categoryFilter || article.category === categoryFilter;
     const matchesStatus = !statusFilter || article.status === statusFilter;
     return matchesSearch && matchesCategory && matchesStatus;
-  });
+  }), [articles, searchTerm, categoryFilter, statusFilter]);
 
-  const totalPages = Math.ceil(filteredArticles.length / ITEMS_PER_PAGE);
+  const totalPages = useMemo(
+    () => Math.ceil(filteredArticles.length / ITEMS_PER_PAGE),
+    [filteredArticles.length]
+  );
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedArticles = filteredArticles.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const paginatedArticles = useMemo(
+    () => filteredArticles.slice(startIndex, startIndex + ITEMS_PER_PAGE),
+    [filteredArticles, startIndex]
+  );
+
+  if (!isLoggedIn) {
+    return <Navigate to="/admin" />;
+  }
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
